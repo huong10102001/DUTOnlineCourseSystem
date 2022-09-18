@@ -137,6 +137,10 @@ DATABASES = {
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+<<<<<<< HEAD
+=======
+
+>>>>>>> CI/CD in jenkins
 
 
 # Password validation
