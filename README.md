@@ -16,8 +16,8 @@ Python 3.7 or later
 
 2. Create virtualenv
      ```
-     virtualenv --python=/usr/bin/python3 env
-     source /home/ubuntu/env/bin/activate
+     python3.8 -m venv env
+     source env/bin/activate
      deactivate
      ```
 
