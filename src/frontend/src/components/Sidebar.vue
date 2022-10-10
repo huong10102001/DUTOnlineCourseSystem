@@ -64,11 +64,12 @@ export default class Sidebar extends Vue {
       color: #fff;
       margin: 5px 0;
       padding-left: 40px;
+      border-radius: 0;
+      transition: padding-left 0.3s;
     }
 
     .router-link-exact-active:hover {
-      background-color: #222;
-      color: #fff;
+      border-radius: 0;
     }
 
     &__name {
@@ -93,13 +94,13 @@ export default class Sidebar extends Vue {
     }
 
     a:hover {
-      background-color: transparent;
-      color: #024547;
+      background-color: #024547;
+      color: #fff;
     }
 
     .is_collapse {
-      padding: 15px 0 15px 17px;
-      margin: 10px;
+      padding: 15px 0 15px 18px;
+      margin: 10px 10px;
       border-radius: 4px;
     }
   }
@@ -117,22 +118,13 @@ export default class Sidebar extends Vue {
       background-color: #024547;
       border-radius: 14px;
       color: white;
-      transition: all 0.3s;
-
-      &--collapse {
-        font-size: 1.6rem;
-        border-radius: 8px;
-        height: 36px;
-        width: 36px;
-        line-height: 32px;
-      }
     }
 
     &__text {
       display: inline-block;
       color: #024547;
       text-transform: capitalize;
-      transition: visibility 0.8s, opacity 0.3s linear;
+      transition: visibility 0.1s, opacity 0.3s linear;
       margin-left: 10px;
       opacity: 1;
       overflow: hidden;
@@ -145,7 +137,7 @@ export default class Sidebar extends Vue {
     }
 
     &--collapse {
-      margin: 40px 10px;
+      margin: 30px 10px;
     }
   }
 
@@ -159,7 +151,7 @@ export default class Sidebar extends Vue {
     text-align: center;
     color: white;
     font-size: 12px;
-    line-height: 30px;
+    line-height: 32px;
     opacity: 0.85;
     transition: all 0.3s;
     top: 85px;
