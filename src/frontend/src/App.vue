@@ -14,7 +14,7 @@
   color: #000000;
   margin: 0 auto;
   background-color: #F5F5F5;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 *{
@@ -27,9 +27,5 @@ $menu-item-active-color: #FFFFFF;
 $menu-item-hover-color: #FFFFFF;
 $menu-item-active-background-color: #024547;
 $menu-item-hover-background-color: #024547;
-$input-border-color: #eee;
-$input-hover-border-color: #eee;
-$input-focus-border-color: #eee;
-$input-focus-box-shadow-color: #eee;
 @import "../node_modules/bulma";
 </style>
