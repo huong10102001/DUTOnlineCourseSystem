@@ -14,7 +14,7 @@
   color: #000000;
   margin: 0 auto;
   background-color: #F5F5F5;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 *{
