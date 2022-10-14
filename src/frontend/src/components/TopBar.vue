@@ -21,31 +21,12 @@
           <font-awesome-icon icon="fa-regular fa-bell"/>
         </div>
 
-        <div class="top-bar__right-menu__avatar"
-             @mouseleave="top_bar.is_avatar_hover = !top_bar.is_avatar_hover"
-             @mouseenter="top_bar.is_avatar_hover = !top_bar.is_avatar_hover">
-          <div class="dropdown is-hoverable">
-            <div class="dropdown-trigger">
-              <figure class="image">
-                <img class="is-rounded" src="@/assets/vectors/default_avatar.svg">
-              </figure>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
-              <div class="dropdown-content">
-                <router-link to="profile" class="dropdown-item">
-                  Profile
-                </router-link>
-                <router-link to="profile/edit" class="dropdown-item">
-                  Edit Profile
-                </router-link>
-                <hr class="dropdown-divider">
-                <router-link to="log-out" class="dropdown-item">
-                  Log Out
-                </router-link>
-              </div>
-            </div>
-          </div>
+        <div class="top-bar__right-menu__avatar">
+          <figure class="image">
+            <img class="is-rounded" src="@/assets/vectors/default_avatar.svg">
+          </figure>
         </div>
+
       </div>
     </div>
   </div>
@@ -53,6 +34,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import MenuItem from "@/types/sidebar/MenuItem";
 
 @Options({
   props: {
@@ -74,7 +56,6 @@ export default class TopBar extends Vue {
 .top-bar {
 
   &__greeting {
-    min-width: 250px;
     display: inline-block;
     &__name {
       display: block;
@@ -89,8 +70,7 @@ export default class TopBar extends Vue {
 
   &__search-bar {
     display: inline-block;
-    width: 50%;
-    min-width: 150px;
+    width: 30%;
     max-width: 600px;
 
     .control {
@@ -119,14 +99,7 @@ export default class TopBar extends Vue {
         transition: color 0.2s ease-in-out;
       }
     }
-
-    #dropdown-menu {
-      font-weight: 400;
-      position: absolute;
-      top: 50px;
-      left: -150px;
-      z-index: 1;
-    }
   }
 }
+
 </style>
