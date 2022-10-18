@@ -53,8 +53,6 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import MenuItem from "@/types/sidebar/MenuItem";
-import TopBarStatus from "@/types/topbar/TopBarStatus";
 
 @Options({
   props: {
