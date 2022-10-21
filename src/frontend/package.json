@@ -8,12 +8,22 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.9",
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-brands-svg-icons": "^6.2.0",
+    "@fortawesome/free-regular-svg-icons": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "axios": "^0.27.2",
     "bulma": "^0.9.4",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.17",
+    "jwt-decode": "^3.1.2",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.0.3",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

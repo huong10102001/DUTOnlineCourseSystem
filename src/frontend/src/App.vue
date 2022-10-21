@@ -1,30 +1,35 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view/>
 </template>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: #000000;
+  margin: 0 auto;
+  background-color: #F5F5F5;
+  min-height: 100vh;
 }
 
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
+
+$menu-item-active-color: #FFFFFF;
+$menu-item-hover-color: #FFFFFF;
+$menu-item-active-background-color: #024547;
+$menu-item-hover-background-color: #024547;
+$input-border-color: #eee;
+$input-hover-border-color: #eee;
+$input-focus-border-color: #eee;
+$input-focus-box-shadow-color: #eee;
+@import "../node_modules/bulma";
 </style>

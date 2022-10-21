@@ -4,11 +4,11 @@ venv
 .history
 **/*.pyc
 docker.env
+seat-map
 
 #idea folder
 .idea/
 venv/### Python template
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -125,7 +125,9 @@ cython_debug/
 # gitignore template for Vue.js projects
 #
 # Recommended template: Node.gitignore
+# TODO: where does this rule come from?
 docs/_book
+# TODO: where does this rule come from?
 test/
 ### Example user template template
 ### Example user template
@@ -145,3 +147,5 @@ yarn.lock
 src/api/credentials.json
 
 .isort.cfg
+
+/src/backend/config.env
