@@ -29,7 +29,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
     }
   },
   methods: {
-    ...mapActions('courses', [ActionTypes.FETCH_COURSE_DETAIL]),
+    ...mapActions('course', [ActionTypes.FETCH_COURSE_DETAIL]),
     ...mapMutations(["SET_LOADING"]),
     async getCourseDetail() {
       this.SET_LOADING(true)
@@ -42,6 +42,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
   },
   async created() {
     await this.getCourseDetail()
+    document.title = this.course.title + ' | E-Learning'
   }
 })
 

@@ -36,6 +36,9 @@ import LoginForm from "@/views/login/LoginForm.vue";
 @Options({
   components: {
     LoginForm
+  },
+  mounted() {
+    document.title = 'Login to E-Learning'
   }
 })
 

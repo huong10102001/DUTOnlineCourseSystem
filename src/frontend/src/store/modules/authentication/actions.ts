@@ -64,7 +64,8 @@ export const actions: ActionTree<State, State> & Actions = {
     if (response.status == 200) {
       commit(MutationTypes.SET_TOKEN_INFO, {
           access_token: response.data.access_token as string,
-          refresh_token: response.data.refresh_token as string
+          refresh_token: response.data.refresh_token as string,
+          user_id: response.data.user_id as string
       });
     } 
     return response;

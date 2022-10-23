@@ -7,4 +7,7 @@ export enum MutationTypes {
 
   // Course
   SET_COURSES = 'SET_COURSES',
+
+  // User
+  SET_USER_INFO = 'SET_USER_INFO'
 }

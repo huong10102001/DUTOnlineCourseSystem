@@ -4,7 +4,7 @@ import { mutations } from "./mutations";
 import { getters } from "./getters";
 import { Module } from "vuex";
 
-export const course: Module<any, any> = {
+export const user: Module<any, any> = {
   namespaced: true,
   state,
   mutations,

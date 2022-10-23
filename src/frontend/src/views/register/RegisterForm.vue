@@ -129,6 +129,12 @@ const registerFormRef = ref<FormInstance>()
     async onRegister(){
       const response = await this.REGISTER(this.registerForm)
       if(response.status == 201){
+        ElNotification({
+          title: 'Register successfully',
+          message: 'You already become a member of E-learning. Please login to enter the world of knowledge.',
+          type: 'success',
+        })
+
         this.$router.push("/login");
       }
       else {

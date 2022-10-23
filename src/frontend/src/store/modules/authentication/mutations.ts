@@ -6,7 +6,7 @@ import decodeToken from "@/utils/decodeToken";
 
 export type Mutations<S = State> = {
   [MutationTypes.GET_TOKEN_INFO](state: S, payload: TokenInfo): void,
-  [MutationTypes.SET_TOKEN_INFO](state: S, {access_token, refresh_token}: any): void,
+  [MutationTypes.SET_TOKEN_INFO](state: S, {access_token, refresh_token, user_id}: any): void,
   [MutationTypes.LOGOUT](state: S): void,
 }
 
@@ -15,8 +15,8 @@ export const mutations: MutationTree<State> & Mutations = {
     state.tokenInfo = payload
   },
 
-  [MutationTypes.SET_TOKEN_INFO](state, {access_token, refresh_token}) {
-    const {exp, iat, user_id}: any = decodeToken(access_token);
+  [MutationTypes.SET_TOKEN_INFO](state, {access_token, refresh_token, user_id}) {
+    const {exp, iat}: any = decodeToken(access_token);
     const token: TokenInfo = {
       access_token: access_token,
       refresh_token: refresh_token,
@@ -24,7 +24,7 @@ export const mutations: MutationTree<State> & Mutations = {
       iat: iat,
       user_id: user_id,
     }
-    state.tokenInfo = token
+    state.tokenInfo = {...token} as TokenInfo
   },
 
   [MutationTypes.LOGOUT](state) {
