@@ -6,6 +6,7 @@ import { MutationTypes } from '@/types/store/MutationTypes'
 import TokenInfo from "@/types/authentication/TokenInfo";
 import AuthenticationService from "@/services/authentication/AuthenticationService";
 import LoginItem from "@/types/login/LoginItem";
+import RegisterItem from "@/types/register/RegisterItem";
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -33,7 +34,12 @@ export interface Actions {
   [ActionTypes.LOGIN](
     { commit }: AugmentedActionContext,
     payload: LoginItem
-  ): void,
+  ): any,
+
+  [ActionTypes.REGISTER](
+    { commit }: AugmentedActionContext,
+    payload: RegisterItem
+  ): any,
 
   [ActionTypes.LOGOUT](
     { commit }: AugmentedActionContext
@@ -54,11 +60,19 @@ export const actions: ActionTree<State, State> & Actions = {
   },
 
   async [ActionTypes.LOGIN]({ commit }, payload) {
-    const token_info: any = await AuthenticationService.login(payload)
-    commit(MutationTypes.SET_TOKEN_INFO, {
-        access_token: token_info.data.access_token as string,
-        refresh_token: token_info.data.refresh_token as string
-    });
+    const response: any = await AuthenticationService.login(payload)
+    if (response.status == 200) {
+      commit(MutationTypes.SET_TOKEN_INFO, {
+          access_token: response.data.access_token as string,
+          refresh_token: response.data.refresh_token as string
+      });
+    } 
+    return response;
+  },
+
+  async [ActionTypes.REGISTER]({ commit }, payload) {
+    const response: any = await AuthenticationService.register(payload)
+    return response;
   },
 
   [ActionTypes.LOGOUT]({ commit }) {

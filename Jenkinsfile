@@ -19,7 +19,6 @@ pipeline {
         sh "source env/bin/activate"
         sh "pip install -r requirements.txt"
         sh "python ./src/backend/manage.py test"
-
       }
     }
 

@@ -36,11 +36,6 @@ import LoginForm from "@/views/login/LoginForm.vue";
 @Options({
   components: {
     LoginForm
-  },
-  data() {
-    return {
-
-    }
   }
 })
 

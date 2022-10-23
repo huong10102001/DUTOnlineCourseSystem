@@ -55,6 +55,7 @@ import { UserFilled, EditPen } from '@element-plus/icons-vue'
 import LoginItem from "@/types/login/LoginItem";
 import { mapActions } from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
+import { ElNotification } from 'element-plus'
 
 const loginFormRef = ref<FormInstance>()
 
@@ -72,14 +73,22 @@ const loginFormRef = ref<FormInstance>()
   methods: {
     ...mapActions("authentication", [ActionTypes.LOGIN]),
     async onLogin(){
-      await this.LOGIN(this.loginForm)
+      const data = await this.LOGIN(this.loginForm)
+      if(data.status == 200){
+        if(this.$router.currentRoute.value.name == "login") {
+          this.$router.push("/base");
+        }
+      }
+      else {
+        ElNotification({
+          title: 'Error',
+          message: 'Username/Password is not correct.',
+          type: 'error',
+        })
+      }
     }
-  }
+  },
 })
 
 export default class LoginForm extends Vue {}
-</script>
-
-<script lang="ts" setup>
-
 </script>

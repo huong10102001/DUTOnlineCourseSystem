@@ -27,5 +27,9 @@ $menu-item-active-color: #FFFFFF;
 $menu-item-hover-color: #FFFFFF;
 $menu-item-active-background-color: #024547;
 $menu-item-hover-background-color: #024547;
+$input-border-color: #eee;
+$input-hover-border-color: #eee;
+$input-focus-border-color: #eee;
+$input-focus-box-shadow-color: #eee;
 @import "../node_modules/bulma";
 </style>
