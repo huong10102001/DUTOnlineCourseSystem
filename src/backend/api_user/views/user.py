@@ -19,8 +19,8 @@ class UserViewSet(BaseViewSet):
         try:
             if serializer.is_valid(raise_exception=True):
                 validated_data = serializer.validated_data
-                profile = UserService.create_user(validated_data)
-                return Response(self.serializer_class(profile).data, status=status.HTTP_201_CREATED)
+                user = UserService.create_user(validated_data)
+                return Response(self.serializer_class(user).data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

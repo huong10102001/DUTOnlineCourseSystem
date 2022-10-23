@@ -11,4 +11,4 @@ class UserPermission(MyBasePermission):
 
 
 class LecturerPermission(MyBasePermission):
-    match_any_roles = [Roles.ADMIN]
+    match_any_roles = [Roles.LECTURER.value]

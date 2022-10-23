@@ -12,6 +12,6 @@ class MyBasePermission(BasePermission):
 
         for role in self.match_any_roles:
 
-            if request.user.profile.role == role:
+            if request.user.user.role == role:
                 return True
         return False

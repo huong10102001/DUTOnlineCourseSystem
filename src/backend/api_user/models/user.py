@@ -15,7 +15,7 @@ class User(TimeStampedModel):
     address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
-    account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="profile")
+    account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="user")
 
     class Meta:
         db_table = "users"

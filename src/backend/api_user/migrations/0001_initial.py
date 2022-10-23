@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 ('address', models.TextField(blank=True, null=True)),
                 ('phone', models.CharField(blank=True, max_length=20, null=True)),
                 ('birthday', models.DateField(blank=True, null=True)),
-                ('account', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
+                ('account', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='user', to=settings.AUTH_USER_MODEL)),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
             ],
