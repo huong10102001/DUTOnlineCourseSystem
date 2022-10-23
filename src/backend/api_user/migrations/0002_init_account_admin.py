@@ -32,5 +32,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(init_admin_account, migrations.RunPython.noop)
+        migrations.RunPython(init_admin_account, migrations.RunPython.noop),
+        migrations.AlterModelManagers(
+            name='account',
+            managers=[
+            ],
+        ),
     ]

@@ -1,16 +1,38 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomePage from '@/views/home/HomePage.vue';
-import LoginPage from '@/views/login/LoginPage.vue';
-import ProfilePage from '@/views/profile/ProfilePage.vue';
-import RegisterPage from '@/views/register/RegisterPage.vue';
-import BasePage from "@/views/base/BasePage.vue";
+import HomePage from '@/views/home/index.vue';
+import LoginPage from '@/views/login/index.vue';
+import ProfilePage from '@/views/profile/index.vue';
+import RegisterPage from '@/views/register/index.vue';
+import BasePage from "@/views/base/index.vue";
+import LibraryPage from "@/views/library/index.vue";
+import CourseBasePage from "@/views/course/index.vue";
+import CourseDetail from "@/views/course/detail/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: BasePage
+    component: BasePage,
+    children: [
+      {
+        path: 'library',
+        name: 'library',
+        component: LibraryPage
+      },
+      {
+        path: 'courses',
+        name: 'courses',
+        component: CourseBasePage,
+        children: [
+            {
+              path: ':slug',
+              name: 'course-detail',
+              component: CourseDetail
+            },
+        ]
+      },
+    ]
   },
   {
     path: '/home',

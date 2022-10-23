@@ -1,6 +1,11 @@
 export enum ActionTypes {
+  // Authentication
   GET_TOKEN_INFO = 'GET_TOKEN_INFO',
   SET_TOKEN_INFO = 'SET_TOKEN_INFO',
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
+
+  // Course
+  FETCH_COURSES = 'FETCH_COURSES',
+  FETCH_COURSE_DETAIL = 'FETCH_COURSE_DETAIL'
 }

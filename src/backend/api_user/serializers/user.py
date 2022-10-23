@@ -19,3 +19,11 @@ class UserSerializer(serializers.ModelSerializer):
             'phone': {'required': False},
             'birthday': {'required': False},
         }
+
+
+class UserShortSerializer(serializers.ModelSerializer):
+    account = AccountSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'full_name', 'role', 'avatar', 'bio', 'account']

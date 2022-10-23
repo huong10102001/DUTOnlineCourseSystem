@@ -13,7 +13,7 @@ export class Http {
     this.handlerEnabled =
       status && status.handlerEnabled ? status.handlerEnabled : false;
     this.instance = axios.create({
-      baseURL: env.API_URL ? `${env.BASE_URL}${env.API_URL}` : env.BASE_URL + '/api/v1',
+      baseURL: env.API_URL ? `${env.BASE_URL}${env.API_URL}` : '/api/v1',
       headers: {
         "Content-type": "application/json",
       }
@@ -34,8 +34,8 @@ export class Http {
 
   requestHandler(request: any) {
     const store = require("@/store");
-    const tokenInfo = store ? store.default.getters["scope/tokenInfo"] : null;
-    const authenticated = !request.url.startsWith("oauth2/login");
+    const tokenInfo = store ? store.default.getters["authentication/tokenInfo"] : null;
+    const authenticated = !request.url.startsWith("auth/login");
     if (authenticated && tokenInfo) {
       const { access_token } = tokenInfo;
       if (access_token && access_token.length !== 0) {
@@ -66,7 +66,7 @@ export class Http {
       data.append("refresh_token", token);
       try {
         await this.instance
-          .post(`oauth2/refresh_token`, data)
+          .post(`auth/refresh_token`, data)
           .then((response) => {
             if (response?.status === 200) {
               storeTokenToVuex(

@@ -17,6 +17,8 @@ schema_view = get_schema_view(
     patterns=[
         path(r"api/v1/auth/", include("api_auth.urls")),
         path(r"api/v1/users/", include("api_user.urls")),
+        url(r"api/v1/topics/", include('api_topic.urls')),
+        url(r"api/v1/courses/", include('api_course.urls')),
     ]
 )
 
@@ -24,4 +26,6 @@ urlpatterns = [
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r"api/v1/auth/", include('api_auth.urls')),
     url(r"api/v1/users/", include('api_user.urls')),
+    url(r"api/v1/topics/", include('api_topic.urls')),
+    url(r"api/v1/courses/", include('api_course.urls')),
 ]

@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementPlus from 'element-plus'
-import Toast from 'vue-toastification'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import 'element-plus/dist/index.css'
@@ -26,6 +25,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.use(store).use(router).use(ElementPlus).use(Toast)
+app.use(store).use(router).use(ElementPlus)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.mount('#app')

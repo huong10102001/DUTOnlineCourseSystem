@@ -1,5 +1,5 @@
 <template>
-  <div class="top-bar p-4 columns is-vcentered">
+  <div class="top-bar columns is-vcentere m-0">
     <div class="column top-bar__greeting">
       <p class="top-bar__greeting__name">Welcome, Huong Le</p>
       <p class="top-bar__greeting__text">Have a good day!</p>
@@ -21,13 +21,11 @@
           <font-awesome-icon icon="fa-regular fa-bell"/>
         </div>
 
-        <div class="top-bar__right-menu__avatar"
-             @mouseleave="top_bar.is_avatar_hover = !top_bar.is_avatar_hover"
-             @mouseenter="top_bar.is_avatar_hover = !top_bar.is_avatar_hover">
+        <div class="top-bar__right-menu__avatar">
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
               <figure class="image">
-                <img class="is-rounded" src="@/assets/vectors/default_avatar.svg">
+                <img class="is-rounded" src="@/assets/vectors/default_avatar.svg" alt="Avatar">
               </figure>
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu">
@@ -106,6 +104,7 @@ export default class TopBar extends Vue {
         height: 52px;
         width: 52px;
         cursor: pointer;
+        margin-right: 5px;
       }
     }
 
