@@ -5,6 +5,7 @@ from api_user.serializers import UserSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from api_auth.permissions import AdminPermission
+from rest_framework.permissions import IsAuthenticated
 
 from api_user.services import UserService
 
@@ -13,6 +14,9 @@ class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
     permission_classes = [AdminPermission]
     serializer_class = UserSerializer
+    permission_map = {
+        "retrieve": [IsAuthenticated]
+    }
 
     def create(self, request, *args, **kwargs):
         serializer = RegisterSerializer(data=request.data, context=self.get_parser_context(request))
