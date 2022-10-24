@@ -36,10 +36,13 @@ def login_view(request):
         account = account.first()
         if check_password(password, account.password):
             token = RefreshToken.for_user(account)
-            response = {'email': account.email, 'access_token': str(token.access_token),
-                        'refresh_token': str(token)}
+            response = {
+                'user_id': account.user.id,
+                'full_name': account.user.full_name,
+                'access_token': str(token.access_token),
+                'refresh_token': str(token)
+            }
             return Response(response)
-
         return Response({"details": "Invalid username/password"}, status=status.HTTP_400_BAD_REQUEST)
 
 
