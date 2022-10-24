@@ -20,7 +20,7 @@ class CourseService extends BaseService{
 
   async getDetail(slug: string) {
     try{
-      const res = await this.request().get(`${this.entity}/${slug}/`);
+      const res = await this.request().get(`${this.entity}/${slug}/content/`);
       return res.data;
     } catch(error){
       return null;
@@ -32,8 +32,8 @@ class CourseService extends BaseService{
     return response ? response : [];
   }
 
-  async update(data: any, slug: string) {
-    const response: any = await this.request().put(`${this.entity}/${slug}/`, data);
+  async update(data: any, id: string) {
+    const response: any = await this.request().put(`${this.entity}/${id}/`, data);
     return response ? response : [];
   }
 }

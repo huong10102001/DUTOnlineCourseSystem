@@ -10,7 +10,6 @@ from django.utils.text import slugify
 class LessonViewSet(BaseViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    lookup_field = 'slug'
     serializer_map = {
         "create": AttachmentSerializer,
         "retrieve": LessonSerializer,

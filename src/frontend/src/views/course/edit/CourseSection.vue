@@ -37,7 +37,7 @@
       </el-form-item>
 
       <el-form-item prop="topics">
-        <span class="title is-5 mt-3">Topic</span>
+        <span class="title is-5 mt-3">Category(ies)</span>
         <el-select
           v-model="course.topics"
           multiple
@@ -45,7 +45,7 @@
           default-first-option
           :reserve-keyword="false"
           style="width: 100%"
-          placeholder="Choose topic(s) for your course"
+          placeholder="Select category(ies) for your course"
         >
           <el-option
             v-for="item in options"
@@ -171,15 +171,13 @@ import {ActionTypes} from "@/types/store/ActionTypes";
           if (this.background != null)
             formData.append("background", this.background?.raw)
 
-          formData.append("user_id", this.tokenInfo.user_id);
-
           this.course.topics.map((topic_id: string) => {
             formData.append("topic_ids", topic_id ? topic_id : "")
           })
 
           const response: any = await this.UPDATE_COURSE_INFO({
             form: formData,
-            slug: this.course.slug
+            slug: this.course.id
           })
 
           if (response.status == 200) {
@@ -214,9 +212,6 @@ import {ActionTypes} from "@/types/store/ActionTypes";
       if (!formEl) return
       formEl.resetFields()
     }
-  },
-  computed: {
-    ...mapGetters("authentication", ["tokenInfo"])
   }
 })
 

@@ -37,16 +37,16 @@
     </el-form-item>
 
     <el-form-item prop="topics">
-      <span class="title is-5 mt-3">Topic</span>
-      <el-select
-        v-model="course.topics"
-        multiple
-        filterable
-        default-first-option
-        :reserve-keyword="false"
-        style="width: 100%"
-        placeholder="Choose topic(s) for your course"
-      >
+      <span class="title is-5 mt-3">Category(ies)</span>
+        <el-select
+          v-model="course.topics"
+          multiple
+          filterable
+          default-first-option
+          :reserve-keyword="false"
+          style="width: 100%"
+          placeholder="Select category(ies) for your course"
+        >
         <el-option
           v-for="item in options"
           :key="item.id"
@@ -194,7 +194,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
 
           if (response.status == 201) {
             this.$router.push({
-              name: "course-detail",
+              name: "edit-course",
               params: {slug: response.data.slug},
             });
 

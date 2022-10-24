@@ -11,7 +11,6 @@ class ChapterViewSet(BaseViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'slug'
     serializer_map = {
         "list": ListChapterSerializer
     }
