@@ -1,6 +1,6 @@
 import { BaseService } from "@/services/BaseService";
 
-class AuthenticationService extends BaseService{
+class CourseService extends BaseService{
   get entity() {
     return "courses"
   }
@@ -27,4 +27,4 @@ class AuthenticationService extends BaseService{
   }
 }
 
-export default new AuthenticationService();
+export default new CourseService();

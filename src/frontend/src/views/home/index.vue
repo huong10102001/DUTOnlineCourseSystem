@@ -58,8 +58,8 @@
 
 <script>
 export default {
-  mounted() {
-    document.title = 'E-Learning'
+  created() {
+    document.title = 'Home Page | E-Learning'
   }
 }
 </script>

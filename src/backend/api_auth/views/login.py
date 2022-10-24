@@ -43,7 +43,8 @@ def login_view(request):
                 'refresh_token': str(token)
             }
             return Response(response)
-        return Response({"details": "Invalid username/password"}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"details": "Invalid username/password"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @swagger_auto_schema(method='POST', request_body=openapi.Schema(

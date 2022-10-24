@@ -15,10 +15,11 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapState} from "vuex";
+import {mapState, mapGetters} from "vuex";
 import Sidebar from "@/components/Sidebar.vue";
 import TopBar from "@/components/TopBar.vue";
 import {ROUTES} from '@/const/routes'
+import {ROLES} from "@/const/roles";
 
 @Options({
   components: {
@@ -34,8 +35,24 @@ import {ROUTES} from '@/const/routes'
       is_collapse: false
     }
   },
+  methods: {
+    ...mapGetters("user", ["userInfo"]),
+  },
   computed: {
     ...mapState(["is_loading"])
+  },
+  beforeUpdate() {
+    if (this.$route.path == '/')
+      this.$router.push("/library")
+  },
+  created() {
+    if (this.$route.path == '/')
+      this.$router.push("/library")
+    switch (this.userInfo) {
+      case ROLES.USER: this.$router.push("/library"); break;
+      case ROLES.LECTURER: this.$router.push("/library"); break;
+      case ROLES.ADMIN: this.$router.push("/library"); break;
+    }
   }
 })
 

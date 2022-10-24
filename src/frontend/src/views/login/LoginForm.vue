@@ -53,7 +53,7 @@ import { ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { UserFilled, EditPen } from '@element-plus/icons-vue'
 import LoginItem from "@/types/login/LoginItem";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import { ElNotification } from 'element-plus'
 
@@ -72,22 +72,28 @@ const loginFormRef = ref<FormInstance>()
   },
   methods: {
     ...mapActions("authentication", [ActionTypes.LOGIN]),
+    ...mapActions("user", [ActionTypes.GET_USER_INFO]),
     async onLogin(){
-      const data = await this.LOGIN(this.loginForm)
-      if(data.status == 200){
-        if(this.$router.currentRoute.value.name == "login") {
-          this.$router.push("/base");
+      const response: any = await this.LOGIN(this.loginForm)
+
+      if(response.status == 200){
+        const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
+        if(user_info.status == 200) {
+          this.$router.push("/")
+          return
         }
       }
-      else {
-        ElNotification({
-          title: 'Error',
-          message: 'Username/Password is not correct.',
-          type: 'error',
-        })
-      }
+
+      ElNotification({
+        title: 'Error',
+        message: 'Username/Password is not correct.',
+        type: 'error',
+      })
     }
   },
+  computed: {
+    ...mapState("authentication", ["tokenInfo"])
+  }
 })
 
 export default class LoginForm extends Vue {}

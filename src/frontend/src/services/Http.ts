@@ -71,7 +71,8 @@ export class Http {
             if (response?.status === 200) {
               storeTokenToVuex(
                 response.data.access_token,
-                response.data.refresh_token
+                response.data.refresh_token,
+                response.data.user_id
               );
             } else {
               localStorage.removeItem("vuex");

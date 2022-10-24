@@ -37,10 +37,8 @@ import RegisterForm from "@/views/register/RegisterForm.vue";
   components: {
     RegisterForm
   },
-  data() {
-    return {
-
-    }
+  mounted() {
+    document.title = 'Become a member E-Learning'
   }
 })
 
