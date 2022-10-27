@@ -40,10 +40,6 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: RegisterItem
   ): any,
-
-  [ActionTypes.LOGOUT](
-    { commit }: AugmentedActionContext
-  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -74,10 +70,5 @@ export const actions: ActionTree<State, State> & Actions = {
   async [ActionTypes.REGISTER]({ commit }, payload) {
     const response: any = await AuthenticationService.register(payload)
     return response;
-  },
-
-  [ActionTypes.LOGOUT]({ commit }) {
-    commit(MutationTypes.LOGOUT);
-    localStorage.clear();
-  },
+  }
 }

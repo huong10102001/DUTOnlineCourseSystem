@@ -1,4 +1,5 @@
 from django.utils.text import slugify
+
 from api_base.services import BaseService
 from api_course.models import Course
 

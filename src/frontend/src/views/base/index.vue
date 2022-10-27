@@ -2,7 +2,7 @@
   <div class="base">
     <Sidebar :items="items" @collapse="is_collapse = $event"/>
     <div :class="['main', {'main--collapse': is_collapse}]">
-      <TopBar></TopBar>
+      <TopBar :userName="userInfo.full_name"></TopBar>
       <div class="container p-4">
         <div class="is-loading-bar has-text-centered" :class="{'is-loading': is_loading }">
           <div class="lds-dual-ring"></div>
@@ -15,11 +15,12 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapState, mapGetters} from "vuex";
+import {mapState, mapGetters, mapMutations} from "vuex";
 import Sidebar from "@/components/Sidebar.vue";
 import TopBar from "@/components/TopBar.vue";
 import {ROUTES} from '@/const/routes'
 import {ROLES} from "@/const/roles";
+import {MutationTypes} from "@/types/store/MutationTypes";
 
 @Options({
   components: {
@@ -30,28 +31,48 @@ import {ROLES} from "@/const/roles";
     return {
       items: [
         {name: 'library', icon: 'fa-solid fa-book-atlas', route: ROUTES.LIBRARY},
+        {name: 'course management', icon: 'fa-solid fa-briefcase', route: ROUTES.COURSE_MANAGEMENT},
         {name: 'my course', icon: 'fa-solid fa-bookmark', route: ROUTES.MY_COURSE},
       ],
-      is_collapse: false
+      is_collapse: true
     }
   },
   methods: {
-    ...mapGetters("user", ["userInfo"]),
+    ...mapMutations("authentication",[MutationTypes.LOGOUT]),
+    ...mapMutations("user",[MutationTypes.CLEAR_USER_INFO]),
+
+    goToHome() {
+      switch (this.userInfo.role) {
+        case ROLES.USER: this.$router.push("/library"); break;
+        case ROLES.LECTURER: this.$router.push("/courses/management"); break;
+        case ROLES.ADMIN: this.$router.push("/courses/management"); break;
+        default: this.$router.push("/home"); break;
+      }
+    },
+
+    logout() {
+      this.LOGOUT()
+      this.CLEAR_USER_INFO()
+      this.goToHome()
+    }
   },
   computed: {
-    ...mapState(["is_loading"])
+    ...mapState(["is_loading"]),
+    ...mapGetters("user", ["userInfo"]),
   },
   beforeUpdate() {
-    if (this.$route.path == '/')
-      this.$router.push("/library")
+    if(!this.userInfo.role)
+      this.goToHome()
+
+    switch (this.$route.name){
+      case 'home': this.goToHome(); break;
+      case 'logout': this.logout(); break;
+    }
   },
-  created() {
-    if (this.$route.path == '/')
-      this.$router.push("/library")
-    switch (this.userInfo) {
-      case ROLES.USER: this.$router.push("/library"); break;
-      case ROLES.LECTURER: this.$router.push("/library"); break;
-      case ROLES.ADMIN: this.$router.push("/library"); break;
+  async created() {
+    switch (this.$route.name){
+      case 'home': this.goToHome(); break;
+      case 'logout': this.logout(); break;
     }
   }
 })
@@ -63,8 +84,8 @@ export default class BasePage extends Vue {
 <style lang="scss" scoped>
 .main {
   height: 100%;
-  margin-left: 250px;
-  width: calc(100% - 250px);
+  margin-left: 300px;
+  width: calc(100% - 300px);
   z-index: 2;
   transition: all 0.3s;
 

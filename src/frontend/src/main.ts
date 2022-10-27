@@ -4,7 +4,9 @@ import router from './router'
 import store from './store'
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import { QuillEditor } from '@vueup/vue-quill'
 
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import 'element-plus/dist/index.css'
 import "vue-toastification/dist/index.css";
 
@@ -27,4 +29,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(store).use(router).use(ElementPlus)
 app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('QuillEditor', QuillEditor)
 app.mount('#app')

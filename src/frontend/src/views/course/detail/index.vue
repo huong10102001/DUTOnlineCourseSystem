@@ -1,5 +1,6 @@
 <template>
-  <div class="course-detail mt-6 p-3">
+  <TitleBar :title="course.title"></TitleBar>
+  <div class="course-detail p-3">
     <InfoSection :course="course"></InfoSection>
     <DescriptionSection :description="course.description"></DescriptionSection>
     <CertificateSection></CertificateSection>
@@ -15,9 +16,11 @@ import CertificateSection from "@/views/course/detail/CertificateSection.vue";
 import ChapterSection from "@/views/course/detail/ChapterSection.vue";
 import { mapActions, mapMutations } from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
+import TitleBar from "@/components/TitleBar.vue";
 
 @Options({
   components: {
+    TitleBar,
     ChapterSection,
     CertificateSection,
     InfoSection,

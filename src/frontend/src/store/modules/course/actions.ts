@@ -25,7 +25,14 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     slug: string
   ): any,
-
+  [ActionTypes.CREATE_COURSE](
+    { commit }: AugmentedActionContext,
+    formData: FormData
+  ): any,
+  [ActionTypes.UPDATE_COURSE_INFO](
+    { commit }: AugmentedActionContext,
+    data: any,
+  ): any
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -36,6 +43,16 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.FETCH_COURSE_DETAIL]({ commit }, slug) {
     let data: any = await CourseService.getDetail(slug)
+    return data
+  },
+
+  async [ActionTypes.CREATE_COURSE]({ commit }, formData) {
+    let data: any = await CourseService.create(formData)
+    return data
+  },
+
+  async [ActionTypes.UPDATE_COURSE_INFO]({ commit }, payload) {
+    let data: any = await CourseService.update(payload.form, payload.slug)
     return data
   },
 }

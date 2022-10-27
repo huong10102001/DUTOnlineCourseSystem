@@ -7,11 +7,10 @@
       </div>
     </router-link>
     <div :class="{'collapse-toggle': true, 'collapse-toggle__off': is_collapse}" @click="is_collapse = !is_collapse; $emit('collapse', is_collapse)">
-      <font-awesome-icon v-if="is_collapse" icon="fa-solid fa-arrow-right" />
-      <font-awesome-icon v-else icon="fa-solid fa-arrow-left" />
+      <font-awesome-icon :class="{'fa-rotate-90': !is_collapse}" icon="fa-solid fa-bars" />
     </div>
     <ul class="menu-list">
-      <li v-for="item in items" class="menu-item">
+      <li v-for="item in items" class="menu-item mdi-ro">
         <router-link :to="item.route" :class="{is_collapse: is_collapse}"><font-awesome-icon :icon="item.icon" /><span :class="['menu-item__name', {'menu-item__name--collapse': is_collapse}]">{{ item.name }}</span></router-link>
       </li>
     </ul>
@@ -28,7 +27,7 @@ import MenuItem from "@/types/sidebar/MenuItem";
   },
   data() {
     return {
-      is_collapse: false
+      is_collapse: true
     }
   }
 })
@@ -41,7 +40,7 @@ export default class Sidebar extends Vue {
 <style scoped lang="scss">
 .sidebar{
   display: inline-block;
-  width: 250px;
+  width: 300px;
   height: 100%;
   position: fixed;
   z-index: 1;
@@ -165,7 +164,7 @@ export default class Sidebar extends Vue {
     opacity: 0.85;
     transition: all 0.3s;
     top: 85px;
-    left: 235px;
+    left: 285px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
     &__off{

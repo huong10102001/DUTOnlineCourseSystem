@@ -3,7 +3,7 @@
     <div class="course-container">
       <h1>New Courses Today</h1>
       <el-row :gutter="40">
-        <el-col :span="8" v-for="course in courses">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
           <CourseItem :course="course"></CourseItem>
         </el-col>
       </el-row>
@@ -12,7 +12,7 @@
     <div class="course-container">
       <h1>Most Popular</h1>
       <el-row :gutter="40">
-        <el-col :span="8" v-for="course in courses">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
           <CourseItem :course="course"></CourseItem>
         </el-col>
       </el-row>
@@ -21,7 +21,7 @@
     <div class="course-container">
       <h1>Weekly Trend</h1>
       <el-row :gutter="40">
-        <el-col :span="8" v-for="course in courses">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
           <CourseItem :course="course"></CourseItem>
         </el-col>
       </el-row>

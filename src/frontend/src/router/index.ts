@@ -7,6 +7,12 @@ import BasePage from "@/views/base/index.vue";
 import LibraryPage from "@/views/library/index.vue";
 import CourseBasePage from "@/views/course/index.vue";
 import CourseDetail from "@/views/course/detail/index.vue";
+import AddCoursePage from '@/views/course/add/index.vue';
+import LessonBasePage from "@/views/lesson/index.vue";
+import LessonDetail from "@/views/lesson/detail/index.vue";
+import CourseManagementPage from "@/views/course/management/index.vue";
+import EditCoursePage from "@/views/course/edit/index.vue";
+
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,24 +30,56 @@ const routes: Array<RouteRecordRaw> = [
         name: 'courses',
         component: CourseBasePage,
         children: [
-            {
-              path: ':slug',
-              name: 'course-detail',
-              component: CourseDetail
-            },
+          {
+            path: 'add',
+            name: 'add-course',
+            component: AddCoursePage
+          },
+          {
+            path: ':slug',
+            name: 'course-detail',
+            component: CourseDetail,
+          },
+          {
+            path: ':slug/edit',
+            name: 'edit-course',
+            component: EditCoursePage
+          },
+          {
+            path: 'management',
+            name: 'course-management',
+            component: CourseManagementPage
+          },
+        ]
+      },
+      {
+        path: 'lesson',
+        name: 'lesson',
+        component: LessonBasePage,
+        children: [
+          {
+            path: 'detail',
+            name: 'lesson-detail',
+            component: LessonDetail
+          },
         ]
       },
     ]
   },
   {
     path: '/home',
-    name: 'index',
+    name: 'homepage',
     component: HomePage
   },
   {
     path: '/login',
     name: 'login',
     component: LoginPage
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: BasePage
   },
   {
     path: '/register',
@@ -53,11 +91,15 @@ const routes: Array<RouteRecordRaw> = [
     name: 'profile',
     component: ProfilePage
   },
+
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 }
+  },
 })
 
 export default router

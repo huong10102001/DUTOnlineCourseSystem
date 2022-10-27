@@ -17,3 +17,9 @@ export default class DescriptionSection extends Vue {
   description!: string
 }
 </script>
+
+<style lang="scss" scoped>
+h1 {
+    font-size: 2rem;
+  }
+</style>

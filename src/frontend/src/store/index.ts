@@ -1,11 +1,12 @@
 import { createStore } from 'vuex'
 import { authentication } from "@/store/modules/authentication";
 import { course } from "@/store/modules/course";
+import { topic } from "@/store/modules/topic";
 import { user } from  "@/store/modules/user";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
-  plugins: [createPersistedState({storage: window.sessionStorage})],
+  plugins: [createPersistedState()],
   state: {
     is_loading: false
   },
@@ -21,6 +22,7 @@ export default createStore({
   modules: {
     authentication,
     course,
-    user
+    user,
+    topic
   }
 })

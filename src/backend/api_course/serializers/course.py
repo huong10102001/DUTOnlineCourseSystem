@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from api_course.models import Course
+from api_course.models import Course, Chapter
 from api_course.services import CourseService
 from api_topic.models import Topic
 from api_topic.serializers import TopicShortSerializer
 from api_user.models import User
 from rest_framework.fields import UUIDField
-
+from api_course.serializers import ListChapterSerializer
 from api_user.serializers import UserShortSerializer
 
 
@@ -42,3 +42,44 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return CourseService.create_course(validated_data)
+
+
+class ListCourseSerializer(serializers.ModelSerializer):
+    user = UserShortSerializer(read_only=True, required=False)
+    topics = TopicShortSerializer(many=True, read_only=True, required=False)
+    chapter_ids = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, allow_empty=True, many=True,
+                                                     queryset=Chapter.objects.all(),
+                                                     source='chapters')
+    chapters = ListChapterSerializer(many=True, required=False)
+
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'summary', 'description', 'background', 'slug', 'status', 'user', 'topics',
+                  'chapter_ids', 'chapters']
+        extra_kwargs = {
+            'description': {'required': False},
+            'user': {'required': False},
+            'topics': {'required': False},
+            'status': {'required': False},
+            'slug': {'read_only': True},
+        }
+
+    def to_representation(self, instance):
+        context = self.context
+        instance = super().to_representation(instance)
+        if context.get('view') and context.get('view').action in ['retrieve', 'list']:
+            data = instance['chapters']
+            result = list(filter(lambda kq: kq['previous_chapter'] is None, data))
+            if len(result) != 0:
+                data.remove(result[0])
+                while True:
+                    chapter_next = list(filter(lambda kq: kq['previous_chapter']['id'] == result[-1]['id'], data))
+                    if len(chapter_next) != 0:
+                        result.append(chapter_next[0])
+                        data.remove(chapter_next[0])
+                        if len(data) == 0:
+                            break
+                    else:
+                        break
+                instance['chapters'] = result
+        return instance

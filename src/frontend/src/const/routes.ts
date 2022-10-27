@@ -3,7 +3,7 @@ export const ROUTES = {
     "MY_COURSE": '/my-course',
     "TOPICS": "/topics",
     "CHAPTERS": "/chapters",
-    "COURSE_MANAGEMENT": "/course-management",
+    "COURSE_MANAGEMENT": "/courses/management",
 
     "LOGIN": "/login",
     "LOGOUT": "/logout",

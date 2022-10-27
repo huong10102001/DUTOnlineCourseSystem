@@ -1,4 +1,5 @@
 import { BaseService } from "@/services/BaseService";
+import CourseItem from "@/types/course/CourseItem";
 
 class CourseService extends BaseService{
   get entity() {
@@ -24,6 +25,16 @@ class CourseService extends BaseService{
     } catch(error){
       return null;
     }
+  }
+
+  async create(data: any) {
+    const response: any = await this.request().post(`${this.entity}/`, data);
+    return response ? response : [];
+  }
+
+  async update(data: any, slug: string) {
+    const response: any = await this.request().put(`${this.entity}/${slug}/`, data);
+    return response ? response : [];
   }
 }
 

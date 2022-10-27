@@ -67,7 +67,8 @@ const loginFormRef = ref<FormInstance>()
         password: ""
       } as LoginItem,
       email_icon: UserFilled,
-      password_icon: EditPen
+      password_icon: EditPen,
+      is_freeze: false,
     }
   },
   methods: {

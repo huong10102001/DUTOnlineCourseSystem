@@ -10,6 +10,7 @@ export type Mutations<S = State> = {
   [MutationTypes.LOGOUT](state: S): void,
 }
 
+
 export const mutations: MutationTree<State> & Mutations = {
   [MutationTypes.GET_TOKEN_INFO](state, payload: TokenInfo) {
     state.tokenInfo = payload
@@ -29,5 +30,6 @@ export const mutations: MutationTree<State> & Mutations = {
 
   [MutationTypes.LOGOUT](state) {
     state.tokenInfo = {} as TokenInfo
+    localStorage.clear();
   },
 }
