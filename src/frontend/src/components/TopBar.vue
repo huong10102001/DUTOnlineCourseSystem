@@ -31,14 +31,14 @@
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">
                   <div class="dropdown-content">
-                    <router-link to="profile" class="dropdown-item">
+                    <router-link to="/profile" class="dropdown-item">
                       Profile
                     </router-link>
-                    <router-link to="profile/edit" class="dropdown-item">
+                    <router-link to="/profile/edit" class="dropdown-item">
                       Edit Profile
                     </router-link>
                     <hr class="dropdown-divider">
-                    <router-link to="logout" class="dropdown-item">
+                    <router-link to="/logout" class="dropdown-item">
                       Log Out
                     </router-link>
                   </div>
