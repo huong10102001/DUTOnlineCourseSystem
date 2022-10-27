@@ -31,6 +31,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'topics': {'required': False},
             'status': {'required': False},
             'slug': {'read_only': True},
+            'background': {'required': False}
         }
 
     def to_internal_value(self, data):

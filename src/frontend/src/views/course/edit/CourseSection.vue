@@ -168,7 +168,9 @@ import {ActionTypes} from "@/types/store/ActionTypes";
           formData.append("summary", this.course.summary);
           formData.append("description", this.course.description);
           formData.append("status", COURSE_STATUS.DRAFT);
-          formData.append("background", this.background?.raw)
+          if (this.background != null)
+            formData.append("background", this.background?.raw)
+
           formData.append("user_id", this.tokenInfo.user_id);
 
           this.course.topics.map((topic_id: string) => {
