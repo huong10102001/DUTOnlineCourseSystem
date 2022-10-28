@@ -9,6 +9,7 @@ from api_course.services import LessonService
 class LessonViewSet(BaseViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    lookup_field = 'slug'
     serializer_map = {
         "create": AttachmentSerializer,
         "retrieve": LessonSerializer,
@@ -56,22 +57,3 @@ class LessonViewSet(BaseViewSet):
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    def list(self, request, *args, **kwargs):
-        query_set = Lesson.objects
-        search_query = request.query_params.get("q", "")
-        query_set = query_set.filter(title__icontains=search_query)
-        sort_query = request.query_params.get("sort")
-        if sort_query:
-            try:
-                if sort_query.startswith("-"):
-                    Lesson._meta.get_field(sort_query[1:])
-                else:
-                    Lesson._meta.get_field(sort_query)
-                query_set = query_set.order_by(sort_query)
-
-            except:
-                pass
-
-        self.queryset = query_set
-        return super().list(request, *args, **kwargs)

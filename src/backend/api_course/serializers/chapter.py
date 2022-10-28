@@ -20,8 +20,8 @@ class ChapterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chapter
-        fields = ['id', 'title', 'previous_chapter_id', 'previous_chapter', 'course',
-                  'course_id']
+        fields = ['id', 'title', 'previous_chapter_id', 'previous_chapter',
+                  'course_id', 'slug']
         extra_kwargs = {
             'title': {'required': False},
             'course': {'required': False}
@@ -41,7 +41,7 @@ class ListChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chapter
         fields = ['id', 'title', 'lessons', 'previous_chapter_id', 'previous_chapter',
-                  'course_id']
+                  'course_id', 'slug']
         extra_kwargs = {
             'title': {'required': False},
             'course': {'required': False}

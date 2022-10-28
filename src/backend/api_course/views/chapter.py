@@ -1,5 +1,5 @@
 from api_base.views import BaseViewSet
-from api_course.models import Chapter
+from api_course.models import Chapter, Course
 from api_course.serializers import ChapterSerializer, ListChapterSerializer
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,16 +11,17 @@ class ChapterViewSet(BaseViewSet):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'slug'
     serializer_map = {
         "list": ListChapterSerializer
     }
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
-        course_id = self.kwargs.get('course_slug')
+        course_id = Course.objects.get(slug=self.kwargs.get('course_slug')).id
         try:
             chapter_save = ChapterService.create_chapters(data, course_id)
-            response = {'chapters': ChapterSerializer(chapter_save, many=True).data, 'message': 'Chapter created!'}
+            response = {'chapter': ChapterSerializer(chapter_save).data, 'message': 'Chapter created!'}
             return Response(response, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -46,21 +47,3 @@ class ChapterViewSet(BaseViewSet):
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    def list(self, request, *args, **kwargs):
-        search_query = request.query_params.get("q", "")
-        query_set = Chapter.objects.filter(title__icontains=search_query)
-        sort_query = request.query_params.get("sort")
-        if sort_query:
-            try:
-                if sort_query.startswith("-"):
-                    Chapter._meta.get_field(sort_query[1:])
-                else:
-                    Chapter._meta.get_field(sort_query)
-                query_set = query_set.order_by(sort_query)
-
-            except:
-                pass
-
-        self.queryset = query_set
-        return super().list(request, *args, **kwargs)

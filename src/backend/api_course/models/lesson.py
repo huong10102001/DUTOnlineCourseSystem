@@ -11,6 +11,7 @@ class Lesson(TimeStampedModel):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name="lessons")
     attachment = models.OneToOneField(Attachment, null=True, blank=True, on_delete=models.SET_NULL)
     previous_lesson = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL)
+    slug = models.SlugField(unique=True, null=True)
 
     class Meta:
         db_table = "lessons"
