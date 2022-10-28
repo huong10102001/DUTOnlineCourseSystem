@@ -28,7 +28,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'content', 'previous_lesson', 'previous_lesson_id', 'chapter_id',
-                  'chapter', 'attachment_id', 'attachment']
+                  'chapter', 'attachment_id', 'attachment', 'slug']
         extra_kwargs = {
             'previous_lesson': {'required': False},
             'title': {'required': False},
@@ -45,7 +45,7 @@ class CreateLessonSerializer(serializers.ModelSerializer):
     attachment_id = serializers.PrimaryKeyRelatedField(required=False, queryset=Attachment.objects.all(),
                                                        source='attachment')
     attachment = AttachmentSerializer(required=False)
-    previous_lesson = NextLessonSerializer(required=False)
+    previous_lesson = NextLessonSerializer(many=False, required=False)
     previous_lesson_id = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, allow_empty=True,
                                                             write_only=True, queryset=Lesson.objects.all(),
                                                             source='previous_lesson')
@@ -53,7 +53,7 @@ class CreateLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'content', 'chapter_id', 'attachment_id', 'attachment',
-                  'previous_lesson_id', 'previous_lesson']
+                  'previous_lesson_id', 'previous_lesson', 'slug']
         depth = 1
         extra_kwargs = {
             'title': {'required': False},
@@ -86,7 +86,7 @@ class CreateLessonSerializer(serializers.ModelSerializer):
 class ListLessonSerializer(serializers.ModelSerializer):
     chapter_id = serializers.PrimaryKeyRelatedField(required=False, queryset=Chapter.objects.all(),
                                                     source='chapter')
-    previous_lesson = NextLessonSerializer(required=False)
+    previous_lesson = NextLessonSerializer(many=False, required=False)
     previous_lesson_id = serializers.PrimaryKeyRelatedField(required=False, allow_null=True, allow_empty=True,
                                                             write_only=True, queryset=Lesson.objects.all(),
                                                             source='previous_lesson')
@@ -98,5 +98,5 @@ class ListLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'content', 'chapter_id', 'attachment_id', 'attachment',
-                  'previous_lesson_id', 'previous_lesson']
+                  'previous_lesson_id', 'previous_lesson', 'slug']
         depth = 1

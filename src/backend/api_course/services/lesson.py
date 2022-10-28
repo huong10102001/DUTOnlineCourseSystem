@@ -1,7 +1,12 @@
-import json
+import string, random
 
 from api_base.services import BaseService
 from api_course.models import Lesson, Attachment
+from django.utils.text import slugify
+
+
+def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
 class LessonService(BaseService):
@@ -14,6 +19,7 @@ class LessonService(BaseService):
         lesson = lesson_attachment.pop('lesson')
         lesson['attachment_id'] = attachment.id
         lesson['chapter_id'] = chapter_id
+        lesson['slug'] = slugify(f"{lesson['title']} {random_string_generator(size=5)}")
         lessons = list(Lesson.objects.filter(chapter_id=chapter_id).values('id', 'previous_lesson_id'))
         result = list(filter(lambda kq: kq['previous_lesson_id'] is None, lessons))
         if len(result) != 0:

@@ -1,10 +1,18 @@
 from api_base.services import BaseService
 from api_course.models import Chapter
+from django.utils.text import slugify
+import string, random
+
+
+def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
 class ChapterService(BaseService):
     @classmethod
     def create_chapters(cls, data, course_id):
+        data['course_id'] = course_id
+        data['slug'] = slugify(f"{data['title']} {random_string_generator(size=5)}")
         chapter_previous = list(Chapter.objects.filter(course_id=course_id).values('id', 'previous_chapter_id'))
         result = list(filter(lambda kq: kq['previous_chapter_id'] is None, chapter_previous))
         if len(result) != 0:
@@ -18,14 +26,8 @@ class ChapterService(BaseService):
                         break
                 else:
                     break
-            data['chapters'][0].update({'previous_chapter_id': result[-1]['id']})
-        chapters = []
-        for i, chapter in enumerate(data['chapters']):
-            chapter.update({'course_id': course_id})
-            chapters.append(Chapter(**chapter))
-            if i < len(data['chapters']) - 1:
-                data['chapters'][i + 1].update({'previous_chapter_id': chapters[i].id})
-        chapter_save = Chapter.objects.bulk_create(chapters)
+            data.update({'previous_chapter_id': result[-1]['id']})
+        chapter_save = Chapter.objects.create(**data)
         return chapter_save
 
     @classmethod
