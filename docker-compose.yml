@@ -3,25 +3,42 @@ version: '3.8'
 services:
 
   app:
-    build: .
-    # volumes:
-    #   - .:/django/
+#    build: .
     ports:
-      - 5555:8000
-    image: app:django
-    container_name: django_container1
+      - 8000:8000
+    image: bangtestnginx2:latest
+    container_name: django_container3
     restart: always
     env_file:
       - ./docker.env
-  #   command: python manage.py runserver 0.0.0.0:8000
-  #   depends_on:
-  #     - db 
-  # db:
-  #   image: mysql:5.7
-  #   ports:
-  #     - "3307:3306"
-  #   environment:
-  #     MYSQL_DATABASE: 'django-app-db'
-  #     MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-  #   volumes:
-  #     - ./data/mysql/db:/var/lib/mysql
+    command: bash -c "python3 manage.py migrate --noinput && gunicorn core.wsgi -b 0.0.0.0:8000"
+
+    depends_on:
+      - db
+#    networks:
+#      - nginx_network
+
+  db:
+     image: mysql:5.7
+     ports:
+       - "3307:3306"
+     environment:
+       MYSQL_DATABASE: 'test4'
+       MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+     volumes:
+       - ./data/mysql/db:/var/lib/mysql
+
+
+  frontend:
+    restart: always
+#    build:
+#      context: ./src/frontend
+#      dockerfile: Dockerfile
+    container_name: frontend2
+    image: frontend_image2
+    depends_on:
+      - app
+#    volumes:
+#      - ./src/frontend/nginx:/etc/nginx/conf.d
+    ports:
+      - 801:80
