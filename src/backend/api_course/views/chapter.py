@@ -18,7 +18,7 @@ class ChapterViewSet(BaseViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
-        course_id = Course.objects.get(slug=self.kwargs.get('course_slug')).id
+        course_id = self.kwargs.get('course_pk')
         try:
             chapter_save = ChapterService.create_chapters(data, course_id)
             response = {'chapter': ChapterSerializer(chapter_save).data, 'message': 'Chapter created!'}

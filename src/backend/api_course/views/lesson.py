@@ -1,9 +1,10 @@
 from api_base.views import BaseViewSet
-from api_course.models import Lesson
+from api_course.models import Lesson, Chapter
 from api_course.serializers import LessonSerializer, AttachmentSerializer, CreateLessonSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from api_course.services import LessonService
+from django.utils.text import slugify
 
 
 class LessonViewSet(BaseViewSet):
@@ -19,11 +20,12 @@ class LessonViewSet(BaseViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data
         data['original_name'] = request.FILES['file'].name
-        course_id = self.kwargs.get('course_slug')
+        course_pk = self.kwargs.get('course_pk')
         chapter_id = self.kwargs.get('chapter_pk')
         data['chapter_id'] = chapter_id
+        chapter = Chapter.objects.select_related('course').get(id=chapter_id)
         data['path'] = "/".join(
-            ['courses', str(course_id), 'Chapters', str(chapter_id)])
+            ['courses', slugify(f"{chapter.course.title} {request.user.user.full_name}"), 'Chapters', slugify(chapter.title)])
         lesson_serializer = CreateLessonSerializer(data=data, context=self.get_parser_context(request))
         try:
             if lesson_serializer.is_valid(raise_exception=True):
@@ -39,6 +41,9 @@ class LessonViewSet(BaseViewSet):
         instance = self.get_object()
         data['original_name'] = request.FILES['file'].name
         data['chapter_id'] = self.kwargs.get('chapter_pk')
+        attachment = instance.attachment
+        attachment.file = request.FILES['file']
+        attachment.save()
         attachment_serializer = CreateLessonSerializer(instance, data=data, partial=True, context=self.get_parser_context(request))
         try:
             if attachment_serializer.is_valid(raise_exception=True):

@@ -44,6 +44,7 @@ class LessonService(BaseService):
         attachment = lesson_attachment.pop('attachment')
         chapter_id = attachment.pop('chapter_id')
         attachment.pop('lesson')
+        attachment.pop('file')
         Attachment.objects.filter(pk=instance.attachment_id).update(**attachment)
         lesson['attachment_id'] = instance.attachment_id
         lesson['chapter_id'] = chapter_id

@@ -5,13 +5,14 @@ from django.db import models
 from api_base.models import TimeStampedModel
 from api_course.constants import CourseStatus
 from api_user.models import User
+from django.utils.text import slugify
 
 
 def upload_path(instance, filename):
     fpath = pathlib.Path(filename)
     new_name = str(uuid.uuid1())
     final_path = "/".join(
-        ['courses', str(instance.id)])
+        ['courses', slugify(f"{instance.title} {instance.user.full_name}"), 'backgrounds'])
 
     return f"{final_path}/{new_name}{fpath.suffix}"
 
