@@ -36,13 +36,15 @@ class LessonViewSet(BaseViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
-        data = request.data.copy()
+        request.data._mutable = True
+        request.data['chapter_id'] = self.kwargs.get('chapter_pk')
+        data = request.data
         instance = self.get_object()
-        data['original_name'] = request.FILES['file'].name
-        data['chapter_id'] = self.kwargs.get('chapter_pk')
-        attachment = instance.attachment
-        attachment.file = request.FILES['file']
-        attachment.save()
+        if len(request.FILES) != 0:
+            data['original_name'] = request.FILES['file'].name
+            attachment = instance.attachment
+            attachment.file = request.FILES['file']
+            attachment.save()
         attachment_serializer = CreateLessonSerializer(instance, data=data, partial=True, context=self.get_parser_context(request))
         try:
             if attachment_serializer.is_valid(raise_exception=True):

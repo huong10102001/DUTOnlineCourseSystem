@@ -60,6 +60,8 @@ class CreateLessonSerializer(serializers.ModelSerializer):
             'content': {'required': False},
             'chapter': {'required': False},
             'attachment': {'required': False},
+            'attachment_id': {'required': False},
+            'chapter_id': {'required': False}
         }
 
     def to_internal_value(self, data):
