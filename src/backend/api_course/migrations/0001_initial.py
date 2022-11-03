@@ -24,10 +24,10 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('file', models.FileField(blank=True, max_length=255, null=True, upload_to=api_course.models.attachment.upload_path)),
+                ('file', models.FileField(blank=False, max_length=255, null=True, upload_to=api_course.models.attachment.upload_path)),
                 ('path', models.CharField(default=None, max_length=255, null=True)),
-                ('file_type', models.CharField(max_length=255)),
-                ('original_name', models.CharField(max_length=255)),
+                ('file_type', models.CharField(max_length=255, blank=False)),
+                ('original_name', models.CharField(max_length=255, blank=False)),
                 ('length', models.IntegerField(default=0)),
             ],
             options={

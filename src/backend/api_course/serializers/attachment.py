@@ -8,5 +8,6 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = ['id', 'file', 'file_type', 'length', 'path', 'original_name']
         extra_kwargs = {
-            'path': {'write_only': True}
+            'path': {'write_only': True},
+            'file': {'required': False}
         }

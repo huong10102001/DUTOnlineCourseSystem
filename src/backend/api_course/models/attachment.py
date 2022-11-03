@@ -14,11 +14,11 @@ def upload_path(instance, filename):
 
 class Attachment(TimeStampedModel):
     file = models.FileField(
-        upload_to=upload_path, max_length=255, blank=True, null=True
+        upload_to=upload_path, max_length=255, blank=False, null=True
     )
     path = models.CharField(default=None, null=True, max_length=255)
-    file_type = models.CharField(max_length=255)
-    original_name = models.CharField(max_length=255)
+    file_type = models.CharField(max_length=255, blank=False)
+    original_name = models.CharField(max_length=255, blank=False)
     length = models.IntegerField(default=0)
 
     class Meta:
