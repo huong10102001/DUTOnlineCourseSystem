@@ -10,7 +10,8 @@ import {
   select,
 } from "redux-saga/effects";
 import axios from "axios";
-import {getUser,getUserSuccess,getUserFailure} from '../actions/userAction'
+import {getUser,getUserSuccess,getUserFailure} from '../actions/userAction';
+import BASE_URL from "../request/url";
 const getUserId = (state) => state.auth.user_id;
 const getToken = (state) => state.auth.access_token;
 function* get_user(action) {
@@ -18,15 +19,15 @@ function* get_user(action) {
   const token = yield select(getToken);
   console.log("@@@Userid",user_id)
   try {
-    const data = yield axios.get(`http://127.0.0.1:8000/api/v1/users/${user_id}/`,{
+    const response = yield axios.get(`${BASE_URL}/api/v1/users/${user_id}/`,{
        headers: {
         'Authorization': 'Bearer ' + token
       }
     });
-    console.log(data);
-    yield put(getUserSuccess(data.data));
+    console.log(response);
+    yield put(getUserSuccess(response.data));
   } catch (error) {
-    // yield put(getUserFailure(error.response.data));
+    yield put(getUserFailure(error.response.data));
     console.log(error);
   }
   return;

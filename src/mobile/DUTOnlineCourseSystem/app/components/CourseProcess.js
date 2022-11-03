@@ -54,7 +54,7 @@ const CourseProcess = ({ props }) =>{
             }, []);
             return (
               <View style={styles.coverProgressComplete}>
-                <Text style={{ color: "white", fontWeight: 700 }}>
+                <Text style={{ color: "white", fontWeight: '700' }}>
                   Complete
                 </Text>
               </View>
@@ -62,7 +62,7 @@ const CourseProcess = ({ props }) =>{
           case "0%":
             return (
               <View style={styles.coverProgressStart}>
-              <Text style={{color:'white', fontWeight:700}}>Start Now</Text>
+              <Text style={{color:'white', fontWeight:'bold'}}>Start Now</Text>
             </View>
             )
           default:
@@ -147,13 +147,13 @@ const styles = StyleSheet.create({
     height: 58,
   },
   title: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 16,
     lineHeight: 21,
     color: "#024547",
   },
   decription: {
-    fontWeight: 400,
+    fontWeight: '400',
     fontSize: 12,
     opacity: 0.6,
     marginVertical: 5,

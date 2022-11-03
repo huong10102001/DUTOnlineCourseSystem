@@ -15,14 +15,14 @@ import {
   registerSuccessAction,
   registerFailureAction,
 } from "../actions/registerAction";
-
+import BASE_URL from "../request/url";
 function* register_api(action) {
   console.log("@@@@", action.payload);
   let register_url = "";
   if (action.payload.role == "user") {
-    register_url = "http://127.0.0.1:8000/api/v1/auth/registers/user";
+    register_url = `${BASE_URL}/api/v1/auth/registers/user`;
   } else {
-    register_url = "http://127.0.0.1:8000/api/v1/auth/registers/lecturer";
+    register_url = `${BASE_URL}/api/v1/auth/registers/lecturer`;
   }
   try {
     const payload = action.payload;

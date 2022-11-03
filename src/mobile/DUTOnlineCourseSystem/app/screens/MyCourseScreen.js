@@ -6,6 +6,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Foundation from "react-native-vector-icons/Foundation";
 import CourseProcess from "../components/CourseProcess";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 const MyCourseScreen = ({ navigator }) => {
   return (
     <ScrollView>
@@ -23,7 +24,7 @@ const MyCourseScreen = ({ navigator }) => {
               <Text
                 style={{
                   fontStyle: "normal",
-                  fontWeight: 400,
+                  fontWeight: "400",
                   fontSize: 20,
                   lineHeight: 24,
                   color: "white",
@@ -42,7 +43,7 @@ const MyCourseScreen = ({ navigator }) => {
             <Text
               style={{
                 fontStyle: "normal",
-                fontWeight: 700,
+                fontWeight: "700",
                 fontSize: 20,
                 lineHeight: 24,
                 color: "white",
@@ -104,7 +105,11 @@ const MyCourseScreen = ({ navigator }) => {
           </View>
         </View>
       </View>
-      <View>
+      <View
+        style={{
+          width: "100%",
+        }}
+      >
         <View
           style={{
             // flex: 1,
@@ -116,12 +121,14 @@ const MyCourseScreen = ({ navigator }) => {
           <Text style={styles.titleView}>New Course Today</Text>
           <Text style={styles.seeAll}>See all</Text>
         </View>
-        <View style={{ alignItems: "center" }}>
-          <CourseProcess></CourseProcess>
-          <View style={{ marginBottom: 25, marginTop: 25 }}>
+        <ScrollView>
+          <View style={{ alignItems: "center" }}>
             <CourseProcess></CourseProcess>
+            <View style={{ marginBottom: 25, marginTop: 25 }}>
+              <CourseProcess></CourseProcess>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </ScrollView>
   );
@@ -156,13 +163,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   titleView: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: 0.02,
   },
   seeAll: {
     color: "#024547",
-    fontWeight: 500,
+    fontWeight: '500',
   },
 });

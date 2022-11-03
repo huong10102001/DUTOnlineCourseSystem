@@ -27,6 +27,8 @@ const coursesReducer = (state = coursesState, { type, payload }) => {
         ...state,
         error: payload.detail,
       };
+    case "LOGOUT":
+      return coursesState
     default:
       return state;
     }

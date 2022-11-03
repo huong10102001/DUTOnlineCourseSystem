@@ -9,7 +9,7 @@ import {
   StatusBar,
   Image,
   ScrollView,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import tw from "tailwind-react-native-classnames";
 import Foundation from "react-native-vector-icons/Foundation";
@@ -25,12 +25,11 @@ const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const {width:screenWidth} = Dimensions.get('window');
-  let courseState = {};
     useEffect(() => {
       dispatch(getAllCourses());
       console.log(`getAllCourses`);
     }, []);
-  courseState = useSelector((state) => state.courses);
+  let courseState = useSelector((state) => state.courses);
   const listCourse = [
     {
       course: <Course />,
@@ -47,12 +46,13 @@ const HomeScreen = ({ navigation }) => {
   ];
 
   return (
-    <ScrollView>
+    <ScrollView style={{}}>
       <StatusBar
-        barStyle="dark-content"
+        barStyle="white-content"
         hidden={false}
-        backgroundColor="#00BCD4"
+        backgroundColor="#024547"
         translucent={true}
+        color="white"
       />
       {/* Tim kiem va profile */}
       <View>
@@ -66,11 +66,11 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             <View style={{ flex: 3 }}>
-              <View style={{ flex: 2, flexDirection: "row" }}>
+              <View style={{ flex: 2, flexDirection: "row",alignItems:'center' }}>
                 <Text
                   style={{
                     fontStyle: "normal",
-                    fontWeight: 400,
+                    fontWeight: '400',
                     fontSize: 20,
                     lineHeight: 24,
                     color: "white",
@@ -89,11 +89,11 @@ const HomeScreen = ({ navigation }) => {
               <Text
                 style={{
                   fontStyle: "normal",
-                  fontWeight: 700,
+                  fontWeight: '700',
                   fontSize: 20,
                   lineHeight: 24,
                   color: "white",
-                  marginTop: 4,
+                  marginTop: 0,
                 }}
               >
                 {user.full_name}
@@ -175,7 +175,6 @@ const HomeScreen = ({ navigation }) => {
             </View>
             <View style={{ flex: 1, marginLeft: 40 }}>
               <ScrollView
-                horizontal
                 pagingEnabled
                 contentContainerStyle={{
                   width: screenWidth * listCourse.length,
@@ -187,7 +186,9 @@ const HomeScreen = ({ navigation }) => {
                       width: screenWidth - 80,
                       alignItems: "center",
                       alignContent: "center",
+                      paddingBottom:50
                     }}
+                    key={index}
                   >
                     <Course data={e} navigator={navigator} />
                   </View>
@@ -300,13 +301,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   titleView: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: 0.02,
   },
   seeAll: {
     color: "#024547",
-    fontWeight:500,
+    fontWeight:'500',
   },
 });

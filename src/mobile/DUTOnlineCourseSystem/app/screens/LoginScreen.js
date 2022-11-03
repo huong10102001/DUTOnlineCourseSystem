@@ -96,12 +96,7 @@ function mapStateToProps(state){
     isLogin : state.auth
   }
 }
-export default connect(
-  mapStateToProps,
-  dispatch =>{
-
-  }
-)(LoginScreen);
+export default connect()(LoginScreen);
 
 const styles = StyleSheet.create({
   title: {

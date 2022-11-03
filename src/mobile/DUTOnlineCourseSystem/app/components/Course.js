@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 const Course = (props) =>{
   const navigation = useNavigation();
   const course_data = props.data;
-  console.log(props);
+  // console.log(props);
     return (
       <TouchableOpacity
         onPress={(data) => {
@@ -20,7 +20,7 @@ const Course = (props) =>{
             <Image
               style={styles.image}
               source={{
-                uri: props.background,
+                uri: course_data.background,
               }}
             ></Image>
           </View>
@@ -109,13 +109,13 @@ const styles = StyleSheet.create({
     height: 58,
   },
   title: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 16,
     lineHeight: 21,
     color: "#024547",
   },
   decription: {
-    fontWeight: 400,
+    fontWeight: '400',
     fontSize: 12,
     opacity: 0.6,
     marginVertical: 5,

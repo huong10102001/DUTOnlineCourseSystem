@@ -6,7 +6,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 const DetailCourse = ({ route,navigation }) => {
   const {course_data} = route.params;
-  console.log(course_data);
+  console.log(course_data.background);
   const props = {
     author:"Dương Anh Tuấn",
     url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
@@ -19,21 +19,21 @@ const DetailCourse = ({ route,navigation }) => {
       "Learn to Program and Analyze Data with Python. Develop programs to gather, clean, analyze, and visualize data.",
   };
   return (
-    <ScrollView style={{ padding: 25 }}>
-      <View style={{ alignItems: "center" }}>
+    <ScrollView style={{ padding: 25,paddingBottom:50 }}>
+      <View style={{ alignItems: "center",marginTop:25,marginBottom:50 }}>
         <Image
           style={styles.image}
           source={{
-            uri: props.url,
+            uri: course_data.background,
           }}
         ></Image>
-        <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "flex-start" }}>
           <Text style={[styles.title, styles.spaceBetweenComponent]}>
             {course_data.title}
           </Text>
-          <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
-            <Text>{course_data.summary}</Text>
-          </View>
+        </View>
+        <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
+          <Text style={{ textAlign: "justify" }}>{course_data.summary}</Text>
         </View>
         <View style={{ alignItems: "center", width: "100%" }}>
           <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
@@ -89,7 +89,7 @@ const DetailCourse = ({ route,navigation }) => {
               }}
             >
               <Text
-                style={{ color: "#FFBD35", fontWeight: 600, marginRight: 8 }}
+                style={{ color: "#FFBD35", fontWeight: "600", marginRight: 8 }}
               >
                 {props.star}
               </Text>
@@ -98,7 +98,7 @@ const DetailCourse = ({ route,navigation }) => {
           </View>
         </View>
         <View style={[styles.spaceBetweenComponent, styles.btnEnroll]}>
-          <Text style={{ color: "white", fontWeight: 700 }}>Enroll now</Text>
+          <Text style={{ color: "white", fontWeight: "700" }}>Enroll now</Text>
         </View>
         <View
           style={
@@ -106,12 +106,18 @@ const DetailCourse = ({ route,navigation }) => {
             [styles.contentComponent, styles.spaceBetweenComponent])
           }
         >
-          <Text style={{ color: "#024547", fontWeight: 700, marginBottom: 16 }}>
+          <Text
+            style={{ color: "#024547", fontWeight: "700", marginBottom: 16 }}
+          >
             What will you learn
           </Text>
-          <Text style={{ marginBottom: 16 }}>{course_data.summary}</Text>
-          <Text style={{ marginBottom: 16 }}>{course_data.summary}</Text>
-          <Text>{course_data.summary}</Text>
+          <Text style={{ marginBottom: 16, textAlign: "justify" }}>
+            {course_data.summary}
+          </Text>
+          <Text style={{ marginBottom: 16, textAlign: "justify" }}>
+            {course_data.summary}
+          </Text>
+          <Text style={{ textAlign: "justify" }}>{course_data.summary}</Text>
         </View>
         <View
           style={
@@ -119,7 +125,9 @@ const DetailCourse = ({ route,navigation }) => {
             [styles.contentComponent, styles.spaceBetweenComponent])
           }
         >
-          <Text style={{ color: "#024547", fontWeight: 700, marginBottom: 16 }}>
+          <Text
+            style={{ color: "#024547", fontWeight: "700", marginBottom: 16 }}
+          >
             {course_data.user.full_name}
           </Text>
           <View>
@@ -133,25 +141,29 @@ const DetailCourse = ({ route,navigation }) => {
                 ></Image>
               </View>
               <View style={{ width: "70%" }}>
-                <Text style={{ marginBottom: 16 }}>
+                <Text style={{ marginBottom: 16, textAlign: "justify" }}>
                   {props.whatWillYouLearn}
                 </Text>
               </View>
             </View>
-            <Text style={{ marginBottom: 16 }}>{props.whatWillYouLearn}</Text>
-            <Text>{props.whatWillYouLearn}</Text>
+            <Text style={styles.textJustifyPadding}>
+              {props.whatWillYouLearn}
+            </Text>
+            <Text style={{textAlign:"justify"}}>{props.whatWillYouLearn}</Text>
           </View>
         </View>
         <View
           style={
-            ({ alignItems: "center", width: "100%" },
+            ({ alignItems: "center", width: "100%",marginBottom:100 },
             [styles.contentComponent, styles.spaceBetweenComponent])
           }
         >
-          <Text style={{ color: "#024547", fontWeight: 700, marginBottom: 16 }}>
+          <Text
+            style={{ color: "#024547", fontWeight: "700", marginBottom: 16 }}
+          >
             Earn a Certificate upon completion
           </Text>
-          <Text style={{ marginBottom: 16 }}>{props.whatWillYouLearn}</Text>
+          <Text style={styles.textJustifyPadding}>{props.whatWillYouLearn}</Text>
           <Image
             style={styles.image}
             source={{
@@ -174,9 +186,10 @@ const styles = StyleSheet.create({
   },
   spaceBetweenComponent: {
     marginTop: 25,
+    width: "100%",
   },
   title: {
-    fontWeight: 700,
+    fontWeight: "700",
     alignItems: "center",
   },
   contentComponent: {
@@ -194,10 +207,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
   },
-  avatar:{
-    position:'absolute',
-    width:60,
-    height:60,
-    borderRadius:30,
+  avatar: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  textJustifyPadding: {
+    marginBottom: 16,
+    textAlign: "justify",
   },
 });
