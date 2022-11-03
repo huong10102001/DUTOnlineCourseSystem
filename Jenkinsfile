@@ -59,8 +59,7 @@ pipeline {
         }
         steps{
             sshagent(credentials:['login_digitalocean']){
-               sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker pull ${DOCKER_IMAGE_FRONTEND}:${DOCKER_TAG}"
-               sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker pull ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}"
+               sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker-compose pull"
                sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker-compose up -d"
             }
             echo "success login"
