@@ -1,24 +1,11 @@
 <template>
-  <el-tooltip
-    class="box-item"
-    effect="dark"
-    content="Click here to change background"
-    placement="top"
+  <CoverImage
+    :image="image"
+    :is_freeze="is_freeze"
+    @changeImage="this.image = $event"
+    @changeFile="this.background = $event"
   >
-    <el-upload
-      class="avatar-uploader"
-      action=""
-      :show-file-list="false"
-      :on-change="changeFile"
-      :before-upload="beforeImageUpload"
-      :on-success="handleImageUpload"
-      :on-error="handleImageUpload"
-      :disabled="is_freeze"
-    >
-      <img v-if="course.background" :src="course.background" class="avatar" />
-      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-    </el-upload>
-  </el-tooltip>
+  </CoverImage>
 
   <div class="p-6">
     <el-form
@@ -31,13 +18,23 @@
       :rules="rules"
     >
 
+      <div class="is-flex is-justify-content-end">
+        <span :class="['tag', 'mb-5', {
+          'is-black': course.status == DRAFT,
+          'is-primary': course.status == PUBLISHED,
+          'is-danger': course.status == DEACTIVATED
+        }]">
+          {{ course.status }}
+        </span>
+      </div>
+
       <el-form-item prop="title">
         <span class="title is-5">Title</span>
-        <el-input v-model="course.title"/>
+        <el-input v-model="course.title" placeholder="Enter course title"/>
       </el-form-item>
 
       <el-form-item prop="topics">
-        <span class="title is-5 mt-3">Category(ies)</span>
+        <span class="title is-5 mt-3">Category</span>
         <el-select
           v-model="course.topics"
           multiple
@@ -45,7 +42,7 @@
           default-first-option
           :reserve-keyword="false"
           style="width: 100%"
-          placeholder="Select category(ies) for your course"
+          placeholder="Select category for your course"
         >
           <el-option
             v-for="item in options"
@@ -58,11 +55,26 @@
 
       <el-form-item prop="summary">
         <span class="title is-5 mt-3">Short description</span>
-        <el-input v-model="course.summary"/>
+        <el-input v-model="course.summary" type="textarea" placeholder="Tell something about this course..."/>
       </el-form-item>
-      <span class="title is-5 mt-3">Description</span>
-      <div class="mt-4">
-        <TextEditor :is_freeze="is_freeze" :init_content="course.description" @contentChange="course.description = $event"/>
+      <span class="title is-5 mt-3">
+        Description
+        <button class="button is-light ml-2" style="font-size: 0.6rem" @click.prevent="expandEditor = true">
+          <font-awesome-icon icon="fa-solid fa-up-right-and-down-left-from-center" class="mr-1" /> Expand
+        </button>
+      </span>
+      <div :class="['mt-4', {expandEditor: expandEditor}]">
+        <div :class="{expandEditor__content: expandEditor}">
+          <TextEditor
+            ref="editor"
+            :is_freeze="is_freeze"
+            :init_content="course.description"
+            @contentChange="course.description = $event"
+          />
+          <div class="is-flex is-justify-content-center">
+            <button v-show="expandEditor" class="button is-rounded" @click.prevent="expandEditor = false">Close</button>
+          </div>
+        </div>
       </div>
       <div class="is-flex is-justify-content-space-between">
         <button
@@ -72,30 +84,62 @@
           <el-icon v-if="is_freeze" class="is-loading mr-2">
             <Loading />
           </el-icon>
-          Save as draft
+          Save
         </button>
-        <button
-          class="button is-dark is-rounded"
-          @click.prevent="resetForm($refs.formRef)"
-          :disabled="is_freeze">
-          Reset
-        </button>
+        <div>
+          <button
+            class="button is-success is-light is-rounded mr-2"
+            v-if="course.status == DRAFT"
+            @click.prevent="handlePublish">
+            Publish
+          </button>
+          <button
+            class="button is-link is-light is-rounded mr-2"
+            v-if="course.status == PUBLISHED"
+            @click.prevent="handleUnpublish">
+            Unpublish
+          </button>
+          <button
+            class="button is-danger is-rounded"
+            @click.prevent="dialogVisible = true">
+            <font-awesome-icon icon="fa-solid fa-trash" />
+          </button>
+        </div>
       </div>
     </el-form>
   </div>
+
+  <el-dialog
+    v-model="dialogVisible"
+    title="Delete Course"
+    width="50%"
+    style="border-radius: 20px"
+    center>
+    <template #footer>
+      <span class="dialog-footer">
+        <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
+        <button class="button is-dark is-rounded" @click="handleDelete">
+          Confirm
+        </button>
+      </span>
+    </template>
+  </el-dialog>
+
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import TopicItem from "@/types/course/TopicItem";
 import TextEditor from "@/components/TextEditor.vue"
-import { ElNotification, FormInstance } from "element-plus";
+import { ElMessage, ElNotification, FormInstance } from "element-plus";
 import { COURSE_STATUS } from "@/const/course_status";
-import { mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
+import CoverImage from "@/components/CoverImage.vue";
 
 @Options({
   components: {
+    CoverImage,
     TextEditor
   },
   props: {
@@ -104,9 +148,11 @@ import {ActionTypes} from "@/types/store/ActionTypes";
   },
   data() {
     return {
-      showUpload: true,
+      dialogVisible: false,
       background: null,
+      image: "",
       is_freeze: false,
+      expandEditor: false,
       rules: {
         title: [
           { required: true, message: 'Please input title', trigger: 'blur' },
@@ -128,34 +174,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
     }
   },
   methods: {
-    ...mapActions("course",[ActionTypes.UPDATE_COURSE_INFO]),
-    changeFile(file: any, fileList: any) {
-      this.background = file;
-    },
-    handleImageUpload(res: any, file: any) {
-      this.course.background = URL.createObjectURL(file.raw);
-    },
-    beforeImageUpload(file: any) {
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG && !isPNG) {
-        ElNotification({
-          title: 'Notice',
-          message: 'Avatar picture must be JPG or PNG format!',
-          type: 'info',
-        })
-      }
-      if (!isLt2M) {
-        ElNotification({
-          title: 'Notice',
-          message: 'Avatar picture size can not exceed 2MB!',
-          type: 'info',
-        })
-      }
-      return (isJPG || isPNG) && isLt2M;
-    },
+    ...mapActions("course",[ActionTypes.UPDATE_COURSE_INFO, ActionTypes.DELETE_COURSE]),
     async handleSubmit(formEl: FormInstance | undefined){
       if (!formEl) return
 
@@ -177,7 +196,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
 
           const response: any = await this.UPDATE_COURSE_INFO({
             form: formData,
-            slug: this.course.id
+            id: this.course.id
           })
 
           if (response.status == 200) {
@@ -208,10 +227,97 @@ import {ActionTypes} from "@/types/store/ActionTypes";
         this.is_freeze = false
       })
     },
-    resetForm(formEl: FormInstance | undefined) {
-      if (!formEl) return
-      formEl.resetFields()
+
+    async handleDelete(){
+      this.is_freeze = true
+      let response:any = await this.DELETE_COURSE(this.course.id)
+      if (response.status == 204) {
+        this.$router.push('/')
+        ElMessage({
+          message: `Deleted ${this.course.title} successfully.`,
+          type: 'success',
+        })
+        this.$emit('delete-course')
+      } else {
+        ElMessage.error('Delete course failed.')
+      }
+      this.dialogVisible= false
+      this.is_freeze = false
+    },
+
+    async handlePublish() {
+      this.is_freeze = true
+      let formData = new FormData()
+      formData.append("title", this.course.title);
+      formData.append("summary", this.course.summary);
+      formData.append("status", COURSE_STATUS.PUBLISHED);
+
+      const response: any = await this.UPDATE_COURSE_INFO({
+        form: formData,
+        id: this.course.id
+      })
+
+      if (response.status == 200) {
+        this.course.status = COURSE_STATUS.PUBLISHED
+
+        ElNotification({
+          title: 'Update successfully',
+          message: 'Course has been published!',
+          type: 'success',
+        })
+      } else {
+        ElNotification({
+          title: 'Error',
+          message: 'Update course status failed!',
+          type: 'error',
+        })
+      }
+
+      this.is_freeze = false
+    },
+
+    async handleUnpublish() {
+      this.is_freeze = true
+      let formData = new FormData()
+      formData.append("title", this.course.title);
+      formData.append("summary", this.course.summary);
+      formData.append("status", COURSE_STATUS.DRAFT);
+
+      const response: any = await this.UPDATE_COURSE_INFO({
+        form: formData,
+        id: this.course.id
+      })
+
+      if (response.status == 200) {
+        this.course.status = COURSE_STATUS.DRAFT
+
+        ElNotification({
+          title: 'Update successfully',
+          message: 'Course status has been change to draft!',
+          type: 'success',
+        })
+      } else {
+        ElNotification({
+          title: 'Error',
+          message: 'Update course status failed!',
+          type: 'error',
+        })
+      }
+
+      this.is_freeze = false
     }
+  },
+  created() {
+    this.unwatchCourse = this.$watch('course', (newVal: any) => {
+      if (newVal) {
+        this.image = newVal.background
+        this.unwatchCourse();
+      }
+    });
+
+    this.DRAFT = COURSE_STATUS.DRAFT
+    this.PUBLISHED = COURSE_STATUS.PUBLISHED
+    this.DEACTIVATED = COURSE_STATUS.DEACTIVATED
   }
 })
 
@@ -221,47 +327,28 @@ export default class CourseSection extends Vue {
 }
 </script>
 
-<style scoped>
-.avatar-uploader .avatar {
-  width: 100%;
-  border-radius: 20px;
-  object-fit: cover;
-  aspect-ratio: 21/9;
-  display: block;
-}
-
-/deep/.el-upload {
-  border-radius: 20px;
-  display: block;
-  aspect-ratio: 21/9;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  transition: all 0.2s linear;
-}
-
-/deep/.el-upload:hover {
-  opacity: 0.9;
-}
-</style>
-
 <style lang="scss" scoped>
-.avatar-uploader .el-upload {
-  border-radius: 20px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  aspect-ratio: 21/9;
-  transition: var(--el-transition-duration-fast);
-}
+.expandEditor {
+  position: fixed;
+  top: -20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1999;
+  transition: 0.3s all linear;
 
-.el-icon.avatar-uploader-icon {
-  border-radius: 20px;
-  background-color: #eee;
-  font-size: 28px;
-  color: #8c939d;
-  width: 100%;
-  height:100%;
-  margin: 0 auto;
+  &__content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 2000;
+    padding: 20px;
+    width: 90%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+  }
 }
-
 </style>

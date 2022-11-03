@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField()),
                 ('background', models.FileField(blank=True, null=True, upload_to=api_course.models.course.upload_path)),
                 ('cost', models.FloatField(default=0)),
-                ('status', models.CharField(choices=[('DRAFT', 'DRAFT'), ('PUBLISHED', 'PUBLISHED'), ('DEACTIVATE', 'DEACTIVATE')], default='DRAFT', max_length=50)),
+                ('status', models.CharField(choices=[('DRAFT', 'DRAFT'), ('PUBLISHED', 'PUBLISHED'), ('DEACTIVATED', 'DEACTIVATED')], default='DRAFT', max_length=50)),
                 ('certificate_frame', models.TextField()),
                 ('topics', models.ManyToManyField(blank=True, null=True, related_name='courses', to='api_topic.Topic')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='courses', to='api_user.user')),

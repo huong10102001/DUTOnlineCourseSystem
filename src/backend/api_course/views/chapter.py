@@ -12,7 +12,7 @@ class ChapterViewSet(BaseViewSet):
     serializer_class = ChapterSerializer
     permission_classes = [IsAuthenticated]
     serializer_map = {
-        "list": ListChapterSerializer
+        "list": ListChapterSerializer,
     }
 
     def create(self, request, *args, **kwargs):

@@ -36,6 +36,15 @@ class CourseService extends BaseService{
     const response: any = await this.request().put(`${this.entity}/${id}/`, data);
     return response ? response : [];
   }
+
+  async delete(id: string) {
+    try{
+      const res = await this.request().delete(`${this.entity}/${id}/`);
+      return res;
+    } catch(error){
+      return null;
+    }
+  }
 }
 
 export default new CourseService();

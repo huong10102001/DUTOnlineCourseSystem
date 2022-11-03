@@ -32,6 +32,10 @@ export interface Actions {
   [ActionTypes.UPDATE_COURSE_INFO](
     { commit }: AugmentedActionContext,
     data: any,
+  ): any,
+  [ActionTypes.DELETE_COURSE](
+    { commit }: AugmentedActionContext,
+    id: string,
   ): any
 }
 
@@ -52,7 +56,11 @@ export const actions: ActionTree<State, State> & Actions = {
   },
 
   async [ActionTypes.UPDATE_COURSE_INFO]({ commit }, payload) {
-    let data: any = await CourseService.update(payload.form, payload.slug)
+    let data: any = await CourseService.update(payload.form, payload.id)
     return data
+  },
+  async [ActionTypes.DELETE_COURSE]({ commit }, id) {
+    let response: any = await CourseService.delete(id)
+    return response
   },
 }

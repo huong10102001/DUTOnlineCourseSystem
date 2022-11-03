@@ -23,6 +23,10 @@
                     Edit
                   </el-dropdown-item>
                 </router-link>
+
+                <el-dropdown-item v-if="$route.name == 'course-management'" icon="Delete" @click="dialogVisible = true">
+                  Delete
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -38,6 +42,15 @@
           <font-awesome-icon icon="fa-solid fa-chalkboard-user" class="mr-1"/>
           {{ course.user.full_name }}
         </p>
+        <span
+          v-if="$route.name == 'course-management'"
+          :class="['tag', 'mt-2', {
+          'is-black': course.status == 'DRAFT',
+          'is-primary': course.status == 'PUBLISHED',
+          'is-danger': course.status == 'DEACTIVATED'
+        }]">
+          {{ course.status }}
+        </span>
       </div>
 
       <div class="course-item__image">
@@ -56,18 +69,65 @@
       </div>
     </div>
   </router-link>
+  
+  <el-dialog
+    v-model="dialogVisible"
+    v-if="$route.name == 'course-management'"
+    title="Delete Course"
+    width="50%"
+    style="border-radius: 20px"
+    center>
+    <span style="word-break: break-word">
+      Are you sure to delete this course? This should be undone!
+    </span>
+    <template #footer>
+      <span class="dialog-footer">
+        <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
+        <button class="button is-dark is-rounded" @click="handleDelete">
+          Confirm
+        </button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import Course from "@/types/course/CourseItem";
+import { mapActions} from "vuex";
+import {ActionTypes} from "@/types/store/ActionTypes";
+import {ElMessage} from "element-plus";
+import {COURSE_STATUS} from "@/const/course_status";
 
 @Options({
   props: {
     course: {} as Course,
   },
   data() {
-    return {}
+    return {
+      dialogVisible: false
+    }
+  },
+  methods: {
+    ...mapActions("course",[ActionTypes.DELETE_COURSE]),
+    async handleDelete(){
+      let response:any = await this.DELETE_COURSE(this.course.id)
+      if (response.status == 204) {
+        ElMessage({
+          message: `Deleted ${this.course.title} successfully.`,
+          type: 'success',
+        })
+        this.$emit('delete-course')
+      } else {
+        ElMessage.error('Delete course failed.')
+      }
+      this.dialogVisible= false
+    }
+  },
+  created() {
+    this.DRAFT = COURSE_STATUS.DRAFT
+    this.PUBLISHED = COURSE_STATUS.PUBLISHED
+    this.DEACTIVATED = COURSE_STATUS.DEACTIVATED
   }
 })
 
@@ -161,6 +221,7 @@ a {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border-top: 10px solid #333;
 }
+
 </style>
 
 <style scoped>

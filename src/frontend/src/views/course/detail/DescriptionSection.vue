@@ -20,6 +20,6 @@ export default class DescriptionSection extends Vue {
 
 <style lang="scss" scoped>
 h1 {
-    font-size: 2rem;
-  }
+  font-size: 2rem;
+}
 </style>

@@ -1,15 +1,20 @@
 <template>
-  <TitleBar :title="course.title"></TitleBar>
-  <div class="course-detail p-3">
-    <InfoSection :course="course"></InfoSection>
-    <DescriptionSection :description="course.description"></DescriptionSection>
-    <CertificateSection></CertificateSection>
-    <ChapterSection></ChapterSection>
+  <div class="main-container">
+    <TitleBar :title="course.title"></TitleBar>
+    <div class="course-detail__background">
+      <CoverImage :image="course.background" :is_freeze="true"></CoverImage>
+    </div>
+    <div class="course-detail p-3">
+      <InfoSection :course="course"></InfoSection>
+      <DescriptionSection :description="course.description"></DescriptionSection>
+      <CertificateSection></CertificateSection>
+      <ChapterSection></ChapterSection>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import {Options, Vue} from 'vue-class-component';
+import { Options, Vue } from 'vue-class-component';
 import InfoSection from './InfoSection.vue'
 import DescriptionSection from './DescriptionSection.vue'
 import CertificateSection from "@/views/course/detail/CertificateSection.vue";
@@ -17,6 +22,7 @@ import ChapterSection from "@/views/course/detail/ChapterSection.vue";
 import { mapActions, mapMutations } from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import TitleBar from "@/components/TitleBar.vue";
+import CoverImage from "@/components/CoverImage.vue";
 
 @Options({
   components: {
@@ -24,7 +30,8 @@ import TitleBar from "@/components/TitleBar.vue";
     ChapterSection,
     CertificateSection,
     InfoSection,
-    DescriptionSection
+    DescriptionSection,
+    CoverImage
   },
   data() {
     return {
@@ -54,11 +61,21 @@ export default class CourseDetail extends Vue {}
 
 <style lang="scss" scoped>
 .course-detail{
-
   &__section {
     border-radius: 20px;
     font-size: 1rem;
     margin-bottom: 50px;
   }
+
+  &__background {
+    background-color: white;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: 5px;
+  }
+}
+
+.main-container {
+  max-width: 900px;
+  margin: 0 auto;
 }
 </style>

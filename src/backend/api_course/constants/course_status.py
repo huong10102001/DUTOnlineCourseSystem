@@ -4,7 +4,7 @@ from enum import Enum
 class CourseStatus(Enum):
     DRAFT = "DRAFT"
     PUBLISHED = "PUBLISHED"
-    DEACTIVATE = "DEACTIVATE"
+    DEACTIVATED = "DEACTIVATED"
 
     @classmethod
     def choices(cls):

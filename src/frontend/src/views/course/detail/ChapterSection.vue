@@ -4,13 +4,12 @@
       <h1 class="is-size-5 mb-5">There are 4 Chapter in this section</h1>
       <div v-for="i in 4">
         <div class="columns is-vcentered">
-          <div class="column is-one-third has-text-centered">
-            <p class="is-size-4">Chapter</p>
-            <p class="is-size-3 has-text-weight-medium mt-2">{{ i }}</p>
+          <div class="column is-one-third has-text-centered is-size-4">
+            <p>Chapter</p>
+            <p class="has-text-weight-medium mt-2">{{ i }}</p>
           </div>
           <div class="column">
-            <h3> Chapter name {{ i }}</h3>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            <h3 class="is-size-4"> Chapter name {{ i }}</h3>
           </div>
         </div>
       </div>

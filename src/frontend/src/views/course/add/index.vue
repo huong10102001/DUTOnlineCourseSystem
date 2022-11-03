@@ -1,5 +1,5 @@
 <template>
- <div class="main-container" style="max-width: 900px; margin: 0 auto">
+ <div class="main-container">
     <TitleBar :title="title"></TitleBar>
 	  <div class="create-section has-background-white">
       <AddCourse :options="options"></AddCourse>
@@ -62,6 +62,9 @@ export default class AddCoursePage extends Vue {}
 
 <style lang="scss" scoped>
 .main-container {
+  max-width: 900px;
+  margin: 0 auto;
+
   .create-section {
     border-radius: 20px;
   }

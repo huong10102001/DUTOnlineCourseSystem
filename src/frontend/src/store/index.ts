@@ -2,6 +2,8 @@ import { createStore } from 'vuex'
 import { authentication } from "@/store/modules/authentication";
 import { course } from "@/store/modules/course";
 import { topic } from "@/store/modules/topic";
+import { chapter } from "@/store/modules/chapter";
+import { lesson } from "@/store/modules/lesson";
 import { user } from  "@/store/modules/user";
 import createPersistedState from "vuex-persistedstate";
 
@@ -23,6 +25,8 @@ export default createStore({
     authentication,
     course,
     user,
-    topic
+    topic,
+    chapter,
+    lesson
   }
 })

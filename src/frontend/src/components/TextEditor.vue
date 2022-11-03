@@ -95,7 +95,9 @@ export default class AddCoursePage extends Vue {
   }
 
   :deep(.ql-editor) {
-    min-height: 300px !important;
+    min-height: 400px !important;
+    max-height: 70vh !important;
+    overflow: auto;
     color: black;
   }
 }

@@ -1,10 +1,14 @@
 <template>
   <div class="main-container p-2">
     <div class="course-container">
-      <h1>All Courses</h1>
+      <router-link to="/categories/management" class="button is-rounded btn-change">
+        <font-awesome-icon icon="fa-solid fa-tags" class="mr-2"/> |
+        <font-awesome-icon icon="fa-solid fa-chalkboard" class="ml-2 mr-2"/>
+        Course Management
+      </router-link>
       <el-row :gutter="20">
         <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
-          <CourseItem :course="course"></CourseItem>
+          <CourseItem :course="course" @deleteCourse="getListCourses"></CourseItem>
         </el-col>
       </el-row>
     </div>
@@ -66,14 +70,19 @@ export default class CourseManagementPage extends Vue {}
 <style scoped lang="scss">
 .main-container {
   h1 {
-    font-size: 1.22rem;
-    margin-bottom: 20px;
+    font-size: 1.3rem;
     color: #666;
     font-weight: 500;
   }
 
   .course-container {
     margin-bottom: 10px;
+  }
+
+  .btn-change{
+    font-size: 0.95rem;
+    font-weight: 450;
+    margin-bottom: 25px;
   }
 }
 </style>

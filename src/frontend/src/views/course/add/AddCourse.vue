@@ -1,24 +1,11 @@
 <template>
-  <el-tooltip
-    class="box-item"
-    effect="dark"
-    content="Click here to change background"
-    placement="top"
+  <CoverImage
+    :image="image"
+    :is_freeze="is_freeze"
+    @changeImage="this.image = $event"
+    @changeFile="this.background = $event"
   >
-    <el-upload
-      class="avatar-uploader"
-      action=""
-      :show-file-list="false"
-      :on-change="changeFile"
-      :before-upload="beforeImageUpload"
-      :on-success="handleImageUpload"
-      :on-error="handleImageUpload"
-      :disabled="is_freeze"
-    >
-      <img v-if="course.background" :src="course.background" class="avatar" />
-      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-    </el-upload>
-  </el-tooltip>
+  </CoverImage>
 
   <el-form
     ref="formRef"
@@ -33,11 +20,11 @@
 
     <el-form-item prop="title">
       <span class="title is-5">Title</span>
-      <el-input v-model="course.title"/>
+      <el-input v-model="course.title" placeholder="Enter course title"/>
     </el-form-item>
 
     <el-form-item prop="topics">
-      <span class="title is-5 mt-3">Category(ies)</span>
+      <span class="title is-5 mt-3">Category</span>
         <el-select
           v-model="course.topics"
           multiple
@@ -45,7 +32,7 @@
           default-first-option
           :reserve-keyword="false"
           style="width: 100%"
-          placeholder="Select category(ies) for your course"
+          placeholder="Select category for your course"
         >
         <el-option
           v-for="item in options"
@@ -58,12 +45,28 @@
 
     <el-form-item prop="summary">
       <span class="title is-5 mt-3">Short description</span>
-      <el-input v-model="course.summary"/>
+      <el-input v-model="course.summary" type="textarea" placeholder="Tell something about this course..."/>
     </el-form-item>
-    <span class="title is-5 mt-3">Description</span>
-    <div class="mt-4">
-      <TextEditor :is_freeze="is_freeze" @contentChange="course.description = $event"/>
-    </div>
+
+    <span class="title is-5 mt-3">
+      Description
+      <button class="button is-light ml-2" style="font-size: 0.6rem" @click.prevent="expandEditor = true">
+        <font-awesome-icon icon="fa-solid fa-up-right-and-down-left-from-center" class="mr-1" /> Expand
+      </button>
+    </span>
+    <div :class="['mt-4', {expandEditor: expandEditor}]">
+        <div :class="{expandEditor__content: expandEditor}">
+          <TextEditor
+            ref="editor"
+            :is_freeze="is_freeze"
+            :init_content="course.description"
+            @contentChange="course.description = $event"
+          />
+          <div class="is-flex is-justify-content-center">
+            <button v-show="expandEditor" class="button is-rounded" @click.prevent="expandEditor = false">Close</button>
+          </div>
+        </div>
+      </div>
     <div class="is-flex is-justify-content-space-between">
       <button
         class="button is-success is-rounded"
@@ -91,11 +94,13 @@ import TextEditor from "@/components/TextEditor.vue"
 import { ElNotification, FormInstance } from "element-plus";
 import { COURSE_STATUS } from "@/const/course_status";
 import { mapGetters, mapActions } from "vuex";
-import {ActionTypes} from "@/types/store/ActionTypes";
+import { ActionTypes } from "@/types/store/ActionTypes";
+import CoverImage from "@/components/CoverImage.vue";
 
 @Options({
   components: {
-    TextEditor
+    TextEditor,
+    CoverImage
   },
   props: {
     options: [] as TopicItem[],
@@ -109,6 +114,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
         background: null,
         topics: []
       },
+      image: "",
       showUpload: true,
       background: null,
       is_freeze: false,
@@ -130,37 +136,11 @@ import {ActionTypes} from "@/types/store/ActionTypes";
           { min: 20, max: 200, message: 'Length should be 20 to 200', trigger: 'blur' },
         ]
       } as any,
+      expandEditor: false
     }
   },
   methods: {
     ...mapActions("course",[ActionTypes.CREATE_COURSE]),
-    changeFile(file: any, fileList: any) {
-      this.background = file;
-    },
-    handleImageUpload(res: any, file: any) {
-      this.course.background = URL.createObjectURL(file.raw);
-    },
-    beforeImageUpload(file: any) {
-      const isJPG = file.type === "image/jpeg";
-      const isPNG = file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG && !isPNG) {
-        ElNotification({
-          title: 'Notice',
-          message: 'Avatar picture must be JPG or PNG format!',
-          type: 'info',
-        })
-      }
-      if (!isLt2M) {
-        ElNotification({
-          title: 'Notice',
-          message: 'Avatar picture size can not exceed 2MB!',
-          type: 'info',
-        })
-      }
-      return (isJPG || isPNG) && isLt2M;
-    },
     async handleSubmit(formEl: FormInstance | undefined){
       if (!formEl) return
       await formEl.validate(async (valid, fields) => {
@@ -227,6 +207,14 @@ import {ActionTypes} from "@/types/store/ActionTypes";
   },
   computed: {
     ...mapGetters("authentication", ["tokenInfo"])
+  },
+  created() {
+    this.unwatchCourse = this.$watch('course', (newVal: any) => {
+      if (newVal) {
+        this.image = newVal.background
+        this.unwatchCourse();
+      }
+    });
   }
 })
 
@@ -278,4 +266,27 @@ export default class AddCoursePage extends Vue {
   margin: 0 auto;
 }
 
+.expandEditor {
+  position: fixed;
+  top: -20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1999;
+  transition: 0.3s all linear;
+
+  &__content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 2000;
+    padding: 20px;
+    width: 90%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+  }
+}
 </style>

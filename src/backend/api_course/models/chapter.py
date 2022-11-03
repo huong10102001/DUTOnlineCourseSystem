@@ -11,4 +11,4 @@ class Chapter(TimeStampedModel):
 
     class Meta:
         db_table = "chapters"
-        ordering = ('-created_at',)
+        ordering = ('created_at',)

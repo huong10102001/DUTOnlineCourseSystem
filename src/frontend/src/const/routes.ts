@@ -4,6 +4,7 @@ export const ROUTES = {
     "TOPICS": "/topics",
     "CHAPTERS": "/chapters",
     "COURSE_MANAGEMENT": "/courses/management",
+    "TOPIC_MANAGEMENT": "/topics/management",
 
     "LOGIN": "/login",
     "LOGOUT": "/logout",

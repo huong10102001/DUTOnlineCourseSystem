@@ -7,11 +7,10 @@ class TopicService extends BaseService{
 
   async getAll(params: any = null) {
     try {
-      const response = await this.request().get(`${this.entity}/`, {
+      const response: any = await this.request().get(`${this.entity}/`, {
         params,
       });
-      const data = response.data;
-      return data;
+      return response.data;
     } catch (error) {
       return [];
     }
@@ -23,6 +22,33 @@ class TopicService extends BaseService{
       return res.data;
     } catch(error){
       return null;
+    }
+  }
+
+  async create(data: any) {
+    try {
+      const res: any = await this.request().post(`${this.entity}/`,data)
+      return res
+    } catch (e) {
+        return null
+    }
+  }
+
+  async update(payload: any) {
+    try {
+      const res: any = await this.request().put(`${this.entity}/${payload.id}/`, payload)
+      return res
+    } catch (e) {
+        return null
+    }
+  }
+
+  async delete(id: string) {
+    try {
+      const res: any = await this.request().delete(`${this.entity}/${id}/`)
+      return res
+    } catch (e) {
+        return null
     }
   }
 }
