@@ -223,49 +223,7 @@ export default class AddCoursePage extends Vue {
 }
 </script>
 
-<style scoped>
-.avatar-uploader .avatar {
-  width: 100%;
-  border-radius: 20px;
-  object-fit: cover;
-  aspect-ratio: 21/9;
-  display: block;
-}
-
-/deep/.el-upload {
-  border-radius: 20px;
-  display: block;
-  aspect-ratio: 21/9;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-  transition: all 0.2s linear;
-}
-
-/deep/.el-upload:hover {
-  opacity: 0.9;
-}
-</style>
-
 <style lang="scss" scoped>
-.avatar-uploader .el-upload {
-  border-radius: 20px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  aspect-ratio: 21/9;
-  transition: var(--el-transition-duration-fast);
-}
-
-.el-icon.avatar-uploader-icon {
-  border-radius: 20px;
-  background-color: #eee;
-  font-size: 28px;
-  color: #8c939d;
-  width: 100%;
-  height:100%;
-  margin: 0 auto;
-}
-
 .expandEditor {
   position: fixed;
   top: -20px;

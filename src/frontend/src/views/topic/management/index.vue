@@ -2,7 +2,8 @@
   <div class="main-container p-2">
     <div class="course-container">
       <router-link to="/courses/management" class="button is-rounded btn-change">
-        <font-awesome-icon icon="fa-solid fa-chalkboard" class="mr-2"/> |
+        <font-awesome-icon icon="fa-solid fa-chalkboard" class="mr-2"/>
+        |
         <font-awesome-icon icon="fa-solid fa-tags" class="ml-2 mr-2"/>
         Category Management
       </router-link>
@@ -21,7 +22,7 @@
             prefix-icon="Search"
             v-model="searchText"
             size="large"
-            placeholder="Input here for searching..." />
+            placeholder="Input here for searching..."/>
         </el-form-item>
       </div>
 
@@ -33,8 +34,8 @@
         size="large"
         class="main-container__table">
 
-        <el-table-column type="index" sortable label="#" align="center" width="80" />
-        <el-table-column prop="title" sortable label="Title" width="200" />
+        <el-table-column type="index" sortable label="#" align="center" width="80"/>
+        <el-table-column prop="title" sortable label="Title" width="200"/>
         <el-table-column prop="description" label="Description" min-width="500">
           <template #default="scope">
             <div class="dont-break-out">
@@ -73,7 +74,7 @@
       v-model="dialogVisible"
       :title="mode == 'add' ? 'Add Category' : 'Edit Category'"
       width="80%"
-      style="border-radius: 20px"
+      style="border-radius: 20px; max-width: 600px"
       center>
 
       <TopicForm :topic="formContent" @updateTopic="formContent = $event"></TopicForm>
@@ -82,7 +83,7 @@
         <span class="dialog-footer">
           <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
           <button class="button is-dark is-rounded" @click="mode == 'add' ? handleAddTopic(): handleEditTopic()">
-            {{ mode == 'add' ? 'Add':'OK' }}
+            {{ mode == 'add' ? 'Add' : 'OK' }}
           </button>
         </span>
       </template>
@@ -93,12 +94,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { mapActions } from "vuex";
-import { ActionTypes } from "@/types/store/ActionTypes";
+import {Options, Vue} from "vue-class-component";
+import {mapActions} from "vuex";
+import {ActionTypes} from "@/types/store/ActionTypes";
 import TopicItem from "@/types/course/TopicItem";
 import TopicForm from "@/views/topic/management/TopicForm.vue";
-import { ElMessageBox, ElNotification } from "element-plus";
+import {ElMessageBox, ElNotification} from "element-plus";
 
 @Options({
   components: {
@@ -133,8 +134,8 @@ import { ElMessageBox, ElNotification } from "element-plus";
       this.total = data.count
       this.loading = false
     },
-    async handleAddTopic(){
-      const res:any = await this.ADD_TOPIC(this.formContent)
+    async handleAddTopic() {
+      const res: any = await this.ADD_TOPIC(this.formContent)
       if (res.status == 201) {
         await this.getListTopics()
 
@@ -152,8 +153,8 @@ import { ElMessageBox, ElNotification } from "element-plus";
       }
       this.dialogVisible = false
     },
-    async handleEditTopic(){
-      const res:any = await this.UPDATE_TOPIC(this.formContent)
+    async handleEditTopic() {
+      const res: any = await this.UPDATE_TOPIC(this.formContent)
       if (res.status == 200) {
         await this.getListTopics()
 
@@ -171,37 +172,37 @@ import { ElMessageBox, ElNotification } from "element-plus";
       }
       this.dialogVisible = false
     },
-    async handleDeleteTopic(topic: TopicItem){
+    async handleDeleteTopic(topic: TopicItem) {
       ElMessageBox.confirm('Are you sure to delete this category?')
-      .then(async () => {
-        const response: any = await this.DELETE_TOPIC(topic.id)
-        if (response.status == 204){
-          await this.getListTopics()
+        .then(async () => {
+          const response: any = await this.DELETE_TOPIC(topic.id)
+          if (response.status == 204) {
+            await this.getListTopics()
 
-          ElNotification({
-            title: 'Delete category successfully',
-            message: `Category ${topic.title} has been deleted!`,
-            type: 'success',
-          })
-        } else {
-          ElNotification({
-            title: 'Delete category failed',
-            message: 'An error occurred!',
-            type: 'success',
-          })
-        }
-      })
-      .catch(() => {
+            ElNotification({
+              title: 'Delete category successfully',
+              message: `Category ${topic.title} has been deleted!`,
+              type: 'success',
+            })
+          } else {
+            ElNotification({
+              title: 'Delete category failed',
+              message: 'An error occurred!',
+              type: 'success',
+            })
+          }
+        })
+        .catch(() => {
 
-      })
+        })
     }
     ,
-    onClickEditIcon(topic: TopicItem){
+    onClickEditIcon(topic: TopicItem) {
       this.mode = 'edit'
       this.formContent = topic
       this.dialogVisible = true
     },
-    onClickAddButton(){
+    onClickAddButton() {
       this.formContent = {}
       this.mode = 'add'
       this.dialogVisible = true
@@ -215,7 +216,7 @@ import { ElMessageBox, ElNotification } from "element-plus";
       deep: true,
       handler: async function () {
         await this.getListTopics();
-        this.$router.replace({ query: this.query }).catch((err: any) => err);
+        this.$router.replace({query: this.query}).catch((err: any) => err);
       },
     }
   },
@@ -239,7 +240,7 @@ export default class TopicManagementPage extends Vue {}
     font-weight: 500;
   }
 
-  .btn-change{
+  .btn-change {
     font-size: 0.95rem;
     font-weight: 450;
     margin-bottom: 25px;
@@ -252,9 +253,9 @@ export default class TopicManagementPage extends Vue {}
     box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 
     .dont-break-out {
-      word-wrap: break-word !important;      /* IE 5.5-7 */
+      word-wrap: break-word !important; /* IE 5.5-7 */
       white-space: -moz-pre-wrap !important; /* Firefox 1.0-2.0 */
-      white-space: pre-wrap !important;      /* current browsers */
+      white-space: pre-wrap !important; /* current browsers */
       overflow-wrap: break-word !important;
       word-break: break-word !important;
     }
@@ -263,7 +264,7 @@ export default class TopicManagementPage extends Vue {}
 </style>
 
 <style scoped>
-/deep/.el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+/deep/ .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
   background-color: #024547;
 }
 </style>

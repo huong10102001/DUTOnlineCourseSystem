@@ -45,9 +45,9 @@
         <span
           v-if="$route.name == 'course-management'"
           :class="['tag', 'mt-2', {
-          'is-black': course.status == 'DRAFT',
-          'is-primary': course.status == 'PUBLISHED',
-          'is-danger': course.status == 'DEACTIVATED'
+          'is-black': course.status == COURSE_STATUS.DRAFT,
+          'is-primary': course.status == COURSE_STATUS.PUBLISHED,
+          'is-danger': course.status == COURSE_STATUS.DEACTIVATED
         }]">
           {{ course.status }}
         </span>
@@ -125,9 +125,7 @@ import {COURSE_STATUS} from "@/const/course_status";
     }
   },
   created() {
-    this.DRAFT = COURSE_STATUS.DRAFT
-    this.PUBLISHED = COURSE_STATUS.PUBLISHED
-    this.DEACTIVATED = COURSE_STATUS.DEACTIVATED
+    this.COURSE_STATUS = COURSE_STATUS
   }
 })
 

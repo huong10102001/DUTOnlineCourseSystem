@@ -26,12 +26,9 @@ class TopicService extends BaseService{
   }
 
   async create(data: any) {
-    try {
-      const res: any = await this.request().post(`${this.entity}/`,data)
-      return res
-    } catch (e) {
-        return null
-    }
+    const response: any = await this.request().post(
+        `${this.entity}/`, data);
+    return response ? response : [];
   }
 
   async update(payload: any) {

@@ -1,15 +1,20 @@
 <template>
   <el-descriptions
-    title="Detail lesson"
+    title="Lesson Info"
     :column="1"
     :size="large"
     border
   >
     <template #extra>
       <div>
-        <button class="button extra-button">Edit lesson</button>
+        <router-link :to="{name:'edit-lesson', params: {
+              course_slug: $route.params.course_slug,
+              chapter_slug: chapter.slug,
+              lesson_slug: lesson.slug}
+            }">
+          <button class="button is-dark">Edit</button>
+        </router-link>
       </div>
-      
     </template>
     
     <el-descriptions-item>
@@ -33,7 +38,7 @@
           Chapter
         </div>
       </template>
-      {{ chapter_title }}
+      {{ chapter.title }}
     </el-descriptions-item>
 
     <el-descriptions-item>
@@ -69,7 +74,13 @@
           Attachment
         </div>
       </template>
-      <el-link :href="lesson.attachment.file">{{ lesson.attachment.original_name }}</el-link>    
+      <el-link
+        :href="lesson.attachment.file"
+        target="_blank"
+        :icon="lesson.attachment.file_type == 'Video' ? 'Film' : 'Document'"
+      >
+        <p class="ml-1">{{ lesson.attachment.original_name }}</p>
+      </el-link>
     </el-descriptions-item>
 
     <el-descriptions-item>
@@ -95,7 +106,7 @@ import { lesson } from "@/store/modules/lesson";
 @Options({
   props: {
     lesson: {},
-    chapter_title: String,
+    chapter: {},
     course_title: String
   },
   data() {
@@ -123,5 +134,8 @@ export default class PreviewSection extends Vue {}
   background-color:#024547!important;
   color:white;
   border-radius: 14px !important;
+}
+/deep/.el-descriptions__content{
+  vertical-align: middle;
 }
 </style>

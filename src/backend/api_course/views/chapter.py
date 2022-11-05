@@ -32,7 +32,7 @@ class ChapterViewSet(BaseViewSet):
         try:
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
-                response = ChapterSerializer(instance).data
+                response = ListChapterSerializer(instance).data
                 response['message'] = 'Chapter updated!'
                 return Response(response, status=status.HTTP_200_OK)
         except Exception as e:

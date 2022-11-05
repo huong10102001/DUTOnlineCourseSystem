@@ -3,7 +3,7 @@
     <el-row style="width: 100%">
       <el-col :span="12" class="mt-2">
         <p class="title is-5" style="color: #024547">
-          Chapters - Total: {{ course_chapters?.length }}
+          Chapters ({{ course_chapters.length }})
         </p>
       </el-col>
       <el-col :span="12" class="mb-4 is-flex is-justify-content-right">
@@ -16,13 +16,14 @@
         </button>
       </el-col>
     </el-row>
-    <ListChapterSection
+
+    <ChapterCollapse
       :chapters="course_chapters"
       :course_id="course_id"
       :course_title="course_title"
       @deleteChapter="handleDeleteChapter($event)"
       @updateChapter="handleUpdateChapter($event)"
-    ></ListChapterSection>
+    ></ChapterCollapse>
   </el-row>
 </template>
 
@@ -32,16 +33,16 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import Chapter from "@/types/chapter/ChapterItem";
 import { ElMessage, ElMessageBox, ElNotification } from "element-plus";
-import ListChapterSection from "./ListChapterSection.vue";
+import ChapterCollapse from "@/components/ChapterCollapse.vue";
 
 @Options({
   props: {
-    chapters: [],
+    chapters: [] as any,
     course_id: String,
     course_title: String
   },
   components: {
-    ListChapterSection,
+    ChapterCollapse,
   },
   data() {
     return {

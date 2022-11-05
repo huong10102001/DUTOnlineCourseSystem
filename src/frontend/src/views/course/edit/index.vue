@@ -45,7 +45,7 @@ import ChapterSection from "@/views/course/edit/ChapterSection.vue";
 
     async fetchCourse() {
       let topic: any = await this.FETCH_TOPICS();
-      let course: any = await this.FETCH_COURSE_DETAIL(this.$route.params.slug);
+      let course: any = await this.FETCH_COURSE_DETAIL(this.$route.params.course_slug);
       if (topic && course) {
         this.options = topic.results as TopicItem[];
         this.course = course;

@@ -14,6 +14,8 @@ import CourseManagementPage from "@/views/course/management/index.vue";
 import EditCoursePage from "@/views/course/edit/index.vue";
 import TopicBasePage from "@/views/topic/index.vue";
 import TopicManagementPage from "@/views/topic/management/index.vue";
+import AddLessonPage from "@/views/lesson/add/index.vue";
+import EditLessonPage from "@/views/lesson/edit/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -38,12 +40,12 @@ const routes: Array<RouteRecordRaw> = [
             component: AddCoursePage
           },
           {
-            path: ':slug',
+            path: ':course_slug',
             name: 'course-detail',
             component: CourseDetail,
           },
           {
-            path: ':slug/edit',
+            path: ':course_slug/edit',
             name: 'edit-course',
             component: EditCoursePage
           },
@@ -52,17 +54,51 @@ const routes: Array<RouteRecordRaw> = [
             name: 'course-management',
             component: CourseManagementPage
           },
+          {
+            path: ':course_slug/chapters/:chapter_slug/lessons',
+            name: 'lessons',
+            component: LessonBasePage,
+            children: [
+              {
+                path: 'detail',
+                name: 'lesson-detail',
+                component: LessonDetail
+              },
+              {
+                path: 'add',
+                name: 'add-lesson',
+                component: AddLessonPage
+              },
+              {
+                path: ':lesson_slug/edit',
+                name: 'edit-lesson',
+                component: EditLessonPage
+              },
+            ]
+          },
         ]
       },
       {
-        path: 'lesson',
-        name: 'lesson',
-        component: LessonBasePage,
+        path: 'categories',
+        name: 'categories',
+        component: TopicBasePage,
         children: [
           {
-            path: 'detail',
-            name: 'lesson-detail',
-            component: LessonDetail
+            path: 'management',
+            name: 'category-management',
+            component: TopicManagementPage
+          },
+        ]
+      },
+      {
+        path: 'categories',
+        name: 'categories',
+        component: TopicBasePage,
+        children: [
+          {
+            path: 'management',
+            name: 'category-management',
+            component: TopicManagementPage
           },
         ]
       },

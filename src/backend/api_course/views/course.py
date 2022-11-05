@@ -15,7 +15,8 @@ class CourseViewSet(BaseViewSet):
         "retrieve": ListCourseSerializer,
     }
 
-    @action(methods=[HttpMethod.GET], detail=True, lookup_field="slug", url_path="content", serializer_class=ListCourseSerializer)
+    @action(methods=[HttpMethod.GET], detail=True, lookup_field="slug", url_path="content",
+            serializer_class=ListCourseSerializer)
     def slug(self, request, *args, **kwargs):
         course_obj = Course.objects.filter(slug=kwargs['pk']).first()
         res_data = self.serializer_class(course_obj).data

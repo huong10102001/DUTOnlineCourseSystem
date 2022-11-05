@@ -4,13 +4,8 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import CourseDetail from "@/views/course/detail/index.vue";
 
-@Options({
-  components: {
-    CourseDetail
-  }
-})
+@Options({})
 
 export default class CourseBasePage extends Vue {
 }

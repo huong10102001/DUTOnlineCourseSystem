@@ -43,7 +43,7 @@ import CoverImage from "@/components/CoverImage.vue";
     ...mapMutations(["SET_LOADING"]),
     async getCourseDetail() {
       this.SET_LOADING(true)
-      let data = await this.FETCH_COURSE_DETAIL(this.$route.params.slug)
+      let data = await this.FETCH_COURSE_DETAIL(this.$route.params.course_slug)
       if (data){
         this.course = data
       }

@@ -20,9 +20,9 @@
 
       <div class="is-flex is-justify-content-end">
         <span :class="['tag', 'mb-5', {
-          'is-black': course.status == DRAFT,
-          'is-primary': course.status == PUBLISHED,
-          'is-danger': course.status == DEACTIVATED
+          'is-black': course.status == COURSE_STATUS.DRAFT,
+          'is-primary': course.status == COURSE_STATUS.PUBLISHED,
+          'is-danger': course.status == COURSE_STATUS.DEACTIVATED
         }]">
           {{ course.status }}
         </span>
@@ -89,13 +89,13 @@
         <div>
           <button
             class="button is-success is-light is-rounded mr-2"
-            v-if="course.status == DRAFT"
+            v-if="course.status == COURSE_STATUS.DRAFT"
             @click.prevent="handlePublish">
             Publish
           </button>
           <button
             class="button is-link is-light is-rounded mr-2"
-            v-if="course.status == PUBLISHED"
+            v-if="course.status == COURSE_STATUS.PUBLISHED"
             @click.prevent="handleUnpublish">
             Unpublish
           </button>
@@ -315,9 +315,7 @@ import CoverImage from "@/components/CoverImage.vue";
       }
     });
 
-    this.DRAFT = COURSE_STATUS.DRAFT
-    this.PUBLISHED = COURSE_STATUS.PUBLISHED
-    this.DEACTIVATED = COURSE_STATUS.DEACTIVATED
+    this.COURSE_STATUS = COURSE_STATUS
   }
 })
 

@@ -30,8 +30,8 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { mapActions, mapMutations } from "vuex";
+import {Options, Vue} from "vue-class-component";
+import {mapActions, mapMutations} from "vuex";
 import CourseItem from "@/components/CourseItem.vue";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import Course from "@/types/course/CourseItem";
@@ -60,15 +60,6 @@ import Course from "@/types/course/CourseItem";
       this.SET_LOADING(false)
     }
   },
-  watch: {
-    query: {
-      deep: true,
-      handler: function () {
-        this.getListCourses();
-        this.$router.replace({ query: this.query }).catch((err: any) => err);
-      },
-    }
-  },
   async created() {
     await this.getListCourses();
   },
@@ -77,7 +68,8 @@ import Course from "@/types/course/CourseItem";
   }
 })
 
-export default class LibraryPage extends Vue {}
+export default class LibraryPage extends Vue {
+}
 </script>
 
 <style scoped lang="scss">
