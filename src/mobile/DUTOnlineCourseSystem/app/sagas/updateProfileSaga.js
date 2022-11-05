@@ -34,8 +34,7 @@ function* update_profile_api(action) {
         headers: {
           "Authorization": "Bearer " + token,
         }
-      }
-      ,
+      },
     );
     console.log("@@@data",response.data);
     yield put(updateProfileUserSuccess(response.data));

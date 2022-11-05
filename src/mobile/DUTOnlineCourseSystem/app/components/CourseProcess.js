@@ -1,24 +1,36 @@
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React, { useState } from "react";
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import { PROCESS_STATUS } from '../const/processStatus';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 const CourseProcess = ({ props }) =>{
   const [isComplete, setIsComplete] = useState(false);
-    const state = {
-      url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
-      name: "Name of Couse",
-      decription:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius.",
-      author: "DAT",
-      class: "B class",
-      time: "3 Hours",
-      numberOfLession:36,
-      isComplete:36,
+  const navigation = useNavigation();
+  const numberOfLesson = () =>{
+    let count = 0;
+    for (let i = 0; i<props.chapters.length;i++){
+      count = count + props.chapters[i].lessons.length
+    }
+    console.log("@@@@",count)
+    return count;
+  }
+  const state = {
+    url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+    name: "Name of Couse",
+    decription:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius.",
+    author: "DAT",
+    class: "B class",
+    time: "3 Hours",
+    numberOfLession:36,
+    isComplete:36,
     };
-
+    console.log(props)
     const checkIconComplete = () =>{
       if(!isComplete){
         return (
@@ -44,11 +56,11 @@ const CourseProcess = ({ props }) =>{
     }
     
     const checkProcessCourse = (isComplete, numberOfLession) => {
-      const state = "100%";
+      const state = "0%";
       console.log(state)
       {
-        switch (state) {
-          case "100%":
+        switch (props.process_status) {
+          case PROCESS_STATUS.COMPLETED:
             React.useEffect(() => {
               setIsComplete(true);
             }, []);
@@ -59,14 +71,30 @@ const CourseProcess = ({ props }) =>{
                 </Text>
               </View>
             );
-          case "0%":
+          case PROCESS_STATUS.OPEN:
             return (
               <View style={styles.coverProgressStart}>
               <Text style={{color:'white', fontWeight:'bold'}}>Start Now</Text>
             </View>
             )
+          case PROCESS_STATUS.IN_PROGRESS:
+            let lesson_completed = props.lessons_completed;
+            let number_of_lesson = numberOfLesson();
+            let percent = lesson_completed/number_of_lesson*100
+            let percent_string = percent.toString()+"%"
+            return (
+              <View style={styles.coverProgress}>
+                <View
+                  style={{
+                    backgroundColor: "#024547",
+                    height: "100%",
+                    borderRadius: 10,
+                    width: { percent_string },
+                  }}
+                ></View>
+              </View>
+            );
           default:
-            // styles.progressBar.width=state
             return (
               <View style={styles.coverProgress}>
                 <View
@@ -82,14 +110,19 @@ const CourseProcess = ({ props }) =>{
         }
       }
     };
-    props = state
+    // props = state
     return (
-      <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={(data) => {
+          navigation.navigate("DetailCourse", { course_id: props.id });
+        }}
+      >
         <View style={{ flex: 1, borderRadius: 5 }}>
           <Image
             style={styles.image}
             source={{
-              uri: props.url,
+              uri: props.background,
             }}
           ></Image>
         </View>
@@ -101,8 +134,10 @@ const CourseProcess = ({ props }) =>{
             justifyContent: "center",
           }}
         >
-          <Text style={styles.title}>{props.name}</Text>
-          <View style={tw`flex flex-row content-center opacity-50 pt-2`}>
+          <Text style={styles.title}>{props.title}</Text>
+          <View
+            style={tw`flex flex-row content-center opacity-50 pt-2 items-center`}
+          >
             <FontAwesome
               size={18}
               color="black"
@@ -110,13 +145,13 @@ const CourseProcess = ({ props }) =>{
               width={20}
               style={{ width: 20 }}
             />
-            <Text style={styles.text}>{props.author}</Text>
+            <Text style={styles.text}>{props.user.full_name}</Text>
           </View>
           {checkProcessCourse()}
         </View>
 
         <View style={styles.buttonPlay}>{checkIconComplete()}</View>
-      </View>
+      </TouchableOpacity>
     );
 }
 const styles = StyleSheet.create({

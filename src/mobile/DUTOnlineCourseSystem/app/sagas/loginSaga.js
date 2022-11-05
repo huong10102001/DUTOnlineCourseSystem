@@ -17,20 +17,6 @@ import {
 } from "../actions/registerAction";
 import { getUser } from "../actions/userAction";
 import BASE_URL from "../request/url";
-// function* login_request(state) {
-//   console.log("@@@@ loginrequest");
-//   const payload = state.payload;
-//   return yield axios
-//     .post("http://127.0.0.1:8000/auth/login", {
-//       email: payload.username,
-//       password: payload.password,
-//     })
-//     .then((response) => {
-//       console.log("@@@@@@");
-//       console.log(response);
-//     })
-//     .catch((error) => {});
-// }
 function* fetch_login(action) {
   try {
     console.log("@@@@logina")
@@ -42,7 +28,7 @@ function* fetch_login(action) {
     yield put(loginSuccess(data.data));
     yield put(getUser());
   } catch (error) {
-    // yield put(loginFailed(error.response.data));
+    yield put(loginFailed(error.response.data));
     console.error(error);
   }
   return;

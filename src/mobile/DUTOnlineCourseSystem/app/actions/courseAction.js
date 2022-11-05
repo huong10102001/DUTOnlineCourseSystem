@@ -1,24 +1,24 @@
-export const getAllCourses = (payload) => ({
-  type: "GET_ALL_COURSES",
+export const getCourse = (payload) => ({
+  type: "GET_COURSE",
   payload,
 });
 
 export function getCourseSuccess(payload) {
   return {
-    type: "GET_COURSES_SUCCESS",
+    type: "GET_COURSE_DETAIL_SUCCESS",
     payload,
   };
 }
 
 export function getCourseFailure(payload) {
   return {
-    type: "GET_COURSES_FAILURE",
+    type: "GET_COURSE_DETAIL_FAILURE",
     payload,
   };
 }
 
 export default {
-  getAllCourses,
+  getCourse,
   getCourseSuccess,
   getCourseFailure,
 };

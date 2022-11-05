@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image, ScrollView } from "react-native";
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Foundation from "react-native-vector-icons/Foundation";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
 import CourseProcess from "../components/CourseProcess";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getListCoursesProcess } from "../actions/coursesProcessListAction";
 const MyCourseScreen = ({ navigator }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const courses = useSelector((state) => state.courses.results);
+  useEffect(() => {
+    dispatch(getListCoursesProcess());
+  }, []);
+  const mycourse = useSelector((state) => state.coursesProcessList.results);
   return (
     <ScrollView>
       <View style={styles.topNavbar}>
@@ -20,7 +29,9 @@ const MyCourseScreen = ({ navigator }) => {
           }}
         >
           <View style={{ flex: 3 }}>
-            <View style={{ flex: 2, flexDirection: "row" }}>
+            <View
+              style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+            >
               <Text
                 style={{
                   fontStyle: "normal",
@@ -47,10 +58,10 @@ const MyCourseScreen = ({ navigator }) => {
                 fontSize: 20,
                 lineHeight: 24,
                 color: "white",
-                marginTop: 4,
+                marginTop: 0,
               }}
             >
-              Dương Anh Tuấn
+              {user.full_name}
             </Text>
           </View>
           <View style={{ flex: 1 }}>
@@ -68,7 +79,7 @@ const MyCourseScreen = ({ navigator }) => {
                 width: 56,
               }}
             >
-              <Foundation
+              <Entypo
                 size={26}
                 color="black"
                 name="magnifying-glass"
@@ -118,14 +129,18 @@ const MyCourseScreen = ({ navigator }) => {
             padding: 25,
           }}
         >
-          <Text style={styles.titleView}>New Course Today</Text>
-          <Text style={styles.seeAll}>See all</Text>
+          <Text style={styles.titleView}>My course</Text>
+          <Text style={styles.seeAll}>{mycourse.length} courses</Text>
         </View>
         <ScrollView>
           <View style={{ alignItems: "center" }}>
-            <CourseProcess></CourseProcess>
+            {/* <CourseProcess></CourseProcess> */}
             <View style={{ marginBottom: 25, marginTop: 25 }}>
-              <CourseProcess></CourseProcess>
+              {mycourse.map((e, index) => (
+                <View style={{ marginBottom: 50 }}>
+                  <CourseProcess props={e}></CourseProcess>
+                </View>
+              ))}
             </View>
           </View>
         </ScrollView>
@@ -163,13 +178,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   titleView: {
-    fontWeight: '700',
+    fontWeight: "700",
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: 0.02,
   },
   seeAll: {
     color: "#024547",
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

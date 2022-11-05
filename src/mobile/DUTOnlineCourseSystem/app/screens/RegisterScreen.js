@@ -2,8 +2,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView,Touch
 import tw from 'tailwind-react-native-classnames';
 import React, { useState } from 'react'
 import { Checkbox } from 'react-native-paper';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import {registerAction} from '../actions/registerAction';
 import {connect, useDispatch, useSelector} from 'react-redux';
 const RegisterScreen = ({ navigation }) => {

@@ -7,7 +7,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 const AnnouncementScreen = ({navigator}) =>{
     return (
       <View>
-        <Text>Announcement</Text>
+        <Text>Notification</Text>
       </View>
     );
 }

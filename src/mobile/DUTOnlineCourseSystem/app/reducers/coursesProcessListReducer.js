@@ -6,20 +6,22 @@ const coursesState = {
   error: null,
 };
 
-const coursesReducer = (state = coursesState, { type, payload }) => {
-  console.log(`coursesReducer type: ${type} with payload: ${payload}`);
+const coursesProcessListReducer = (state = coursesState, { type, payload }) => {
+  console.log(
+    `coursesProcessListReducer type: ${type} with payload: ${payload}`
+  );
   switch (type) {
-    case "GET_COURSES":
+    case "GET_LIST_COURSES_PROCESS":
       return {
         ...state,
       };
-    case "GET_COURSES_SUCCESS":
+    case "GET_LIST_COURSES_PROCESS_SUCCESS":
       const { count, next, previous, results } = payload;
       return {
         ...state,
         results: results,
       };
-    case "GET_COURSES_FAILURE":
+    case "GET_LIST_COURSES_PROCESS_FAILURE":
       return {
         ...state,
         error: payload.error,
@@ -30,4 +32,4 @@ const coursesReducer = (state = coursesState, { type, payload }) => {
       return state;
   }
 };
-export default coursesReducer;
+export default coursesProcessListReducer;

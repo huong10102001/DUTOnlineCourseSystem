@@ -1,13 +1,13 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Entypo from "react-native-vector-icons/Entypo";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/authAction";
 const SettingScreen = ({navigation}) => {
@@ -193,6 +193,9 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     width: "100%",
   },
+  spaceBetweenComponent: {
+    marginTop: 25,
+  },
   width_30: {
     width: "30%",
   },
@@ -201,9 +204,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-  },
-  spaceBetweenComponent: {
-    marginTop: 25,
   },
   line:{
     margin:8,

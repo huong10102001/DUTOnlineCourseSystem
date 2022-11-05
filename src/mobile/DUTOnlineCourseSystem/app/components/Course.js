@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from 'react-redux';
+import { getCourseProcess } from '../actions/courseProcessAction';
 const Course = (props) =>{
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const course_data = props.data;
   // console.log(props);
     return (
       <TouchableOpacity
         onPress={(data) => {
-          navigation.navigate("Announce", { course_data:course_data });
+          navigation.navigate("DetailCourse", { course_id: course_data.id });
         }}
       >
         <View style={styles.container}>
@@ -20,7 +23,9 @@ const Course = (props) =>{
             <Image
               style={styles.image}
               source={{
-                uri: course_data.background,
+                uri:
+                  course_data.background ||
+                  "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
               }}
             ></Image>
           </View>
@@ -35,7 +40,9 @@ const Course = (props) =>{
           >
             <Text style={styles.title}>{course_data.title}</Text>
             <Text style={styles.decription}>{course_data.decription}</Text>
-            <View style={tw`flex flex-row content-center opacity-50 pt-2`}>
+            <View
+              style={tw`flex flex-row content-center opacity-50 pt-2 items-center`}
+            >
               <FontAwesome
                 size={18}
                 color="black"
@@ -47,7 +54,7 @@ const Course = (props) =>{
             </View>
             <View style={tw`flex flex-row opacity-50 pt-2`}>
               <View style={{ width: "50%" }}>
-                <View style={tw`flex flex-row content-center`}>
+                <View style={tw`flex flex-row content-center items-center`}>
                   <Ionicons
                     size={18}
                     color="black"
@@ -59,7 +66,7 @@ const Course = (props) =>{
                 </View>
               </View>
               <View style={{ width: "50%" }}>
-                <View style={tw`flex flex-row content-center`}>
+                <View style={tw`flex flex-row content-center items-center`}>
                   <Ionicons
                     size={18}
                     color="black"

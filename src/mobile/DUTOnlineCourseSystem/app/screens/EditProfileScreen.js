@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import DatePickerAndroid from "@react-native-community/datetimepicker";
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import Entypo from "react-native-vector-icons/Entypo";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { connect, useDispatch, useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 import { updateProfileUser, resetErrorUser } from "../actions/userAction";
@@ -33,6 +33,9 @@ const EditProfileScreen = ({ navigation }) => {
   const user_error = user.error;
   const isLoading = user.isLoading;
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [pic, setPic] = useState(
+    "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png"
+  );
   useEffect(() => {
     dispatch(resetErrorUser());
     console.log(birthday)
@@ -60,33 +63,50 @@ const EditProfileScreen = ({ navigation }) => {
     console.log("@@@DayChange",selectedDate);
     setBirthday(selectedDate);
   }
+  const uploadImage = () =>{
+    let options = {
+      mediaType:'photo',
+      quality:1,
+      includeBase64: true,
+    };
+    launchImageLibrary(options,response =>{
+      if(response.didCancel){
+        console.warn("DIDCANCEL");
+      } else {
+        setPic("data:image/png;base64, "+response.assets[0].base64)
+        console.warn(pic);
+      }
+    })
+  }
   return (
     <ScrollView style={{ padding: 25 }}>
-      <View style={styles.contentComponent}>
-        <View style={{ flexDirection: "row", minHeight: 60 }}>
-          <View style={{ width: "30%", alignItems: "center", minHeight: 60 }}>
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+      <TouchableOpacity onPress={uploadImage}>
+        <View style={styles.contentComponent}>
+          <View style={{ flexDirection: "row", minHeight: 60 }}>
+            <View style={{ width: "30%", alignItems: "center", minHeight: 60 }}>
+              <Image
+                style={styles.avatar}
+                source={{
+                  uri: pic,
+                }}
+              ></Image>
+            </View>
+            <View
+              style={{
+                width: "70%",
+                paddingLeft: 10,
+                minHeight: 60,
+                justifyContent: "center",
               }}
-            ></Image>
-          </View>
-          <View
-            style={{
-              width: "70%",
-              paddingLeft: 10,
-              minHeight: 60,
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: "700" }}>
-              {user.full_name}
-            </Text>
-            <Text style={{}}>{user.role}</Text>
+            >
+              <Text style={{ fontSize: 18, fontWeight: "700" }}>
+                {user.full_name}
+              </Text>
+              <Text style={{}}>{user.role}</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
         <View style={tw`mt-4`}>
           <View style={styles.labelContainer}>

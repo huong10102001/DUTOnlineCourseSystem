@@ -1,14 +1,26 @@
-import React from "react";
-import { Text, View, StyleSheet, Image, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { Text, View, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-const DetailCourse = ({ route,navigation }) => {
-  const {course_data} = route.params;
-  console.log(course_data.background);
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Chapter from "../components/Chapter";
+import { WebView } from "react-native-webview";
+import { enRoll } from "../actions/processAction";
+import { connect, useDispatch, useSelector } from "react-redux";
+import RenderHtml from "react-native-render-html";
+import { getCourse } from "../actions/courseAction";
+import { getCourseProcess } from "../actions/courseProcessAction";
+const DetailCourse = ({ route, navigation }) => {
+  const { course_id } = route.params;
+  console.log(course_id);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getCourse({ course_id: course_id }));
+  }, []);
+  const course_data = useSelector((state) => state.course);
   const props = {
-    author:"Dương Anh Tuấn",
+    author: "Dương Anh Tuấn",
     url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
     title: "Python for Everybody Specialization",
     sumary:
@@ -19,12 +31,12 @@ const DetailCourse = ({ route,navigation }) => {
       "Learn to Program and Analyze Data with Python. Develop programs to gather, clean, analyze, and visualize data.",
   };
   return (
-    <ScrollView style={{ padding: 25,paddingBottom:50 }}>
-      <View style={{ alignItems: "center",marginTop:25,marginBottom:50 }}>
+    <ScrollView style={{ padding: 25, paddingBottom: 50 }}>
+      <View style={{ alignItems: "center", marginTop: 25, marginBottom: 50 }}>
         <Image
           style={styles.image}
           source={{
-            uri: course_data.background,
+            uri: course_data.background || props.url,
           }}
         ></Image>
         <View style={{ alignItems: "flex-start" }}>
@@ -97,27 +109,26 @@ const DetailCourse = ({ route,navigation }) => {
             </View>
           </View>
         </View>
-        <View style={[styles.spaceBetweenComponent, styles.btnEnroll]}>
-          <Text style={{ color: "white", fontWeight: "700" }}>Enroll now</Text>
-        </View>
+        <TouchableOpacity
+          style={[styles.spaceBetweenComponent,{justifyContent:"center",alignItems:"center"}]}
+          onPress={() => {
+            dispatch(getCourseProcess({ course_id: course_data.id }));
+            navigation.navigate("Lesson");
+          }}
+        >
+          <View style={[styles.btnEnroll, { width: "100%",alignSelf:"center", alignItems:"center"}]}>
+            <Text style={{ color: "white", fontWeight: "700"}}>
+              Enroll now
+            </Text>
+          </View>
+        </TouchableOpacity>
         <View
           style={
             ({ alignItems: "center", width: "100%" },
             [styles.contentComponent, styles.spaceBetweenComponent])
           }
         >
-          <Text
-            style={{ color: "#024547", fontWeight: "700", marginBottom: 16 }}
-          >
-            What will you learn
-          </Text>
-          <Text style={{ marginBottom: 16, textAlign: "justify" }}>
-            {course_data.summary}
-          </Text>
-          <Text style={{ marginBottom: 16, textAlign: "justify" }}>
-            {course_data.summary}
-          </Text>
-          <Text style={{ textAlign: "justify" }}>{course_data.summary}</Text>
+          <RenderHtml source={{ html: `${course_data.description}` }} />
         </View>
         <View
           style={
@@ -149,12 +160,14 @@ const DetailCourse = ({ route,navigation }) => {
             <Text style={styles.textJustifyPadding}>
               {props.whatWillYouLearn}
             </Text>
-            <Text style={{textAlign:"justify"}}>{props.whatWillYouLearn}</Text>
+            <Text style={{ textAlign: "justify" }}>
+              {props.whatWillYouLearn}
+            </Text>
           </View>
         </View>
         <View
           style={
-            ({ alignItems: "center", width: "100%",marginBottom:100 },
+            ({ alignItems: "center", width: "100%", marginBottom: 100 },
             [styles.contentComponent, styles.spaceBetweenComponent])
           }
         >
@@ -163,13 +176,27 @@ const DetailCourse = ({ route,navigation }) => {
           >
             Earn a Certificate upon completion
           </Text>
-          <Text style={styles.textJustifyPadding}>{props.whatWillYouLearn}</Text>
+          <Text style={styles.textJustifyPadding}>
+            {props.whatWillYouLearn}
+          </Text>
           <Image
             style={styles.image}
             source={{
               uri: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
             }}
           ></Image>
+        </View>
+        <View style={{ alignItems: "flex-start" }}>
+          <Text style={[styles.title, styles.spaceBetweenComponent]}>
+            {course_data.chapters.length} Chapters in this Specialization
+          </Text>
+        </View>
+        <View style={{ marginTop: 25 }}>
+          {course_data.chapters.map((e, index) => (
+            <View style={{ paddingBottom: 20 }}>
+              <Chapter key={index} props={[e, index]} />
+            </View>
+          ))}
         </View>
       </View>
     </ScrollView>

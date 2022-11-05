@@ -10,11 +10,11 @@ import {
   select,
 } from "redux-saga/effects";
 import axios from "axios";
-import BASE_URL from "../request/url";
-import { getAllCourses,getCourseFailure,getCourseSuccess } from "../actions/courseAction";
-import authAction from "../actions/authAction";
+import BASE_URL from "../../request/url";
+import authAction from "../../actions/authAction";
+import { getCourses, getCoursesFailure, getCoursesSuccess } from "../../actions/coursesAction";
 const getToken = (state) => state.auth.access_token;
-function* fetch_courses(action){
+function* fetch_courses_api(action){
     console.log(`fetch_course type: ${action.type} with payload: ${action.payload}`);
     const token = yield select(getToken);
     try {
@@ -25,11 +25,11 @@ function* fetch_courses(action){
       }
     });
     console.log(data)
-    yield put(getCourseSuccess(data.data));
+    yield put(getCoursesSuccess(data.data));
   } catch (error) {
-    yield put(getCourseFailure(error.response.data));
+    yield put(getCoursesFailure(error.response.data));
     console.log(error);
   }
   return;
 }
-export default fetch_courses;
+export default fetch_courses_api;
