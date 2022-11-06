@@ -6,7 +6,7 @@ services:
 #    build: .
     ports:
       - 8000:8000
-    image: bangpham2325/bangtestnginx2:latest
+    image:  bangpham2325/backend_image:latest
     container_name: django_container3
     restart: always
     env_file:
@@ -20,7 +20,7 @@ services:
 #      context: ./src/frontend
 #      dockerfile: Dockerfile
     container_name: frontend2
-    image: bangpham2325/frontend_image2
+    image:  bangpham2325/frontend-image:latest
     depends_on:
       - app
 #    volumes:

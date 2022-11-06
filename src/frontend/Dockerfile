@@ -6,7 +6,7 @@ RUN npm i --silent
 #RUN npm install react-scripts@3.4.1 -g --silent
 COPY . ./
 # ENV REACT_APP_HOST_IP_ADDRESS $API_URL
-RUN npm run build
+RUN npm run build-production
 
 # Build step 2(Deploying build on NGINX)
 FROM nginx:1.18
