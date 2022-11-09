@@ -21,6 +21,7 @@ import TopBar from "@/components/TopBar.vue";
 import {ROUTES} from '@/const/routes'
 import {ROLES} from "@/const/roles";
 import {MutationTypes} from "@/types/store/MutationTypes";
+import MenuItem from "@/types/sidebar/MenuItem";
 
 @Options({
   components: {
@@ -33,7 +34,7 @@ import {MutationTypes} from "@/types/store/MutationTypes";
         {name: 'library', icon: 'fa-solid fa-book-atlas', route: ROUTES.LIBRARY},
         {name: 'course management', icon: 'fa-solid fa-briefcase', route: ROUTES.COURSE_MANAGEMENT},
         {name: 'my course', icon: 'fa-solid fa-bookmark', route: ROUTES.MY_COURSE},
-      ],
+      ] as MenuItem[],
       is_collapse: true
     }
   },

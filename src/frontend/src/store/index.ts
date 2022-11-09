@@ -5,6 +5,9 @@ import { topic } from "@/store/modules/topic";
 import { chapter } from "@/store/modules/chapter";
 import { lesson } from "@/store/modules/lesson";
 import { user } from  "@/store/modules/user";
+import { courseProcess } from "@/store/modules/courseProcess";
+import { lessonProcess } from "@/store/modules/lessonProcess";
+import { discussion } from './modules/discussion';
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -27,6 +30,9 @@ export default createStore({
     user,
     topic,
     chapter,
-    lesson
+    lesson,
+    courseProcess,
+    lessonProcess,
+    discussion
   }
 })

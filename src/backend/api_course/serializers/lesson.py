@@ -1,7 +1,7 @@
 from api_course.models import Chapter, Lesson, Attachment
 from rest_framework import serializers
 from rest_framework.fields import UUIDField
-from api_course.serializers import AttachmentSerializer
+from api_course.serializers import AttachmentSerializer, DiscussionLessonSerializer
 from api_course.services import LessonService
 import json
 
@@ -24,11 +24,12 @@ class LessonSerializer(serializers.ModelSerializer):
     attachment_id = serializers.PrimaryKeyRelatedField(required=False, write_only=True,
                                                        queryset=Attachment.objects.all(), source='attachment')
     attachment = AttachmentSerializer(read_only=True)
+    discussions = DiscussionLessonSerializer(many=True, required=True)
 
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'content', 'previous_lesson', 'previous_lesson_id', 'chapter_id',
-                  'chapter', 'attachment_id', 'attachment', 'slug']
+                  'chapter', 'attachment_id', 'attachment', 'slug', 'discussions']
         extra_kwargs = {
             'previous_lesson': {'required': False},
             'title': {'required': False},
@@ -36,6 +37,17 @@ class LessonSerializer(serializers.ModelSerializer):
             'chapter': {'required': False},
         }
         depth = 1
+
+    def to_representation(self, instance):
+        context = self.context
+        instance = super().to_representation(instance)
+        if context.get('view') and context.get('view').action in ['retrieve', 'list']:
+            data = instance['discussions']
+            instance['total_discussion'] = len(data)
+            if len(data) != 0:
+                result = list(filter(lambda kq: kq['parent_discussion'] is None, data))
+                instance['discussions'] = result
+        return instance
 
 
 class CreateLessonSerializer(serializers.ModelSerializer):
@@ -96,9 +108,20 @@ class ListLessonSerializer(serializers.ModelSerializer):
     attachment_id = serializers.PrimaryKeyRelatedField(required=False, queryset=Attachment.objects.all(),
                                                        source='attachment')
     attachment = AttachmentSerializer(read_only=False)
+    discussions = DiscussionLessonSerializer(many=True, required=True)
 
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'content', 'chapter_id', 'attachment_id', 'attachment',
-                  'previous_lesson_id', 'previous_lesson', 'slug']
+                  'previous_lesson_id', 'previous_lesson', 'slug', 'discussions']
         depth = 1
+
+    def to_representation(self, instance):
+        context = self.context
+        instance = super().to_representation(instance)
+        data = instance['discussions']
+        instance['total_discussion'] = len(data)
+        if len(data) != 0:
+            result = list(filter(lambda kq: kq['parent_discussion'] is None, data))
+            instance['discussions'] = result
+        return instance

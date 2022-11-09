@@ -77,7 +77,7 @@ export default class CoverImage extends Vue {
   display: block;
 }
 
-/deep/.el-upload {
+:deep(.el-upload) {
   border-radius: 20px;
   display: block;
   aspect-ratio: 21/9;
@@ -85,7 +85,7 @@ export default class CoverImage extends Vue {
   transition: all 0.2s linear;
 }
 
-/deep/.el-upload:hover {
+:deep(.el-upload:hover) {
   opacity: 0.9;
 }
 </style>

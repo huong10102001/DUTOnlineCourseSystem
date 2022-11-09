@@ -18,15 +18,17 @@
                   </el-dropdown-item>
                 </router-link>
 
-                <router-link :to="'/courses/' + course.slug + '/edit'">
-                  <el-dropdown-item v-if="$route.name == 'course-management'" icon="Edit">
-                    Edit
-                  </el-dropdown-item>
-                </router-link>
+                <restricted-view :routes="ROUTES.COURSE_MANAGEMENT.name">
+                  <router-link :to="'/courses/' + course.slug + '/edit'">
+                    <el-dropdown-item icon="Edit">
+                      Edit
+                    </el-dropdown-item>
+                  </router-link>
 
-                <el-dropdown-item v-if="$route.name == 'course-management'" icon="Delete" @click="dialogVisible = true">
-                  Delete
-                </el-dropdown-item>
+                  <el-dropdown-item icon="Delete" @click="dialogVisible = true">
+                    Delete
+                  </el-dropdown-item>
+                </restricted-view>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -42,15 +44,16 @@
           <font-awesome-icon icon="fa-solid fa-chalkboard-user" class="mr-1"/>
           {{ course.user.full_name }}
         </p>
-        <span
-          v-if="$route.name == 'course-management'"
-          :class="['tag', 'mt-2', {
-          'is-black': course.status == COURSE_STATUS.DRAFT,
-          'is-primary': course.status == COURSE_STATUS.PUBLISHED,
-          'is-danger': course.status == COURSE_STATUS.DEACTIVATED
-        }]">
-          {{ course.status }}
-        </span>
+        <restricted-view :routes="[ROUTES.COURSE_MANAGEMENT.name]">
+          <span
+            :class="['tag', 'mt-2', {
+            'is-black': course.status == COURSE_STATUS.DRAFT,
+            'is-primary': course.status == COURSE_STATUS.PUBLISHED,
+            'is-danger': course.status == COURSE_STATUS.DEACTIVATED
+          }]">
+            {{ course.status }}
+          </span>
+        </restricted-view>
       </div>
 
       <div class="course-item__image">
@@ -58,6 +61,17 @@
              src="https://www.fossmint.com/wp-content/uploads/2019/02/Udemy-Python-Learning-Courses-for-Beginners.png">
         <img v-else :src="course.background">
       </div>
+
+      <restricted-view :routes="[ROUTES.MY_COURSE.name]">
+        <div class="progress-bar">
+          <el-progress
+            :stroke-width="26"
+            :percentage="100"
+            color="#75E064"
+            :show-text="false"
+          />
+        </div>
+      </restricted-view>
 
     </div>
   </router-link>
@@ -69,49 +83,56 @@
       </div>
     </div>
   </router-link>
-  
-  <el-dialog
-    v-model="dialogVisible"
-    v-if="$route.name == 'course-management'"
-    title="Delete Course"
-    width="50%"
-    style="border-radius: 20px"
-    center>
-    <span style="word-break: break-word">
-      Are you sure to delete this course? This should be undone!
-    </span>
-    <template #footer>
-      <span class="dialog-footer">
-        <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
-        <button class="button is-dark is-rounded" @click="handleDelete">
-          Confirm
-        </button>
+
+  <restricted-view :routes="[ROUTES.COURSE_MANAGEMENT.name]">
+    <el-dialog
+      v-model="dialogVisible"
+      title="Delete Course"
+      width="50%"
+      style="border-radius: 20px"
+      center>
+      <span style="word-break: break-word">
+        Are you sure to delete this course? This should be undone!
       </span>
-    </template>
-  </el-dialog>
+      <template #footer>
+        <span class="dialog-footer">
+          <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
+          <button class="button is-dark is-rounded" @click="handleDelete">
+            Confirm
+          </button>
+        </span>
+      </template>
+    </el-dialog>
+  </restricted-view>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import Course from "@/types/course/CourseItem";
-import { mapActions} from "vuex";
+import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import {ElMessage} from "element-plus";
 import {COURSE_STATUS} from "@/const/course_status";
+import RestrictedView from "@/components/RestrictedView.vue";
+import {ROUTES} from "@/const/routes";
 
 @Options({
+  components: {RestrictedView},
   props: {
     course: {} as Course,
   },
   data() {
     return {
-      dialogVisible: false
+      dialogVisible: false,
+      ROUTES: ROUTES,
+      COURSE_STATUS: COURSE_STATUS
     }
   },
+  emits: ['deleteCourse'],
   methods: {
-    ...mapActions("course",[ActionTypes.DELETE_COURSE]),
-    async handleDelete(){
-      let response:any = await this.DELETE_COURSE(this.course.id)
+    ...mapActions("course", [ActionTypes.DELETE_COURSE]),
+    async handleDelete() {
+      let response: any = await this.DELETE_COURSE(this.course.id)
       if (response.status == 204) {
         ElMessage({
           message: `Deleted ${this.course.title} successfully.`,
@@ -121,11 +142,8 @@ import {COURSE_STATUS} from "@/const/course_status";
       } else {
         ElMessage.error('Delete course failed.')
       }
-      this.dialogVisible= false
+      this.dialogVisible = false
     }
-  },
-  created() {
-    this.COURSE_STATUS = COURSE_STATUS
   }
 })
 
@@ -223,8 +241,23 @@ a {
 </style>
 
 <style scoped>
-/deep/.el-dropdown-menu__item:not(.is-disabled):focus {
+:deep(.el-dropdown-menu__item:not(.is-disabled):focus) {
   color: #fff;
   background-color: rgba(2, 69, 71, 0.85);
+}
+
+.progress-bar .el-progress--line {
+  margin: 10px 0;
+  width: 100%;
+}
+
+:deep(.progress-bar .el-progress-bar__inner) {
+  margin: 4px;
+  height: calc(100% - 8px);
+  max-width: calc(100% - 8px);
+}
+
+:deep(.progress-bar .el-progress-bar__outer) {
+  background-color: #024547;
 }
 </style>

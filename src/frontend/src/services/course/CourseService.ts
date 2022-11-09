@@ -1,7 +1,7 @@
-import { BaseService } from "@/services/BaseService";
+import {BaseService} from "@/services/BaseService";
 import CourseItem from "@/types/course/CourseItem";
 
-class CourseService extends BaseService{
+class CourseService extends BaseService {
   get entity() {
     return "courses"
   }
@@ -19,29 +19,37 @@ class CourseService extends BaseService{
   }
 
   async getDetail(slug: string) {
-    try{
+    try {
       const res = await this.request().get(`${this.entity}/${slug}/content/`);
       return res.data;
-    } catch(error){
+    } catch (error) {
       return null;
     }
   }
 
   async create(data: any) {
-    const response: any = await this.request().post(`${this.entity}/`, data);
-    return response ? response : [];
+    try {
+      const response: any = await this.request().post(`${this.entity}/`, data);
+      return response
+    } catch (error) {
+      return null
+    }
   }
 
   async update(data: any, id: string) {
-    const response: any = await this.request().put(`${this.entity}/${id}/`, data);
-    return response ? response : [];
+    try {
+      const response: any = await this.request().put(`${this.entity}/${id}/`, data);
+      return response
+    } catch (error) {
+      return null;
+    }
   }
 
   async delete(id: string) {
-    try{
+    try {
       const res = await this.request().delete(`${this.entity}/${id}/`);
       return res;
-    } catch(error){
+    } catch (error) {
       return null;
     }
   }

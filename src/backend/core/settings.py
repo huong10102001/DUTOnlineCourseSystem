@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'api_user',
     'api_topic',
     'api_course',
+    'api_process',
     # swagger
     'drf_yasg',
 
@@ -136,6 +137,13 @@ DATABASES = {
         }
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation

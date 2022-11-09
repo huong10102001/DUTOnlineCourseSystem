@@ -2,32 +2,50 @@
   <aside :class="['sidebar', {'sidebar--collapse': is_collapse}]" ref="sidebar">
     <router-link to="/">
       <div :class="['logo', 'is-flex', 'is-justify-content-center', {'logo--collapse': is_collapse}]">
-          <div :class="['logo__icon', {'logo__icon--collapse': is_collapse}]">e</div>
-          <div :class="['logo__text', {'logo__text--collapse': is_collapse}]">learning</div>
+        <div :class="['logo__icon', {'logo__icon--collapse': is_collapse}]">e</div>
+        <div :class="['logo__text', {'logo__text--collapse': is_collapse}]">learning</div>
       </div>
     </router-link>
-    <div :class="{'collapse-toggle': true, 'collapse-toggle__off': is_collapse}" @click="is_collapse = !is_collapse; $emit('collapse', is_collapse)">
-      <font-awesome-icon :class="{'fa-rotate-90': !is_collapse}" icon="fa-solid fa-bars" />
+    <div :class="{'collapse-toggle': true, 'collapse-toggle__off': is_collapse}"
+         @click="is_collapse = !is_collapse; $emit('collapse', is_collapse)">
+      <font-awesome-icon :class="{'fa-rotate-90': !is_collapse}" icon="fa-solid fa-bars"/>
     </div>
     <ul class="menu-list">
-      <li v-for="item in items" class="menu-item mdi-ro">
-        <router-link :to="item.route" :class="{is_collapse: is_collapse}"><font-awesome-icon :icon="item.icon" /><span :class="['menu-item__name', {'menu-item__name--collapse': is_collapse}]">{{ item.name }}</span></router-link>
-      </li>
+      <restricted-view v-for="item in items" :roles="item.route.roles" :key="item.route.path">
+        <li class="menu-item ">
+          <router-link :to="item.route.path" :class="{is_collapse: is_collapse}">
+            <span class="menu-item__icon">
+              <font-awesome-icon :icon="item.icon"/>
+            </span>
+            <span :class="['menu-item__name', {'menu-item__name--collapse': is_collapse}]">
+              {{ item.name }}
+            </span>
+          </router-link>
+        </li>
+      </restricted-view>
     </ul>
   </aside>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import {Options, Vue} from 'vue-class-component';
 import MenuItem from "@/types/sidebar/MenuItem";
+import RestrictedView from "@/components/RestrictedView.vue";
+import { ROLES } from "@/const/roles";
+import { ROUTES } from "@/const/routes";
 
 @Options({
+  components: {
+    RestrictedView
+  },
   props: {
-    items: [] as MenuItem[],
+    items: null,
   },
   data() {
     return {
-      is_collapse: true
+      is_collapse: true,
+      ROLES: ROLES,
+      ROUTES: ROUTES
     }
   }
 })
@@ -38,7 +56,7 @@ export default class Sidebar extends Vue {
 </script>
 
 <style scoped lang="scss">
-.sidebar{
+.sidebar {
   display: inline-block;
   width: 300px;
   height: 100%;
@@ -47,14 +65,14 @@ export default class Sidebar extends Vue {
   top: 0;
   left: 0;
   background-color: #ffffff;
-  box-shadow: inset -5px 0 9px -7px rgba(0,0,0,0.7);
+  box-shadow: inset -5px 0 9px -7px rgba(0, 0, 0, 0.7);
   transition: all 0.3s;
 
-  &--collapse{
+  &--collapse {
     width: 70px;
   }
 
-  .menu-item{
+  .menu-item {
     white-space: nowrap;
     overflow: hidden;
 
@@ -62,12 +80,22 @@ export default class Sidebar extends Vue {
       background-color: #024547;
       color: #fff;
       margin: 5px 0;
-      padding-left: 40px;
+      padding-left: calc(20px + 0.75em);
+    }
+
+    .router-link-exact-active.is_collapse {
+      padding-left: 0.75em;
     }
 
     .router-link-exact-active:hover {
       background-color: #222;
       color: #fff;
+    }
+
+    &__icon {
+      width: 22px;
+      display: inline-block;
+      text-align: center;
     }
 
     &__name {
@@ -77,7 +105,7 @@ export default class Sidebar extends Vue {
       opacity: 1;
       transition: visibility 0s, opacity 0.5s linear;
 
-      &--collapse{
+      &--collapse {
         visibility: hidden;
         opacity: 0;
       }
@@ -87,7 +115,7 @@ export default class Sidebar extends Vue {
       transition: all 0.2s;
       color: #6D7C90;
       font-size: 1.2rem;
-      padding: 15px 0 15px 20px;
+      padding: 15px;
       margin: 10px 20px;
       border-radius: inherit;
     }
@@ -98,7 +126,7 @@ export default class Sidebar extends Vue {
     }
 
     .is_collapse {
-      padding: 15px 0 15px 17px;
+      //padding-left: 0;
       margin: 10px;
       border-radius: 4px;
     }
@@ -167,10 +195,11 @@ export default class Sidebar extends Vue {
     left: 285px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
-    &__off{
+    &__off {
       left: 55px;
     }
   }
+
   .collapse-toggle:hover {
     cursor: pointer;
     opacity: 1;

@@ -1,0 +1,34 @@
+import { BaseService } from "@/services/BaseService";
+
+class LessonProcessService extends BaseService{
+  get entity() {
+    return "process_lesson"
+  }
+
+  async create(id: string, payload: any) {
+    try{
+      const response: any = await this.request().post(`process_course/${id}/${this.entity}/`, payload);
+      return response;
+    }
+    catch(error){
+      return null;
+    }
+  }
+
+  async update(course_process_id: string, id: string, status: string) {
+    const response: any = await this.request().put(`process_course/${course_process_id}/${this.entity}/${id}/`, status);
+    return response ? response : [];
+  }
+
+  async getDetail(course_process_id: string, id: string) {
+    try{
+      const res = await this.request().get(`process_course/${course_process_id}/${this.entity}/${id}/`);
+      return res.data;
+    } catch(error){
+      return null;
+    }
+  }
+
+}
+
+export default new LessonProcessService();

@@ -143,7 +143,7 @@ import CoverImage from "@/components/CoverImage.vue";
     TextEditor
   },
   props: {
-    options: [] as TopicItem[],
+    options: null,
     course: {}
   },
   data() {
@@ -202,7 +202,7 @@ import CoverImage from "@/components/CoverImage.vue";
           if (response.status == 200) {
             this.$router.push({
               name: "course-detail",
-              params: {slug: response.data.slug},
+              params: {course_slug: response.data.slug},
             });
 
             ElNotification({

@@ -6,7 +6,7 @@
         <p class="mt-3">
           {{ course.summary }}
         </p>
-        <button class="button is-dark mt-3 is-rounded">Enroll now</button>
+        <button class="button is-dark mt-3 is-rounded" @click="enrollCourse">Enroll now</button>
       </div>
 
       <div class="column">
@@ -33,10 +33,37 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import { mapActions, mapGetters, mapState } from "vuex";
+import { ActionTypes } from "@/types/store/ActionTypes";
 
 @Options({
   props: {
     course: {} as any
+  },
+  data() {
+    return {
+    }
+  },
+  methods: {
+    ...mapActions('courseProcess', [ActionTypes.CREATE_COURSE_PROCESS]),
+    async enrollCourse() {
+      const course_process = {
+        course_id: this.course.id,
+        user_id: this.tokenInfo.user_id,
+      }
+      await this.CREATE_COURSE_PROCESS(course_process)
+      this.$router.push({
+        name: 'lesson-detail',
+        params: {
+          course_slug: this.course.slug,
+          chapter_slug: this.course.chapters[0].slug,
+          lesson_slug: this.course.chapters[0].lessons[0].slug,
+        }
+      })
+    }
+  },
+  computed: {
+    ...mapGetters("authentication", ["tokenInfo"]),
   }
 })
 

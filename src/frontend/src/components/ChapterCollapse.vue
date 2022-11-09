@@ -14,55 +14,76 @@
             <span>Chapter {{ index + 1 }}: {{ chapter.title }}</span>
           </div>
 
-          <el-icon
-            v-if="userInfo.role != ROLES.User"
-            class="mx-3"
-            style="font-size: 18px; color: #024547"
-            @click.stop="$router.push({name:'add-lesson', params: {
+          <restricted-view :routes="[ROUTES.EDIT_COURSE]" :roles="[ROLES.ADMIN, ROLES.LECTURER]">
+            <el-icon
+              class="mx-3"
+              style="font-size: 18px; color: #024547"
+              @click.stop="$router.push({name:'add-lesson', params: {
               course_slug: $route.params.course_slug,
               chapter_slug: chapter.slug}
             })"
-          >
-            <Plus/>
-          </el-icon>
+            >
+              <Plus/>
+            </el-icon>
 
-          <el-icon
-            v-if="userInfo.role != ROLES.User"
-            class="mx-1 top"
-            style="font-size: 18px; color: #024547"
-            @click.stop="editChapter(chapter.id, chapter.title)"
-          >
-            <Edit
-            />
-          </el-icon>
+            <el-icon
+              class="mx-1 top"
+              style="font-size: 18px; color: #024547"
+              @click.stop="editChapter(chapter.id, chapter.title)"
+            >
+              <Edit/>
+            </el-icon>
 
-          <el-icon
-            v-if="userInfo.role != ROLES.User"
-            class="mx-3"
-            style="font-size: 18px; color: #024547"
-            @click.stop="deleteChapter(chapter.id, chapter.title)"
-          >
-            <Delete/>
-          </el-icon>
+            <el-icon
+              class="mx-3"
+              style="font-size: 18px; color: #024547"
+              @click.stop="deleteChapter(chapter.id, chapter.title)"
+            >
+              <Delete/>
+            </el-icon>
+          </restricted-view>
+          <restricted-view :routes="[ROUTES.LESSON_DETAIL]">
+            <el-icon
+              class="mx-3"
+              style="font-size: 18px; color: #024547"
+              @click.stop="deleteChapter(chapter.id, chapter.title)"
+            >
+              <Lock/>
+            </el-icon>
+          </restricted-view>
         </template>
 
-        <div class="mt-4 ml-4" v-for="lesson in chapter.lessons" :key="lesson">
-          <el-button
-            size="large"
-            text
-            @click="open = true; detail_lesson = lesson; current_chapter = chapter"
-            class="el-button--colapse is-flex is-justify-content-space-between"
-          >
-            <div>{{ lesson.title }}</div>
-          </el-button>
+        <div class="is-flex is-justify-content-end" v-for="lesson in chapter.lessons" :key="lesson">
+          <div class="mt-4 m-0 child-collapse columns is-vcentered" @click="handleLessonPreview(chapter, lesson)">
+            <div class="column is-flex is-justify-content-start">
+              {{ lesson.title }}
+            </div>
+            <div class="column is-flex is-justify-content-end">
+              <restricted-view :routes="[ROUTES.LESSON_DETAIL]">
+                <el-icon
+                  class="mx-3"
+                  style="font-size: 18px; color: #024547"
+                  @click.stop=""
+                >
+                  <Lock/>
+                </el-icon>
+              </restricted-view>
+            </div>
+          </div>
         </div>
       </el-collapse-item>
     </el-collapse>
   </el-scrollbar>
-  <el-drawer v-model="open" size="80%">
-    <PreviewSection :lesson="detail_lesson" :course_title="course_title"
-                    :chapter="current_chapter" ></PreviewSection>
-  </el-drawer>
+
+  <restricted-view :routes="[ROUTES.EDIT_COURSE]">
+    <PreviewSection
+      :lesson="detail_lesson"
+      :course_title="course_title"
+      :chapter="current_chapter"
+      :course_id="course_id"
+      v-model="open"
+      @deleteLesson="open = false; $emit('deleteLesson', $event)"></PreviewSection>
+  </restricted-view>
 </template>
 
 <script lang="ts">
@@ -74,21 +95,27 @@ import {ElMessage, ElMessageBox, ElNotification} from "element-plus";
 import PreviewSection from "@/views/course/edit/PreviewSection.vue";
 import {ROLES} from "@/const/roles";
 import {course} from "@/store/modules/course";
+import RestrictedView from "@/components/RestrictedView.vue";
+import {ROUTES} from "@/const/routes";
 
 @Options({
   props: {
-    chapters: [] as any,
+    chapters: null,
     course_id: String,
     course_title: String
   },
+  emits: ["updateChapter", "deleteChapter", "deleteLesson"],
   components: {
+    RestrictedView,
     PreviewSection,
   },
   data() {
     return {
       open: false,
       detail_lesson: "",
-      current_chapter: {}
+      current_chapter: {},
+      ROLES: ROLES,
+      ROUTES: ROUTES
     };
   },
   methods: {
@@ -133,6 +160,8 @@ import {course} from "@/store/modules/course";
           message: "You've just removed a chapter.",
           type: "success",
         });
+
+        this.$emit("deleteChapter", id);
       } else {
         ElNotification({
           title: "Error",
@@ -159,6 +188,7 @@ import {course} from "@/store/modules/course";
         }
       });
     },
+
     deleteChapter(id: string, title: string) {
       ElMessageBox.confirm(
         "You want to delete " + title + ". Continue?",
@@ -171,20 +201,24 @@ import {course} from "@/store/modules/course";
         }
       ).then(async ({}) => {
         await this.removeChapter(id);
-        this.$emit("deleteChapter", id);
       });
     },
+
+    handleLessonPreview(chapter: any, lesson: any) {
+      if (this.$route.name == 'edit-course') {
+        this.open = true
+        this.detail_lesson = lesson
+        this.current_chapter = chapter
+      }
+    }
   },
   computed: {
     ...mapGetters("authentication", ["tokenInfo"]),
     ...mapGetters("user", ["userInfo"]),
-  },
-  created() {
-    this.ROLES = ROLES;
-  },
+  }
 })
-export default class ListChapterSection extends Vue {
-  chapters!: Chapter;
+export default class ChapterCollapse extends Vue {
+  chapters!: Chapter[];
 }
 </script>
 
@@ -200,11 +234,19 @@ export default class ListChapterSection extends Vue {
   border-radius: 10px;
 }
 
-.el-button--colapse {
-  width: 100%;
+.child-collapse {
+  display: flex;
+  width: 95%;
   height: 45px !important;
   background-color: #EEEEEE !important;
   border-radius: 10px !important;
+  padding-left: 5px;
+  font-size: 0.9rem;
+  font-weight: 450;
+}
+
+.child-collapse:hover {
+  cursor: pointer;
 }
 
 .collapse-chapter-header {
@@ -212,6 +254,9 @@ export default class ListChapterSection extends Vue {
   color: #024547;
   width: 100%;
   margin-left: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 </style>

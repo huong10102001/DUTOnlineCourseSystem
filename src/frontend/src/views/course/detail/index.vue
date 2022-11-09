@@ -8,7 +8,7 @@
       <InfoSection :course="course"></InfoSection>
       <DescriptionSection :description="course.description"></DescriptionSection>
       <CertificateSection></CertificateSection>
-      <ChapterSection></ChapterSection>
+      <ChapterSection :chapters="course.chapters"></ChapterSection>
     </div>
   </div>
 </template>
