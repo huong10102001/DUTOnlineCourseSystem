@@ -8,6 +8,7 @@ class ProcessLessonService(BaseService):
     @classmethod
     def update_process_lesson(cls, instance, status):
         instance.status = status
+        process_course_status = ProcessCourseStatus.IN_PROGRESS.value
         instance.save()
         if status == ProcessLessonStatus.COMPLETED.value:
             next_lesson = ProcessLesson.objects.filter(previous_process_lesson_id=instance.id).first()
@@ -15,5 +16,6 @@ class ProcessLessonService(BaseService):
                 next_lesson.status = ProcessLessonStatus.OPEN.value
                 next_lesson.save()
             else:
-                ProcessCourse.objects.filter(id=instance.process_course_id).update(status=ProcessCourseStatus.COMPLETED.value)
+                process_course_status = ProcessCourseStatus.COMPLETED.value
+        ProcessCourse.objects.filter(id=instance.process_course_id).update(status=process_course_status)
         return instance
