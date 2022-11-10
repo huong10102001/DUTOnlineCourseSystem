@@ -2,7 +2,7 @@ from rest_framework import serializers
 from api_course.models import Lesson, Attachment
 from api_process.models import ProcessLesson
 from rest_framework.fields import UUIDField
-from api_course.serializers import LessonSerializer, AttachmentSerializer, ChapterSerializer, ListCourseSerializer
+from api_course.serializers import LessonSerializer, AttachmentSerializer
 from api_process.services import ProcessLessonService
 
 

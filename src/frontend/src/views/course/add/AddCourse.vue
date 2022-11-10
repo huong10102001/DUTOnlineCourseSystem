@@ -175,7 +175,7 @@ import CoverImage from "@/components/CoverImage.vue";
           if (response.status == 201) {
             this.$router.push({
               name: "edit-course",
-              params: {slug: response.data.slug},
+              params: {course_slug: response.data.slug},
             });
 
             ElNotification({

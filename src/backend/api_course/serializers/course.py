@@ -54,11 +54,13 @@ class ListCourseSerializer(serializers.ModelSerializer):
                                                      queryset=Chapter.objects.all(),
                                                      source='chapters')
     chapters = ListChapterSerializer(many=True, required=False)
+    process_status = serializers.CharField(read_only=True, required=False)
+    lessons_completed = serializers.CharField(read_only=True, required=False)
 
     class Meta:
         model = Course
         fields = ['id', 'title', 'summary', 'description', 'background', 'slug', 'status', 'user', 'topics',
-                  'chapter_ids', 'chapters']
+                  'chapter_ids', 'chapters', 'process_status', 'lessons_completed']
         extra_kwargs = {
             'description': {'required': False},
             'user': {'required': False},

@@ -15,8 +15,6 @@
 import { Options, Vue } from "vue-class-component";
 import { QuillEditor } from "@vueup/vue-quill";
 import BlotFormatter from 'quill-blot-formatter'
-import {nextTick} from "vue";
-// const ImageUploader: any = require('quill-image-uploader');
 
 @Options({
   components: {

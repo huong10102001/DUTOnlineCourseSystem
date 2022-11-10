@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework_extensions.routers import DefaultRouter
 from rest_framework_nested import routers
-from api_course.views import CourseViewSet, ChapterViewSet, LessonViewSet
+from api_course.views import CourseViewSet, ChapterViewSet, LessonViewSet, DiscussionViewSet
 
 app_name = "api_course"
 router = DefaultRouter()
@@ -12,6 +12,8 @@ course_router.register(r'chapters', ChapterViewSet)
 chapter_router = routers.NestedSimpleRouter(course_router, r'chapters', lookup='chapter')
 chapter_router.register(r'lessons', LessonViewSet)
 
+lesson_router = routers.NestedSimpleRouter(chapter_router, r'lessons', lookup='lesson')
+lesson_router.register(r'discussions', DiscussionViewSet)
 
 # router.register(r"chapters", ChapterViewSet)
 # router.register(r"lessons", LessonViewSet)
@@ -21,4 +23,5 @@ urlpatterns = [
     path(r'', include(router.urls)),
     path(r'', include(course_router.urls)),
     path(r'', include(chapter_router.urls)),
+    path(r'', include(lesson_router.urls)),
 ]

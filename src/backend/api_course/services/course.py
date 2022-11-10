@@ -1,6 +1,5 @@
 from django.db.models import Q
 from django.utils.text import slugify
-
 from api_base.services import BaseService
 from api_course.constants import CourseStatus
 from api_course.models import Course
@@ -21,7 +20,7 @@ class CourseService(BaseService):
         return course_obj
 
     @classmethod
-    def get_one(cls, user_obj, course_obj):
+    def get_with_process(cls, user_obj, course_obj):
         process_lesson = ProcessLesson.objects.filter(Q(
             processlesson__process_course__course_id=course_obj['id']) & Q(
             processlesson__process_course__user_id=user_obj.id))
@@ -55,7 +54,7 @@ class CourseService(BaseService):
         return course_obj
 
     @classmethod
-    def get_list(cls, user_obj, params=None):
+    def get_list_process(cls, user_obj, params=None):
         ft = dict()
         if user_obj.role == Roles.USER.value:
             ft.update({'status': CourseStatus.PUBLISHED.value})
@@ -68,11 +67,16 @@ class CourseService(BaseService):
             ft.update({'status': params.get('status')})
         if params.get('topic_ids'):
             ft.update({'topics__id__in': params.getlist('topic_ids')})
+
         courses = Course.objects.filter(**ft)
         process_courses = ProcessCourse.objects.filter(Q(user_id=user_obj.id)).order_by('-created_at')
+        process_ids = [item[0] for item in list(process_courses.values_list('course_id'))]
+        courses = courses.filter(id__in=process_ids)
 
         for course in courses:
-            status = [item.status for item in process_courses if item.course_id == course.id]
-            course.status = status[0] if status else ProcessLessonStatus.LOCK.value
+            process = process_courses.filter(course_id=course.id)
+            course.process_status = process[0].status
+            course.lessons_completed = ProcessLesson.objects.filter(
+                Q(process_course_id=process[0].id) & Q(status=ProcessLessonStatus.COMPLETED.value)).count()
 
         return courses

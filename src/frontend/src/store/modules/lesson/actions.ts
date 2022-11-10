@@ -30,6 +30,11 @@ export interface Actions {
   [ActionTypes.UPDATE_LESSON](
     { commit }: AugmentedActionContext,
     data: any
+  ): any,
+
+  [ActionTypes.DELETE_LESSON](
+    { commit }: AugmentedActionContext,
+    data: any
   ): any
 }
 
@@ -46,6 +51,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.UPDATE_LESSON]({ commit }, data) {
     let response: any = await LessonService.update(data)
+    return response
+  },
+
+  async [ActionTypes.DELETE_LESSON]({ commit }, data) {
+    let response: any = await LessonService.delete(data)
     return response
   }
 }

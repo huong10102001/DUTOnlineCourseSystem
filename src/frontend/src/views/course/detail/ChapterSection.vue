@@ -1,15 +1,15 @@
 <template>
   <div class="course-detail__section has-background-white p-3 columns">
     <div class="column">
-      <h1 class="is-size-5 mb-5">There are 4 Chapter in this section</h1>
-      <div v-for="i in 4">
+      <h1 class="is-size-5 mb-5">There are {{ chapter_number }} chapters in this course</h1>
+      <div v-for="(chapter, index) in chapters" class="mb-5">
         <div class="columns is-vcentered">
-          <div class="column is-one-third has-text-centered is-size-4">
-            <p>Chapter</p>
-            <p class="has-text-weight-medium mt-2">{{ i }}</p>
+          <div class="column has-text-centered is-size-4 is-fullwidth is-one-third-desktop">
+            <p class="">Chapter</p>
+            <p class="has-text-weight-medium mt-2">{{ index+1 }}</p>
           </div>
-          <div class="column">
-            <h3 class="is-size-4"> Chapter name {{ i }}</h3>
+          <div class="column has-text-centered">
+            <h3 class="is-size-4">{{ chapter.title }}</h3>
           </div>
         </div>
       </div>
@@ -21,15 +21,16 @@
 import {Options, Vue} from 'vue-class-component';
 
 @Options({
-  components: {
-
+  props: {
+    chapters: null
   },
   data() {
     return {
-
+      chapter_number: 0
     }
   },
-  computed: {
+  beforeUpdate() {
+    this.chapter_number = this.chapters.length
   }
 })
 

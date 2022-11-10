@@ -17,7 +17,7 @@
   >
 
     <div class="tags are-large is-flex is-justify-content-end">
-      <span class="tag">{{ info_text}}</span>
+      <span class="is-size-6">{{ info_text}}</span>
     </div>
 
     <el-form-item prop="title">

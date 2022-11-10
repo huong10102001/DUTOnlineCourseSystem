@@ -21,8 +21,9 @@
       :chapters="course_chapters"
       :course_id="course_id"
       :course_title="course_title"
-      @deleteChapter="handleDeleteChapter($event)"
-      @updateChapter="handleUpdateChapter($event)"
+      @deleteChapter="handleDeleteChapter"
+      @updateChapter="handleUpdateChapter"
+      @deleteLesson="handleDeleteLesson"
     ></ChapterCollapse>
   </el-row>
 </template>
@@ -37,7 +38,7 @@ import ChapterCollapse from "@/components/ChapterCollapse.vue";
 
 @Options({
   props: {
-    chapters: [] as any,
+    chapters: null,
     course_id: String,
     course_title: String
   },
@@ -102,6 +103,12 @@ import ChapterCollapse from "@/components/ChapterCollapse.vue";
         .indexOf(chapter.id);
       this.course_chapters[index] = chapter;
     },
+    handleDeleteLesson(data: any) {
+      let chapter_index = this.course_chapters.map((chapter: any) => chapter.id).indexOf(data.chapter_id)
+      let chapter= this.course_chapters[chapter_index]
+      chapter.lessons.splice(
+        chapter.lessons.map((lesson: any) => lesson.id).indexOf(data.lesson_id) ,1)
+    }
   },
   computed: {
     ...mapGetters("authentication", ["tokenInfo"]),
@@ -116,7 +123,7 @@ import ChapterCollapse from "@/components/ChapterCollapse.vue";
   },
 })
 export default class ChapterSection extends Vue {
-  chapters!: Chapter;
+  chapters!: Chapter[];
 }
 </script>
 

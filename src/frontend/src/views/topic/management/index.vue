@@ -77,12 +77,13 @@
       style="border-radius: 20px; max-width: 600px"
       center>
 
-      <TopicForm :topic="formContent" @updateTopic="formContent = $event"></TopicForm>
+      <TopicForm :topic="formContent" @updateTopic="formContent = $event" ref="form"></TopicForm>
 
       <template #footer="scope">
         <span class="dialog-footer">
           <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
-          <button class="button is-dark is-rounded" @click="mode == 'add' ? handleAddTopic(): handleEditTopic()">
+          <button class="button is-dark is-rounded"
+                  @click="mode == 'add' ? handleAddTopic($refs.form.$refs.topicForm): handleEditTopic($refs.form.$refs.topicForm)">
             {{ mode == 'add' ? 'Add' : 'OK' }}
           </button>
         </span>
@@ -99,7 +100,7 @@ import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import TopicItem from "@/types/course/TopicItem";
 import TopicForm from "@/views/topic/management/TopicForm.vue";
-import {ElMessageBox, ElNotification} from "element-plus";
+import {ElMessageBox, ElNotification, FormInstance} from "element-plus";
 
 @Options({
   components: {
@@ -134,43 +135,51 @@ import {ElMessageBox, ElNotification} from "element-plus";
       this.total = data.count
       this.loading = false
     },
-    async handleAddTopic() {
-      const res: any = await this.ADD_TOPIC(this.formContent)
-      if (res.status == 201) {
-        await this.getListTopics()
-
-        ElNotification({
-          title: 'Add category successfully',
-          message: 'New category has been recently added to list!',
-          type: 'success',
-        })
-      } else {
-        ElNotification({
-          title: 'Add category failed',
-          message: 'An error occurred!',
-          type: 'success',
-        })
-      }
-      this.dialogVisible = false
+    async handleAddTopic(formEl: FormInstance | undefined) {
+      if (!formEl) return
+      await formEl.validate(async (valid, fields) => {
+        if (valid) {
+          const res: any = await this.ADD_TOPIC(this.formContent)
+          if (res.status == 201) {
+            await this.getListTopics()
+            ElNotification({
+              title: 'Add category successfully',
+              message: 'New category has been recently added to list!',
+              type: 'success',
+            })
+            this.dialogVisible = false
+          } else {
+            ElNotification({
+              title: 'Add category failed',
+              message: 'An error occurred!',
+              type: 'success',
+            })
+          }
+        }
+      })
     },
-    async handleEditTopic() {
-      const res: any = await this.UPDATE_TOPIC(this.formContent)
-      if (res.status == 200) {
-        await this.getListTopics()
-
-        ElNotification({
-          title: 'Edit category successfully',
-          message: 'Category information has been recently updated!',
-          type: 'success',
-        })
-      } else {
-        ElNotification({
-          title: 'Edit category failed',
-          message: 'An error occurred!',
-          type: 'success',
-        })
-      }
-      this.dialogVisible = false
+    async handleEditTopic(formEl: FormInstance | undefined) {
+      if (!formEl) return
+      await formEl.validate(async (valid, fields) => {
+        if (valid) {
+          const res: any = await this.UPDATE_TOPIC(this.formContent)
+          if (res.status == 200) {
+            await this.getListTopics()
+            ElNotification({
+              title: 'Edit category successfully',
+              message: 'Category information has been recently updated!',
+              type: 'success',
+            })
+            this.dialogVisible = false
+          } else {
+            ElNotification({
+              title: 'Edit category failed',
+              message: 'An error occurred!',
+              type: 'success',
+            })
+          }
+        }
+      })
     },
     async handleDeleteTopic(topic: TopicItem) {
       ElMessageBox.confirm('Are you sure to delete this category?')
@@ -228,7 +237,8 @@ import {ElMessageBox, ElNotification} from "element-plus";
   }
 })
 
-export default class TopicManagementPage extends Vue {}
+export default class TopicManagementPage extends Vue {
+}
 </script>
 
 <style scoped lang="scss">
@@ -263,8 +273,3 @@ export default class TopicManagementPage extends Vue {}
 }
 </style>
 
-<style scoped>
-/deep/ .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
-  background-color: #024547;
-}
-</style>

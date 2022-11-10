@@ -1,6 +1,6 @@
-import { BaseService } from "@/services/BaseService";
+import {BaseService} from "@/services/BaseService";
 
-class TopicService extends BaseService{
+class TopicService extends BaseService {
   get entity() {
     return "topics"
   }
@@ -17,18 +17,22 @@ class TopicService extends BaseService{
   }
 
   async getDetail(slug: string) {
-    try{
+    try {
       const res = await this.request().get(`${this.entity}/${slug}/`);
       return res.data;
-    } catch(error){
+    } catch (error) {
       return null;
     }
   }
 
   async create(data: any) {
-    const response: any = await this.request().post(
-        `${this.entity}/`, data);
-    return response ? response : [];
+    try {
+      const response: any = await this.request().post(
+        `${this.entity}/`, data)
+      return response
+    } catch (error) {
+      return null;
+    }
   }
 
   async update(payload: any) {
@@ -36,7 +40,7 @@ class TopicService extends BaseService{
       const res: any = await this.request().put(`${this.entity}/${payload.id}/`, payload)
       return res
     } catch (e) {
-        return null
+      return null
     }
   }
 
@@ -45,7 +49,7 @@ class TopicService extends BaseService{
       const res: any = await this.request().delete(`${this.entity}/${id}/`)
       return res
     } catch (e) {
-        return null
+      return null
     }
   }
 }

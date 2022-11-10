@@ -1,16 +1,18 @@
 <template>
   <el-form
+    ref="topicForm"
     size="large"
-    :model="topic"
-    label-width="90px"
-    @change="$emit('updateTopic', topic)"
+    :model="form"
+    label-width="100px"
+    @change="$emit('updateTopic', form)"
+    :rules="rules"
   >
-    <el-form-item label="Title">
-      <el-input v-model="topic.title" placeholder="Enter title" autocomplete="off"/>
+    <el-form-item label="Title" prop="title">
+      <el-input v-model="form.title" placeholder="Enter title" autocomplete="off"/>
     </el-form-item>
 
-    <el-form-item label="Description">
-      <el-input type="textarea" v-model="topic.description" placeholder="Enter description..." autocomplete="off"/>
+    <el-form-item label="Description" prop="description">
+      <el-input type="textarea" v-model="form.description" placeholder="Enter description..." autocomplete="off"/>
     </el-form-item>
   </el-form>
 </template>
@@ -22,6 +24,32 @@ import TopicItem from "@/types/course/TopicItem";
 @Options({
   props: {
     topic: {} as TopicItem
+  },
+  data(){
+    return {
+      form: {} as TopicItem,
+      rules: {
+        title: [
+          {required: true, message: 'Please input title', trigger: 'blur'},
+          {min: 5, max: 25, message: 'Length should be 5 to 25', trigger: ['blur', 'change']},
+        ],
+        description: [
+          {required: true, message: 'Please input description', trigger: 'blur'},
+          {max: 25, message: 'Maximum 150 words.', trigger: ['blur', 'change']},
+        ]
+      } as any,
+    }
+  },
+  watch: {
+    topic: {
+      deep: true,
+      handler: function(){
+        this.form = {...this.topic}
+      }
+    }
+  },
+  created() {
+    this.form = {...this.topic}
   }
 })
 

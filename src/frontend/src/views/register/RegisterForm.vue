@@ -4,151 +4,186 @@
     class="form p-6 is-half"
     :model="registerForm"
     style="min-height: 680px"
-    >
-      <div class="title" style="color: #024547; font-size: 2rem;">Become a member</div>
-      <p class="subtitle">Get instant Access to 4500 Courses</p>
-      <el-form-item prop="full_name"
-			:rules="[
-        {
-          required: true,
-          message: 'Please fill fullname',
-          trigger: 'blur',
-        }
-      ]">
-        <el-input placeholder="Full name" v-model="registerForm.full_name" size="large" :prefix-icon="user_icon"/>
-      </el-form-item>
-      <el-form-item
-        prop="email"
-        :rules="[
-        {
-          required: true,
-          message: 'Please fill email address',
-          trigger: 'blur',
-        },
-        {
-					type: 'email',
-					message: 'Please fill correct email address',
-					trigger: ['blur', 'change'],
-				},
-				]">
-					<el-input placeholder="Email" v-model="registerForm.email" size="large" :prefix-icon="email_icon"/>
-      </el-form-item>
-			<el-form-item prop="password"
-			:rules="[
-        {
-          required: true,
-          message: 'Please fill password',
-          trigger: 'blur',
-        }
-      ]">
-				<el-input placeholder="Password" v-model="registerForm.password" size="large" type="password"
-									:prefix-icon="password_icon"/>
-			</el-form-item>
-			<el-form-item prop="confirmPassword"
-			:rules="[
-        {
-          required: true,
-          message: 'Please fill password',
-          trigger: 'blur',
-        },
-				{
-          min: 6,
-          message: 'Password should have more than 6 characters.',
-          trigger: 'blur',
-        }
-      ]">
-				<el-input placeholder="Confirm password" v-model="confirmPassword" size="large" type="password"
-									:prefix-icon="password_icon"/>
-			</el-form-item>
-			<p class="subtitle" style="font-size: 1rem">Sign up as</p>
-			<el-row class="mb-4 is-flex is-justify-content-center">
-				<div class="flex">
-					<label class="card">
-						<input name="plan"  value="user" class="radio" type="radio" v-model="registerForm.role">
-						<span class="content" align="center">
+    :rules="rules"
+  >
+    <div class="title" style="color: #024547; font-size: 2rem;">Become a member</div>
+    <p class="subtitle">Get instant Access to 4500 Courses</p>
+
+    <el-form-item prop="full_name">
+      <el-input
+        placeholder="Full name"
+        v-model="registerForm.full_name"
+        size="large"
+        prefix-icon="UserFilled"
+        :disabled="is_freeze"
+      />
+    </el-form-item>
+
+    <el-form-item prop="email">
+      <el-input
+        placeholder="Email"
+        v-model="registerForm.email"
+        size="large"
+        prefix-icon="Message"
+        :disabled="is_freeze"
+      />
+    </el-form-item>
+
+    <el-form-item prop="password">
+      <el-input
+        placeholder="Password"
+        v-model="registerForm.password"
+        size="large"
+        type="password"
+        prefix-icon="EditPen"
+        :disabled="is_freeze"
+      />
+    </el-form-item>
+
+    <el-form-item prop="confirmPassword">
+      <el-input
+        placeholder="Confirm password"
+        v-model="confirmPassword"
+        size="large" type="password"
+        prefix-icon="EditPen"
+        :disabled="is_freeze"
+      />
+    </el-form-item>
+
+    <p class="subtitle" style="font-size: 1rem">Sign up as</p>
+    <el-row class="mb-4 is-flex is-justify-content-center">
+      <div class="flex">
+        <label class="card">
+          <input name="plan" value="user" class="radio" type="radio" v-model="registerForm.role" checked>
+          <span class="content" align="center">
 							<font-awesome-icon icon="fa-solid fa-graduation-cap" class="mb-2"/>
 							<p class="subtitle mt-1" style="font-size: 0.75rem">A student,<br>looking for a course</p>
 						</span>
-					</label>
-					<label class="card">
-						<input name="plan" value="lecturer" class="radio" v-model="registerForm.role" type="radio">
-						<span class="content" aria-hidden="true" align="center">
+        </label>
+        <label class="card">
+          <input name="plan" value="lecturer" class="radio" v-model="registerForm.role" type="radio">
+          <span class="content" aria-hidden="true" align="center">
 							<font-awesome-icon icon="fa-solid fa-chalkboard-user" class="mb-2"/>
 							<p class="subtitle mt-1" style="font-size: 0.75rem">A lecturer,<br>posting my course</p>
 						</span>
-					</label>
-				</div>
-			</el-row>
-			<el-row>
-				<label class="checkbox my-3" style="font-size: 1rem">
-					<input type="checkbox">
-					I agree to the <a href="#" style="color: #07B464;">terms and conditions</a>
-				</label>
-			</el-row>
-			<div class="field">
-				<p :class="['control', 'is-flex', 'is-justify-content-center']">
-					<el-button class="button is-success is-fullwidth mt-2" @click="onRegister" size="large">Sign up</el-button>
-				</p>
-				<p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
-					Already have an account?
-					<router-link to="/login" style="color: #07B464;">Log in</router-link>
-				</p>
-			</div>
-	</el-form>
+        </label>
+      </div>
+    </el-row>
+
+    <el-row>
+      <label class="checkbox my-3" style="font-size: 1rem">
+        <input type="checkbox" v-model="is_agree_term">
+        I agree to the <a href="#" style="color: #07B464;">terms and conditions</a>
+      </label>
+    </el-row>
+    <div class="field">
+      <p :class="['control', 'is-flex', 'is-justify-content-center']">
+        <el-button
+          class="button is-success is-fullwidth mt-2"
+          @click="onRegister($refs.registerFormRef)"
+          size="large"
+          :disabled="is_freeze"
+        >
+          Sign up
+        </el-button>
+      </p>
+      <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
+        Already have an account?
+        <router-link to="/login" class="ml-1" style="color: #07B464;">Log in</router-link>
+      </p>
+    </div>
+  </el-form>
 </template>
 
-<script lang="ts" >
+<script lang="ts">
 import {Options, Vue} from "vue-class-component";
-import { ref } from 'vue'
-import type { FormInstance } from 'element-plus'
-import { UserFilled, EditPen, Message } from '@element-plus/icons-vue'
 import RegisterItem from "@/types/register/RegisterItem";
-import { mapActions } from "vuex";
+import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
-import { ElNotification } from 'element-plus'
-
-const registerFormRef = ref<FormInstance>()
+import {ElNotification, FormInstance} from 'element-plus'
 
 @Options({
   data() {
     return {
       registerForm: {
-				full_name: "",
+        full_name: "",
         email: "",
         password: "",
-				role: "user",
+        role: "user",
       } as RegisterItem,
-			confirmPassword: "",
-      user_icon: UserFilled,
-      password_icon: EditPen,
-			email_icon: Message,
+      confirmPassword: "",
+      is_agree_term: false,
+      is_freeze: false,
+      rules: {
+        full_name: [
+          {required: true, message: 'Please input full name', trigger: 'blur'},
+          {min: 5, max: 30, message: 'Length should be 5 to 30', trigger: ['blur']},
+        ],
+        email: [
+          {required: true, message: 'Please input email', trigger: 'blur'},
+          {type: 'email', message: 'Please input correct email address', trigger: ['blur', 'change']}
+        ],
+        password: [
+          {required: true, message: 'Please input password', trigger: 'blur'},
+          {min: 6, max: 24, message: 'Length should be 6 to 24', trigger: ['blur']},
+        ]
+      } as any,
     }
   },
   methods: {
     ...mapActions("authentication", [ActionTypes.REGISTER]),
-    async onRegister(){
-      const response = await this.REGISTER(this.registerForm)
-      if(response.status == 201){
+    async onRegister(formEl: FormInstance | undefined) {
+      if (this.confirmPassword != this.registerForm.password) {
         ElNotification({
-          title: 'Register successfully',
-          message: 'You already become a member of E-learning. Please login to enter the world of knowledge.',
-          type: 'success',
+          title: 'Notice',
+          message: 'Please input the correct confirm password!',
+          type: 'info',
         })
+        return
+      }
 
-        this.$router.push("/login");
-      }
-      else {
+      if (!this.is_agree_term) {
         ElNotification({
-          title: 'Error',
-          message: 'Information is incorrect. Please check again',
-          type: 'error',
+          title: 'Notice',
+          message: 'Please read and agree with terms and conditions before sign up!',
+          type: 'info',
         })
+        return
       }
-    }
+
+      if (!formEl) return
+
+      await formEl.validate(async (valid) => {
+        let temp = this.registerForm.role
+        if (valid) {
+          this.is_freeze = true
+          const response = await this.REGISTER(this.registerForm)
+
+          if (response.status == 201) {
+            ElNotification({
+              title: 'Register successfully',
+              message: 'You already become a member of E-learning. Please login to enter the world of knowledge.',
+              type: 'success',
+            })
+            this.$router.push("/login");
+          } else {
+            ElNotification({
+              title: 'Error',
+              message: "Email is occupied!",
+              type: 'error',
+            })
+          }
+        }
+        this.registerForm.role = temp
+      })
+      this.is_freeze = false
+    },
+
   },
 })
 
-export default class RegisterForm extends Vue {}
+export default class RegisterForm extends Vue {
+}
 </script>
 
 <style lang="scss">
@@ -169,7 +204,7 @@ export default class RegisterForm extends Vue {}
   margin: 0 auto;
   max-width: 60em;
   padding: 0;
- 
+
   @media (min-width: 42em) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -179,7 +214,7 @@ export default class RegisterForm extends Vue {}
   background-color: #fff;
   border-radius: var(--card-radius);
   position: relative;
-  
+
   &:hover {
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.15);
   }
@@ -192,7 +227,7 @@ export default class RegisterForm extends Vue {}
   top: calc(var(--card-padding) + var(--radio-border-width));
 }
 
-@supports(-webkit-appearance: none) or (-moz-appearance: none) { 
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
   .radio {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -202,10 +237,9 @@ export default class RegisterForm extends Vue {}
     cursor: pointer;
     height: var(--radio-size);
     outline: none;
-    transition: 
-      background 0.2s ease-out,
-      border-color 0.2s ease-out;
-    width: var(--radio-size); 
+    transition: background 0.2s ease-out,
+    border-color 0.2s ease-out;
+    width: var(--radio-size);
 
     &::after {
       border: var(--radio-border-width) solid #fff;
@@ -217,9 +251,7 @@ export default class RegisterForm extends Vue {}
       left: 25%;
       position: absolute;
       top: 50%;
-      transform: 
-        rotate(45deg)
-        translate(-50%, -50%);
+      transform: rotate(45deg) translate(-50%, -50%);
       width: 0.375rem;
     }
 
@@ -228,10 +260,10 @@ export default class RegisterForm extends Vue {}
       border-color: var(--color-green);
     }
   }
-  
+
   .card:hover .radio {
     border-color: var(--color-dark-gray);
-    
+
     &:checked {
       border-color: var(--color-green);
     }
@@ -269,12 +301,12 @@ export default class RegisterForm extends Vue {}
   color: var(--color-dark-gray);
 }
 
-.card:hover .radio:disabled ~ .content{
+.card:hover .radio:disabled ~ .content {
   border-color: var(--color-gray);
   box-shadow: none;
 }
 
 .card:hover .radio:disabled {
-    border-color: var(--color-gray);
-  }
+  border-color: var(--color-gray);
+}
 </style>

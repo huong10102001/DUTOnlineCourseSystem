@@ -16,6 +16,7 @@ import TopicBasePage from "@/views/topic/index.vue";
 import TopicManagementPage from "@/views/topic/management/index.vue";
 import AddLessonPage from "@/views/lesson/add/index.vue";
 import EditLessonPage from "@/views/lesson/edit/index.vue";
+import MyCoursePage from "@/views/my-course/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -28,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'library',
         name: 'library',
         component: LibraryPage
+      },
+      {
+        path: 'my-course',
+        name: 'my-course',
+        component: MyCoursePage
       },
       {
         path: 'courses',
@@ -60,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
             component: LessonBasePage,
             children: [
               {
-                path: 'detail',
+                path: ':lesson_slug/detail',
                 name: 'lesson-detail',
                 component: LessonDetail
               },
