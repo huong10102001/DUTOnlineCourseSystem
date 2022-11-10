@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from api_course.models import Course, Chapter
 from api_course.services import CourseService
+from api_process.models import ProcessLesson
+from api_process.services import ProcessCourseService, ProcessLessonService
 from api_topic.models import Topic
 from api_topic.serializers import TopicShortSerializer
 from api_user.models import User
