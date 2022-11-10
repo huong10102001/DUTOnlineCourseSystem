@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from api_course.models import Course, Chapter
 from api_course.services import CourseService
+from api_process.models import ProcessLesson
+from api_process.services import ProcessCourseService, ProcessLessonService
 from api_topic.models import Topic
 from api_topic.serializers import TopicShortSerializer
 from api_user.models import User
@@ -68,7 +70,9 @@ class ListCourseSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         context = self.context
         instance = super().to_representation(instance)
-        if context.get('view') and context.get('view').action in ['retrieve', 'list']:
+        if context.get('view') and context.get('view').action in ['list']:
+            del instance['chapters']
+        if context.get('view') and context.get('view').action in ['retrieve']:
             data = instance['chapters']
             result = list(filter(lambda kq: kq['previous_chapter'] is None, data))
             if len(result) != 0:
