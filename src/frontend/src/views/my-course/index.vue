@@ -42,11 +42,11 @@ import Pagination from "@/components/Pagination.vue";
     }
   },
   methods: {
-    ...mapActions("course", [ActionTypes.FETCH_COURSES]),
+    ...mapActions("courseProcess", [ActionTypes.FETCH_USER_COURSES_PROCESS]),
     ...mapMutations(["SET_LOADING"]),
     async getListCourses() {
       this.SET_LOADING(true)
-      let data = await this.FETCH_COURSES(this.query)
+      let data = await this.FETCH_USER_COURSES_PROCESS(this.query)
       this.courses = data.results as Course[]
       this.total = data.count
       this.SET_LOADING(false)

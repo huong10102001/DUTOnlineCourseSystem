@@ -27,6 +27,18 @@ class CourseService extends BaseService {
     }
   }
 
+  async getUserProcesses(params: any) {
+    try {
+      const res = await this.request().get(`/${this.entity}/process-list/`,{
+        params
+      })
+      const course_process = res.data;
+      return course_process;
+    } catch (error) {
+      return [];
+    }
+  }
+
   async create(data: any) {
     try {
       const response: any = await this.request().post(`${this.entity}/`, data);
