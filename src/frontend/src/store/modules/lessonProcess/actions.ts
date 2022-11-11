@@ -19,7 +19,7 @@ type AugmentedActionContext = {
 export interface Actions {
   // [ActionTypes.FETCH_COURSES_PROCESS](
   //   { commit }: AugmentedActionContext,
-  // ): void,
+  // ): void,+
   [ActionTypes.FETCH_LESSON_PROCESS_DETAIL](
     { commit }: AugmentedActionContext,
     payload: any
@@ -41,12 +41,12 @@ export const actions: ActionTree<State, State> & Actions = {
   // },
 
   async [ActionTypes.FETCH_LESSON_PROCESS_DETAIL]({ commit }, payload) {
-    let data: any = await LessonProcessService.getDetail(payload.course_process_id, payload.id)
+    let data: any = await LessonProcessService.getDetail(payload.course_id, payload.id)
     return data
   },
 
   async [ActionTypes.UPDATE_LESSON_PROCESS]({ commit }, payload) {
-    let data: any = await LessonProcessService.update(payload.course_process_id, payload.id, payload.data)
+    let data: any = await LessonProcessService.update(payload.course_id, payload.data)
     return data
   },
 

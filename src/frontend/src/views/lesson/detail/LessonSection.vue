@@ -11,8 +11,16 @@
       </span>
     </div>
     <div class="lesson-container__section">
-      <PDFViewer v-if="lesson.attachment.file_type == 'Document'" :pdf-file="lesson.attachment.file"></PDFViewer>
-      <VideoViewer v-else :file="lesson.attachment.file"></VideoViewer>
+      <PDFViewer 
+        v-if="lesson.attachment.file_type == 'Document'" 
+        :pdf-file="lesson.attachment.file">
+      </PDFViewer>
+      <VideoViewer 
+        v-else
+        :file="lesson.attachment.file"
+        @lessonComplete="$emit('videoLessonComplete')"
+      >
+      </VideoViewer>
     </div>
   </div>
 </template>
@@ -32,14 +40,6 @@ import VideoViewer from "@/components/VideoViewer.vue";
   components: {
     PDFViewer,
     VideoViewer
-  },
-  data() {
-    return {
-      title: "Study | ",
-    }
-  },
-  methods: {
-
   }
 })
 export default class LessonSection extends Vue {}

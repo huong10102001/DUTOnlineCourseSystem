@@ -45,19 +45,16 @@ import { ActionTypes } from "@/types/store/ActionTypes";
     }
   },
   methods: {
-    ...mapActions('courseProcess', [ActionTypes.CREATE_COURSE_PROCESS]),
-    async enrollCourse() {
-      const course_process = {
-        course_id: this.course.id,
-        user_id: this.tokenInfo.user_id,
-      }
-      await this.CREATE_COURSE_PROCESS(course_process)
+    enrollCourse() {
       this.$router.push({
         name: 'lesson-detail',
         params: {
           course_slug: this.course.slug,
           chapter_slug: this.course.chapters[0].slug,
           lesson_slug: this.course.chapters[0].lessons[0].slug,
+        },
+        query: {
+          course_id: this.course.id
         }
       })
     }

@@ -27,7 +27,7 @@ class CourseProcessService extends BaseService{
 
   async getDetail(id: string) {
     try{
-      const res: any = await this.request().get(`${this.entity}/${id}/`);
+      const res: any = await this.request().get(`courses/${id}/process-retrieve/`);
       return res.data;
     }
     catch(error){

@@ -35,8 +35,7 @@ class CourseViewSet(BaseViewSet):
     @action(methods=[HttpMethod.PUT], detail=True, url_path="process-update")
     def process_update(self, request, *args, **kwargs):
         data = request.data
-        process_lesson_obj = ProcessLesson.objects.filter(lesson_id=data['lesson_id'],
-                                                          process_course__user=request.user.user).first()
+        process_lesson_obj = ProcessLesson.objects.filter(lesson_id=data['lesson_id']).first()
         ProcessLessonService.update_process_lesson(process_lesson_obj, status=data['status'])
         return Response(status=status.HTTP_204_NO_CONTENT)
 

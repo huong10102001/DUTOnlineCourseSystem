@@ -1,5 +1,6 @@
 export const PROCESS_STATUS = {
     OPEN: "OPEN",
     IN_PROGRESS: "IN_PROGRESS",
-    COMPLETED: "COMPLETED"
+    COMPLETED: "COMPLETED",
+    LOCK: "LOCK",
   }

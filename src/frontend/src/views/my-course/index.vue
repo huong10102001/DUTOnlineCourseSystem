@@ -19,10 +19,10 @@
 </template>
 
 <script lang="ts">
-import {Options, Vue} from "vue-class-component";
-import {mapActions, mapMutations} from "vuex";
+import { Options, Vue } from "vue-class-component";
+import { mapActions, mapMutations } from "vuex";
 import CourseItem from "@/components/CourseItem.vue";
-import {ActionTypes} from "@/types/store/ActionTypes";
+import { ActionTypes } from "@/types/store/ActionTypes";
 import Course from "@/types/course/CourseItem";
 import Pagination from "@/components/Pagination.vue";
 
@@ -69,8 +69,7 @@ import Pagination from "@/components/Pagination.vue";
   }
 })
 
-export default class MyCoursePage extends Vue {
-}
+export default class MyCoursePage extends Vue {}
 </script>
 
 <style scoped lang="scss">

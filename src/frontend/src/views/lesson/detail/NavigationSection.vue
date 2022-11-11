@@ -12,7 +12,8 @@
       <button
         :disabled="isNextDisabled"
         @click="handleNextLesson"
-        class="button is-light">
+        class="button is-light"
+      >
         Next
         <font-awesome-icon icon="fa-solid fa-chevron-right" class="ml-2"/>
       </button>
@@ -30,92 +31,94 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import CourseItem from "@/types/course/CourseItem";
 import ChapterCollapse from "@/components/ChapterCollapse.vue";
+import {PROCESS_STATUS} from '@/const/process_status';
+import {mapActions} from "vuex";
+import {ActionTypes} from "@/types/store/ActionTypes";
+import {lesson} from '@/store/modules/lesson';
 
 @Options({
   components: {
     ChapterCollapse
   },
   props: {
-    course: {} as CourseItem,
+    course: {} as any,
+    chapter: {} as any,
     lesson: {} as any,
-    lesson_index: Number,
-    chapter_index: Number
+    previousLesson: null,
+    nextLesson: null,
   },
   data() {
     return {
       isPrevDisabled: false,
-      isNextDisabled: false
+      isNextDisabled: false,
     }
   },
   methods: {
-    handlePrevLesson() {
-      if(this.lesson.previous_lesson) {
-        this.$router.push({
-          name: 'lesson-detail',
-          params: {
-            course_slug: this.course.slug,
-            chapter_slug: this.course.chapters[this.chapter_index].slug,
-            lesson_slug: this.course.chapters[this.chapter_index].lessons[this.lesson_index-1].slug
-          }
-        })
-      }
-      else if(this.course.chapters[this.chapter_index-1]){
-        let prev_chapter = this.course.chapters[this.chapter_index-1]
-        this.$router.push({
-          name: 'lesson-detail',
-          params: {
-            course_slug: this.course.slug,
-            chapter_slug: prev_chapter.slug,
-            lesson_slug: prev_chapter.lessons[prev_chapter.lessons.length-1].slug
-          }
-        })
-      }
-    },
-    handleNextLesson(){
-      if (this.course.chapters[this.chapter_index].lessons[this.lesson_index+1]) {
-        this.$router.push({
-          name: 'lesson-detail',
-          params: {
-            course_slug: this.course.slug,
-            chapter_slug: this.course.chapters[this.chapter_index].slug,
-            lesson_slug: this.course.chapters[this.chapter_index].lessons[this.lesson_index+1].slug
-          }
-        })
-      }
-      else if (this.course.chapters[this.chapter_index+1]){
-        this.$router.push({
-          name: 'lesson-detail',
-          params: {
-            course_slug: this.course.slug,
-            chapter_slug: this.course.chapters[this.chapter_index+1].slug,
-            lesson_slug: this.course.chapters[this.chapter_index+1].lessons[0].slug
-          }
-        })
-      }
-    },
-    checkNavigation(){
-      let currentChapter: any = this.course.chapters[this.chapter_index]
+    ...mapActions('lessonProcess', [ActionTypes.UPDATE_LESSON_PROCESS]),
 
-      if (this.lesson_index == 0 && this.chapter_index == 0){
+    handlePrevLesson() {
+      let chapter_index = this.course.chapters.map((e: any) => e.id).indexOf(this.previousLesson.chapter_id)
+      let chapter = this.course.chapters[chapter_index]
+
+      this.$router.push({
+        name: 'lesson-detail',
+        params: {
+          course_slug: this.course.slug,
+          chapter_slug: chapter.slug,
+          lesson_slug: this.previousLesson.slug
+        },
+        meta: {
+          reload: true
+        }
+      })
+    },
+
+    handleNextLesson() {
+      let chapter_index = this.course.chapters.map((e: any) => e.id).indexOf(this.nextLesson.chapter_id)
+      let chapter = this.course.chapters[chapter_index]
+
+      this.$router.push({
+        name: 'lesson-detail',
+        params: {
+          course_slug: this.course.slug,
+          chapter_slug: chapter.slug,
+          lesson_slug: this.nextLesson.slug
+        },
+        meta: {
+          reload: true
+        }
+      })
+    },
+
+    checkNavigation() {
+      if (!this.previousLesson) {
         this.isPrevDisabled = true
       } else {
         this.isPrevDisabled = false
       }
 
-      if (this.lesson_index == currentChapter?.lessons.length - 1
-        && (this.chapter_index == this.course.chapters.length - 1
-          || this.course.chapters[this.chapter_index+1].lessons.length == 0)){
-        this.isNextDisabled = true
+      if (this.nextLesson) {
+        if (this.nextLesson.status == PROCESS_STATUS.LOCK)
+          this.isNextDisabled = true
+        else this.isNextDisabled = false
       } else {
-        this.isNextDisabled = false
+        this.isNextDisabled = true
       }
     }
   },
-  updated() {
-    this.checkNavigation()
+  watch: {
+    lesson: {
+      deep: true,
+      handler() {
+        this.checkNavigation()
+      }
+    }
   },
+  beforeUpdate() {
+    this.checkNavigation()
+  }
 })
-export default class NavigationSection extends Vue {}
+export default class NavigationSection extends Vue {
+}
 </script>
