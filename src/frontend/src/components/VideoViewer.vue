@@ -3,16 +3,14 @@
     controls
     ref="videoPlayer"
     :src="file"
-    :loop="false"
-    :volume="0.6"
+    :loop="loop"
+    :volume="volume"
     :options="playerOptions"
-    :control-bar="{progressControl: false,
-      remainingTimeDisplay: true,
-      }"
+    :control-bar="controls"
     id="video"
-    :fluid="true"
+    :fluid="fluid"
     :events="['seeking', 'seeked']"
-    @timeupdate="onVideoPlayerTimeUpdate($event)"
+    @timeupdate="onVideoPlayerTimeUpdate"
     style="width: 100%;"
   >
 </video-player>
@@ -34,23 +32,28 @@ import "video.js/dist/video-js.css";
     return {
       playerOptions: {
         playbackRates: [0.5, 1.0, 1.5, 1.75, 2],
-      },
-      currentTime: 0,
-      durationTime: 0,
-      threshold: 0.85
+      } as any,
+      threshold: 0.85,
+      volume: 0.6 as any,
+      fluid: true as any,
+      loop: false as any,
+      controls: {
+        progressControl: false,
+        remainingTimeDisplay: true,
+      } as any
     };
   },
   methods: {
-    async onVideoPlayerTimeUpdate(player: any) {
-      this.currentTime = player.target.player.currentTime()
-      this.durationTime = player.target.player.duration()
-      const process = this.currentTime / this.durationTime
+    onVideoPlayerTimeUpdate(player: any) {
+      let currentTime = player.target.player.currentTime()
+      let durationTime = player.target.player.duration()
+      const process = currentTime / durationTime
       if(process >= this.threshold) {
-        console.log('done')
+        this.$emit('lessonComplete')
       }
     },
-  }
-
+  },
+  emits: ['lessonComplete']
 })
 export default class VideoViewer extends Vue {}
 </script>

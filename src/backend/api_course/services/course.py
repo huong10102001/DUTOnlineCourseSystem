@@ -21,9 +21,9 @@ class CourseService(BaseService):
 
     @classmethod
     def get_with_process(cls, user_obj, course_obj):
-        process_lesson = ProcessLesson.objects.filter(Q(
-            processlesson__process_course__course_id=course_obj['id']) & Q(
-            processlesson__process_course__user_id=user_obj.id))
+        process_lesson = \
+            ProcessLesson.objects.filter(
+                Q(process_course__course_id=course_obj['id']) & Q(process_course__user_id=user_obj.id))
 
         if not process_lesson.exists():
             data = {
@@ -33,24 +33,14 @@ class CourseService(BaseService):
             ProcessCourseService.create_process(data, course_obj)
             course_obj['status'] = ProcessCourseStatus.OPEN.value
             return course_obj
-        check_lesson_status = False
-        chapter_status = ProcessLessonStatus.COMPLETED.value
 
         for chapter in course_obj['chapters']:
-            chapter['status'] = chapter_status
             for lesson in chapter['lessons']:
-                process_lesson_item = [item for item in process_lesson if item.lesson_id == lesson['id']]
-                status = ProcessLessonStatus.OPEN.value if not process_lesson_item else process_lesson_item[0]['status']
-                lesson['status'] = status
-                lesson['process_lesson_id'] = None if not process_lesson_item else process_lesson_item[0]['id']
-                if status == ProcessLessonStatus.OPEN.value or status == ProcessLessonStatus.IN_PROGRESS.value:
-                    check_lesson_status = True
-            if check_lesson_status:
-                chapter['status'] = ProcessLessonStatus.IN_PROGRESS.value
-                if chapter['lessons'][0]['status'] == ProcessLessonStatus.OPEN.value:
-                    chapter['status'] = ProcessLessonStatus.OPEN.value
-                check_lesson_status = False
-                chapter_status = ProcessLessonStatus.LOCK.value
+                process_lesson_item = process_lesson.filter(lesson_id=lesson['id']).first()
+                lesson['status'] = \
+                    process_lesson_item.status if process_lesson_item else ProcessLessonStatus.LOCK.value
+                lesson['process_lesson_id'] = None if not process_lesson_item else process_lesson_item.id
+
         return course_obj
 
     @classmethod

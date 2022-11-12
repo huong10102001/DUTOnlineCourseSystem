@@ -66,7 +66,7 @@ const routes: Array<RouteRecordRaw> = [
             component: LessonBasePage,
             children: [
               {
-                path: ':lesson_slug/detail',
+                path: ':lesson_slug',
                 name: 'lesson-detail',
                 component: LessonDetail
               },
@@ -95,31 +95,7 @@ const routes: Array<RouteRecordRaw> = [
             component: TopicManagementPage
           },
         ]
-      },
-      {
-        path: 'categories',
-        name: 'categories',
-        component: TopicBasePage,
-        children: [
-          {
-            path: 'management',
-            name: 'category-management',
-            component: TopicManagementPage
-          },
-        ]
-      },
-      {
-        path: 'categories',
-        name: 'categories',
-        component: TopicBasePage,
-        children: [
-          {
-            path: 'management',
-            name: 'category-management',
-            component: TopicManagementPage
-          },
-        ]
-      },
+      }
     ]
   },
   {

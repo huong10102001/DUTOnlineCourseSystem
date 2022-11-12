@@ -52,6 +52,8 @@ import CoverImage from "@/components/CoverImage.vue";
   },
   async created() {
     await this.getCourseDetail()
+  },
+  mounted() {
     document.title = this.course.title + ' | E-Learning'
   }
 })
