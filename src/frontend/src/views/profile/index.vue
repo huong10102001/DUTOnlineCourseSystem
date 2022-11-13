@@ -1,35 +1,23 @@
 <template>
-    <el-form
-      :model="dynamicValidateForm"
-    >
-      <el-form-item
-        prop="email"
-        :rules="[
-          {
-            required: true,
-            message: 'Please input email address',
-            trigger: 'blur',
-          },
-          {
-            type: 'email',
-            message: 'Please input correct email address',
-            trigger: ['blur', 'change'],
-          },
-        ]"
-      >
-        <el-input v-model="dynamicValidateForm.email" />
-      </el-form-item>
-    </el-form>
-  </template>
-  
-  <script lang="ts" setup>
-  import { reactive} from 'vue'
+  <router-view></router-view>
+</template>
 
-  const dynamicValidateForm = reactive<{
-    email: string
-  }>({
-    email: '',
-  })
-  
+<script lang="ts">
+import {Options, Vue} from 'vue-class-component';
+import ProfileDetail from "@/views/profile/detail/index.vue";
+import ProfileEdit from "@/views/profile/edit/index.vue";
 
-  </script>
+@Options({
+  components: {
+    ProfileDetail,
+    ProfileEdit
+  }
+})
+
+export default class ProfileBasePage extends Vue {
+}
+</script>
+
+<style lang="scss" scoped>
+
+</style>

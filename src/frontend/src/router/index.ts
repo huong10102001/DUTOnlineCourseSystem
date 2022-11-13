@@ -17,6 +17,9 @@ import TopicManagementPage from "@/views/topic/management/index.vue";
 import AddLessonPage from "@/views/lesson/add/index.vue";
 import EditLessonPage from "@/views/lesson/edit/index.vue";
 import MyCoursePage from "@/views/my-course/index.vue";
+import ProfileBasePage from "@/views/profile/index.vue";
+import ProfileDetail from "@/views/profile/detail/index.vue";
+import ProfileEdit from "@/views/profile/edit/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -120,6 +123,35 @@ const routes: Array<RouteRecordRaw> = [
           },
         ]
       },
+      {
+        path: 'lesson',
+        name: 'lesson',
+        component: LessonBasePage,
+        children: [
+          {
+            path: 'detail',
+            name: 'lesson-detail',
+            component: LessonDetail
+          },
+        ]
+      },
+      {
+        path: 'profile',
+        name: 'profile',
+        component: ProfileBasePage,
+        children: [
+          {
+            path: '',
+            name: 'profile-detail',
+            component: ProfileDetail
+          },
+          {
+            path: 'edit',
+            name: 'profile-edit',
+            component: ProfileEdit
+          },
+        ]
+      },
     ]
   },
   {
@@ -141,12 +173,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/register',
     name: 'register',
     component: RegisterPage
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: ProfilePage
-  },
+  }
 
 ]
 

@@ -1,12 +1,24 @@
+import uuid
+from django.utils.text import slugify
+import pathlib
 from django.db import models
 from api_user.constants import Roles
 from api_user.models import Account
 from api_base.models import TimeStampedModel
 
 
+def upload_path(instance, filename):
+    fpath = pathlib.Path(filename)
+    new_name = instance.avatar.name + str(uuid.uuid1())
+    final_path = "/".join(
+        ['avatars', slugify(f"{instance.full_name} {instance.id}")])
+
+    return f"{final_path}/{new_name}{fpath.suffix}"
+
+
 class User(TimeStampedModel):
     full_name = models.CharField(max_length=50)
-    avatar = models.CharField(max_length=200, null=True, blank=True)
+    avatar = models.FileField(blank=True, null=True, upload_to=upload_path)
     role = models.CharField(choices=Roles.choices(), default=Roles.USER.value, max_length=50)
     is_lecturer = models.BooleanField(null=True, default=None)
     study_at = models.CharField(max_length=200, null=True, blank=True)

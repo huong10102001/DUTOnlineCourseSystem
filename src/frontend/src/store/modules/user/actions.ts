@@ -23,6 +23,14 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     user_id: string
   ): void,
+  [ActionTypes.GET_USER_PROFILE](
+    { commit }: AugmentedActionContext,
+    user_id: string
+  ): any,
+  [ActionTypes.UPDATE_USER_PROFILE](
+    { commit }: AugmentedActionContext,
+    payload: any,
+  ): any,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -39,4 +47,16 @@ export const actions: ActionTree<State, State> & Actions = {
     }
     return response
   },
+
+  async [ActionTypes.GET_USER_PROFILE]({ commit }, user_id) {
+    let response: any = await UserService.getUserInfo(user_id)
+    return response
+  },
+
+  async [ActionTypes.UPDATE_USER_PROFILE]({ commit }, payload) {
+    let response: any = await UserService.updateUserInfo(payload.user_id, payload.data)
+    return response
+  },
 }
+
+
