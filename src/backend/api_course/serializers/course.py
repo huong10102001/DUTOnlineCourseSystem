@@ -68,9 +68,7 @@ class ListCourseSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         context = self.context
         instance = super().to_representation(instance)
-        if context.get('view') and context.get('view').action in ['list']:
-            del instance['chapters']
-        if context.get('view') and context.get('view').action in ['retrieve']:
+        if context.get('view') and context.get('view').action in ['retrieve', 'list']:
             data = instance['chapters']
             result = list(filter(lambda kq: kq['previous_chapter'] is None, data))
             if len(result) != 0:
