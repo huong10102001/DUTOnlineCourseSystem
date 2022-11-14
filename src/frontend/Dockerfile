@@ -19,6 +19,5 @@ RUN rm -rf /usr/share/nginx/html/*
 ### Remove default nginx index page
 WORKDIR /app
 # Copy from the stahg 1
-COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf:ro
 COPY --from=build /app/dist /usr/share/nginx/html
-CMD ["nginx", "-g", "daemon off;"]
