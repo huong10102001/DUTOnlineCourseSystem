@@ -20,6 +20,7 @@ import MyCoursePage from "@/views/my-course/index.vue";
 import ProfileBasePage from "@/views/profile/index.vue";
 import ProfileDetail from "@/views/profile/detail/index.vue";
 import ProfileEdit from "@/views/profile/edit/index.vue";
+import CertificationPage from '@/views/certification/index.vue';
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -69,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
             component: LessonBasePage,
             children: [
               {
-                path: ':lesson_slug/detail',
+                path: ':lesson_slug',
                 name: 'lesson-detail',
                 component: LessonDetail
               },
@@ -85,6 +86,11 @@ const routes: Array<RouteRecordRaw> = [
               },
             ]
           },
+          {
+            path: ':course_slug/certificate',
+            name: 'certification',
+            component: CertificationPage
+          }
         ]
       },
       {
@@ -96,42 +102,6 @@ const routes: Array<RouteRecordRaw> = [
             path: 'management',
             name: 'category-management',
             component: TopicManagementPage
-          },
-        ]
-      },
-      {
-        path: 'categories',
-        name: 'categories',
-        component: TopicBasePage,
-        children: [
-          {
-            path: 'management',
-            name: 'category-management',
-            component: TopicManagementPage
-          },
-        ]
-      },
-      {
-        path: 'categories',
-        name: 'categories',
-        component: TopicBasePage,
-        children: [
-          {
-            path: 'management',
-            name: 'category-management',
-            component: TopicManagementPage
-          },
-        ]
-      },
-      {
-        path: 'lesson',
-        name: 'lesson',
-        component: LessonBasePage,
-        children: [
-          {
-            path: 'detail',
-            name: 'lesson-detail',
-            component: LessonDetail
           },
         ]
       },
@@ -174,7 +144,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: RegisterPage
   }
-
 ]
 
 const router = createRouter({

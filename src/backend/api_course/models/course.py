@@ -17,6 +17,15 @@ def upload_path(instance, filename):
     return f"{final_path}/{new_name}{fpath.suffix}"
 
 
+def upload_path_certificate(instance, filename):
+    fpath = pathlib.Path(filename)
+    new_name = instance.title + instance.user.full_name + str(uuid.uuid1())
+    final_path = "/".join(
+        ['courses', 'certificate_frames'])
+
+    return f"{final_path}/{new_name}{fpath.suffix}"
+
+
 class Course(TimeStampedModel):
     title = models.CharField(max_length=255)
     summary = models.CharField(max_length=255)
@@ -27,7 +36,7 @@ class Course(TimeStampedModel):
     topics = models.ManyToManyField(blank=True, null=True, related_name='courses', to='api_topic.Topic')
     cost = models.FloatField(default=0)
     status = models.CharField(choices=CourseStatus.choices(), default=CourseStatus.DRAFT.value, max_length=50)
-    certificate_frame = models.TextField()
+    certificate_frame = models.FileField(blank=True, null=True, upload_to=upload_path_certificate)
 
     class Meta:
         db_table = "courses"

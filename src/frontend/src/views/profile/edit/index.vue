@@ -1,6 +1,4 @@
 <template>
-  <el-row>
-    <el-col :span="14">
       <AvatarSection 
         :user="user"
         @changeAvatar="user.avatar = $event"
@@ -11,15 +9,6 @@
       >
         <InfoSection :editForm="editForm"></InfoSection>
       </el-row>
-    </el-col>
-    <el-col
-      :span="10"
-      style="background-color: white; border-radius: 15px"
-      class="p-5 my-3"
-    >
-      <CertificateSection></CertificateSection>
-    </el-col>
-  </el-row>
 </template>
 
 <script lang="ts">
@@ -27,18 +16,18 @@ import { Options, Vue } from "vue-class-component";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import AvatarSection from "./AvatarSection.vue";
-import CertificateSection from "./CertificateSection.vue";
 import InfoSection from "./InfoSection.vue";
 
 @Options({
   components: {
     AvatarSection,
-    CertificateSection,
     InfoSection,
   },
   data() {
     return {
-      user: {} as any,
+      user: {
+        role: "" as String
+      } as any,
       editForm: {
         account: {
           email: "",

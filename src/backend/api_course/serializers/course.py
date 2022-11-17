@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from api_course.models import Course, Chapter
 from api_course.services import CourseService
+from api_process.models import ProcessLesson
+from api_process.services import ProcessCourseService, ProcessLessonService
 from api_topic.models import Topic
 from api_topic.serializers import TopicShortSerializer
 from api_user.models import User
@@ -23,7 +25,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'title', 'summary', 'description', 'background', 'slug', 'status', 'user', 'user_id', 'topics',
+        fields = ['id', 'title', 'summary', 'description', 'background', 'slug', 'status', 'certificate_frame', 'user', 'user_id', 'topics',
                   'topic_ids']
         extra_kwargs = {
             'description': {'required': False},
@@ -52,11 +54,13 @@ class ListCourseSerializer(serializers.ModelSerializer):
                                                      queryset=Chapter.objects.all(),
                                                      source='chapters')
     chapters = ListChapterSerializer(many=True, required=False)
+    process_status = serializers.CharField(read_only=True, required=False)
+    lessons_completed = serializers.CharField(read_only=True, required=False)
 
     class Meta:
         model = Course
         fields = ['id', 'title', 'summary', 'description', 'background', 'slug', 'status', 'user', 'topics',
-                  'chapter_ids', 'chapters']
+                  'chapter_ids', 'chapters', 'process_status', 'lessons_completed', 'certificate_frame']
         extra_kwargs = {
             'description': {'required': False},
             'user': {'required': False},
@@ -68,7 +72,9 @@ class ListCourseSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         context = self.context
         instance = super().to_representation(instance)
-        if context.get('view') and context.get('view').action in ['retrieve', 'list']:
+        if context.get('view') and context.get('view').action in ['list']:
+            del instance['chapters']
+        if context.get('view') and context.get('view').action in ['retrieve']:
             data = instance['chapters']
             result = list(filter(lambda kq: kq['previous_chapter'] is None, data))
             if len(result) != 0:

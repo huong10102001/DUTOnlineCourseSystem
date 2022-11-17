@@ -63,11 +63,15 @@
       </div>
 
       <restricted-view :routes="[ROUTES.MY_COURSE.name]">
+        <div class="is-flex is-justify-content-end mt-3 mr-2"
+             style="font-size: 0.8rem; font-weight: 450; color: #777777">
+          {{ course.lessons_completed }} / {{ total_lesson }}
+        </div>
         <div class="progress-bar">
           <el-progress
-            :stroke-width="26"
-            :percentage="100"
-            color="#75E064"
+            :stroke-width="16"
+            :percentage="course_progress"
+            color="#00d102"
             :show-text="false"
           />
         </div>
@@ -119,13 +123,36 @@ import {ROUTES} from "@/const/routes";
 @Options({
   components: {RestrictedView},
   props: {
-    course: {} as Course,
+    course: {
+      type: Object,
+      default: {
+        chapters: [
+          {lessons: []}
+        ],
+        lessons_completed: 0
+      }
+    },
   },
   data() {
     return {
       dialogVisible: false,
       ROUTES: ROUTES,
       COURSE_STATUS: COURSE_STATUS
+    }
+  },
+  computed: {
+    course_progress() {
+      if (!this.total_lesson || !this.course.lessons_completed) return 0
+      return Math.round(this.course.lessons_completed*100 / this.total_lesson)
+    },
+    total_lesson() {
+      if (!this.course.chapters) return 0
+      let result = this.course.chapters.reduce(
+        (prev: number, curr: any) => {
+          return prev + curr.lessons.length
+        }, 0
+      )
+      return result
     }
   },
   emits: ['deleteCourse'],
@@ -247,7 +274,7 @@ a {
 }
 
 .progress-bar .el-progress--line {
-  margin: 10px 0;
+  margin-bottom: 10px;
   width: 100%;
 }
 
@@ -257,7 +284,4 @@ a {
   max-width: calc(100% - 8px);
 }
 
-:deep(.progress-bar .el-progress-bar__outer) {
-  background-color: #024547;
-}
 </style>

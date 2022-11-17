@@ -1,4 +1,6 @@
-
+import pathlib
+import uuid
+from django.utils.text import slugify
 from django.db import models
 from api_base.models import TimeStampedModel
 from api_course.models import Course, Lesson, Attachment
@@ -8,12 +10,22 @@ from api_process.constants import ProcessCourseStatus, ProcessLessonStatus
 from api_user.models import User
 
 
+def upload_path(instance, filename):
+    fpath = pathlib.Path(filename)
+    new_name = instance.course.title + "-" + instance.user.full_name + "-" + str(uuid.uuid1())
+    final_path = "/".join(
+        ['certificates', slugify(f"{instance.user.full_name} {str(uuid.uuid1())}")])
+    return f"{final_path}/{new_name}{fpath.suffix}"
+
+
 class ProcessCourse(TimeStampedModel):
     status = models.CharField(choices=ProcessCourseStatus.choices(), default=ProcessCourseStatus.OPEN.value, max_length=50)
     course = models.ForeignKey(Course, null=True, blank=True, on_delete=models.SET_NULL, related_name="process_course")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="process_course")
     course_title = models.CharField(max_length=50, default='')
     last_learn_date = models.DateTimeField(max_length=50, default=timezone.now)
+    learn_completed_date = models.DateTimeField(max_length=50, null=True, blank=True)
+    certificate = models.FileField(blank=True, null=True, upload_to=upload_path)
 
     class Meta:
         db_table = "process_course"

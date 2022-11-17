@@ -1,32 +1,30 @@
 <template>
   <div class="course-detail__section has-background-white p-3 columns">
-    <div class="column has-text-centered">
+    <div class="column has-text-centered" ref="certificate">
+
       <h1 class="is-size-3">Earn a Certificate upon completion</h1>
       <p class="mt-3 mb-5">
-        Learn to Program and Analyze Data with Python. Develop programs to gather, clean, analyze, and visualize data.
+        You will receive a certificate when your course process is completed.
       </p>
 
-      <figure class="image mt-3 m-auto" style="max-width: 450px">
-        <img src="@/assets/images/certificate_example.png">
-      </figure>
-
+      <vue-pdf-embed :source="certificate"/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import VuePdfEmbed from "vue-pdf-embed";
 
 @Options({
-  components: {
-
-  },
-  data() {
-    return {
-
+  props: {
+    certificate: {
+      type: String,
+      default: ""
     }
   },
-  computed: {
+  components: {
+    VuePdfEmbed
   }
 })
 

@@ -2,7 +2,7 @@
   <div class="base">
     <Sidebar :items="items" @collapse="is_collapse = $event"/>
     <div :class="['main', {'main--collapse': is_collapse}]">
-      <TopBar :userName="userInfo.full_name"></TopBar>
+      <TopBar :userName="userInfo.full_name" :avatar="userInfo.avatar"></TopBar>
       <div class="container p-4">
         <div class="is-loading-bar has-text-centered" :class="{'is-loading': is_loading }">
           <div class="lds-dual-ring"></div>

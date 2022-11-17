@@ -42,28 +42,28 @@
               <Delete/>
             </el-icon>
           </restricted-view>
-          <restricted-view :routes="[ROUTES.LESSON_DETAIL]">
-            <el-icon
-              class="mx-3"
-              style="font-size: 18px; color: #024547"
-              @click.stop="deleteChapter(chapter.id, chapter.title)"
-            >
-              <Lock/>
-            </el-icon>
-          </restricted-view>
         </template>
 
-        <div class="is-flex is-justify-content-end" v-for="lesson in chapter.lessons" :key="lesson">
-          <div class="mt-4 m-0 child-collapse columns is-vcentered" @click="handleLessonPreview(chapter, lesson)">
+        <div
+          class="is-flex is-justify-content-end"
+          v-for="lesson in chapter.lessons"
+          :key="lesson"
+        >
+          <div
+            :class="['mt-4', 'm-0', 'child-collapse', 'columns', 'is-vcentered']"
+            @click="
+              $route.name == ROUTES.LESSON_DETAIL ?
+                changeLesson(chapter, lesson) : handleLessonPreview(chapter, lesson)"
+          >
             <div class="column is-flex is-justify-content-start">
               {{ lesson.title }}
             </div>
             <div class="column is-flex is-justify-content-end">
               <restricted-view :routes="[ROUTES.LESSON_DETAIL]">
                 <el-icon
+                  v-if="lesson.status == PROCESS_STATUS.LOCK"
                   class="mx-3"
                   style="font-size: 18px; color: #024547"
-                  @click.stop=""
                 >
                   <Lock/>
                 </el-icon>
@@ -94,9 +94,9 @@ import Chapter from "@/types/chapter/ChapterItem";
 import {ElMessage, ElMessageBox, ElNotification} from "element-plus";
 import PreviewSection from "@/views/course/edit/PreviewSection.vue";
 import {ROLES} from "@/const/roles";
-import {course} from "@/store/modules/course";
 import RestrictedView from "@/components/RestrictedView.vue";
 import {ROUTES} from "@/const/routes";
+import {PROCESS_STATUS} from "@/const/process_status";
 
 @Options({
   props: {
@@ -115,7 +115,8 @@ import {ROUTES} from "@/const/routes";
       detail_lesson: "",
       current_chapter: {},
       ROLES: ROLES,
-      ROUTES: ROUTES
+      ROUTES: ROUTES,
+      PROCESS_STATUS: PROCESS_STATUS
     };
   },
   methods: {
@@ -210,6 +211,22 @@ import {ROUTES} from "@/const/routes";
         this.detail_lesson = lesson
         this.current_chapter = chapter
       }
+    },
+
+    changeLesson(chapter: any, lesson: any) {
+      if (lesson.status == PROCESS_STATUS.LOCK) return
+
+      this.$router.push({
+        name: 'lesson-detail',
+        params: {
+          course_slug: this.$route.params.course_slug,
+          chapter_slug: chapter.slug,
+          lesson_slug: lesson.slug
+        },
+        meta: {
+          reload: true
+        }
+      })
     }
   },
   computed: {
@@ -247,6 +264,7 @@ export default class ChapterCollapse extends Vue {
 
 .child-collapse:hover {
   cursor: pointer;
+  background: #ccc !important;
 }
 
 .collapse-chapter-header {

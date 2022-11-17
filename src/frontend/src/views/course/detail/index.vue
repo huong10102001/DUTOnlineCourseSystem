@@ -7,7 +7,9 @@
     <div class="course-detail p-3">
       <InfoSection :course="course"></InfoSection>
       <DescriptionSection :description="course.description"></DescriptionSection>
-      <CertificateSection></CertificateSection>
+      <CertificateSection
+        :certificate="course.certificate_frame"
+      ></CertificateSection>
       <ChapterSection :chapters="course.chapters"></ChapterSection>
     </div>
   </div>
@@ -52,6 +54,8 @@ import CoverImage from "@/components/CoverImage.vue";
   },
   async created() {
     await this.getCourseDetail()
+  },
+  beforeUpdate() {
     document.title = this.course.title + ' | E-Learning'
   }
 })

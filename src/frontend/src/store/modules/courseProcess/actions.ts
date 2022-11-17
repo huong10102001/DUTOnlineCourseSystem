@@ -2,7 +2,8 @@ import { ActionTypes } from '@/types/store/ActionTypes'
 import { ActionTree, ActionContext } from 'vuex'
 import { State } from './state'
 import { Mutations } from './mutations'
-import CourseProcessService from "@/services/course/CourseProcessService";
+import CourseProcessService from "@/services/process/CourseProcessService";
+import CourseService from "@/services/course/CourseService";
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -28,6 +29,12 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: any
   ): any,
+  [ActionTypes.FETCH_USER_COURSES_PROCESS](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): any,
+
+
   // [ActionTypes.UPDATE_COURSE_INFO](
   //   { commit }: AugmentedActionContext,
   //   data: any,
@@ -51,6 +58,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.CREATE_COURSE_PROCESS]({ commit }, payload) {
     let data: any = await CourseProcessService.create(payload)
+    return data
+  },
+
+  async [ActionTypes.FETCH_USER_COURSES_PROCESS]({ commit }, params) {
+    let data: any = await CourseService.getUserProcesses(params)
     return data
   },
 

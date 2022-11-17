@@ -12,7 +12,7 @@ from api_user.services import UserService
 
 class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
-    permission_classes = [AdminPermission]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     permission_map = {
         "retrieve": [IsAuthenticated]

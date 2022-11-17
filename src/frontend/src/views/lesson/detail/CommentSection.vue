@@ -4,8 +4,8 @@
     <div class="media mb-6" style="width: 100%">
       <figure class="media-left">
         <p class="image is-64x64">
-          <img v-if="userInfo.avatar" :src="userInfo.avatar"/>
-          <img v-else src="@/assets/vectors/default_avatar.svg"/>
+          <img v-if="userInfo.avatar" :src="userInfo.avatar" class="is-rounded" style="height: 100%"/>
+          <img v-else src="@/assets/vectors/default_avatar.svg" class="is-rounded"/>
         </p>
       </figure>
       <div class="media-content">
@@ -33,7 +33,7 @@
       <div class="media mb-5">
         <figure class="media-left">
           <p class="image is-64x64">
-            <img v-if="comment.user.avatar" :src="comment.user.avatar"/>
+            <img v-if="comment.user.avatar" :src="comment.user.avatar" class="is-rounded" style="height: 100%"/>
             <img v-else src="@/assets/vectors/default_avatar.svg"/>
           </p>
         </figure>
@@ -77,7 +77,7 @@
               <div class="media">
                 <figure class="media-left">
                   <p class="image is-48x48">
-                    <img v-if="item.user.avatar" :src="item.user.avatar" />
+                    <img v-if="item.user.avatar" :src="item.user.avatar" class="is-rounded" style="height: 100%"/>
                     <img v-else src="@/assets/vectors/default_avatar.svg" />
                   </p>
                 </figure>
@@ -117,11 +117,9 @@
 
           <div v-if="open_id == comment.id" style="width: 100%">
             <div class="media">
-              <figure class="media-left">
-                <p class="image is-48x48">
-                  <img v-if="comment.user.avatar" :src="comment.user.avatar"/>
-                  <img v-else src="@/assets/vectors/default_avatar.svg"/>
-                </p>
+              <figure class="image is-48x48">
+                  <img v-if="comment.user.avatar" :src="comment.user.avatar" class="is-rounded"/>
+                  <img v-else src="@/assets/vectors/default_avatar.svg"  class="is-rounded"/>
               </figure>
               <div class="media-content">
                 <div class="field">

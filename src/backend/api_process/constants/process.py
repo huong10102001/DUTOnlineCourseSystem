@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class ProcessCourseStatus(Enum):
+    NOT_OPEN = "NOT_OPEN"
     OPEN = "OPEN"
     IN_PROGRESS = "IN_PROGRESS"
     COMPLETED = "COMPLETED"

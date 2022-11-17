@@ -7,6 +7,7 @@ from api_user.models import User
 from rest_framework.fields import UUIDField
 from api_course.serializers import ListCourseSerializer, CourseSerializer
 from api_user.serializers import UserShortSerializer
+from datetime import datetime
 
 
 class ProcessCourseSerializer(serializers.ModelSerializer):
@@ -24,7 +25,7 @@ class ProcessCourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProcessCourse
-        fields = ['id', 'course_title', 'status', 'last_learn_date', 'course_id', 'course', 'user', 'user_id',
+        fields = ['id', 'course_title', 'status', 'last_learn_date', 'learn_completed_date', 'certificate', 'course_id', 'course', 'user', 'user_id',
                   'process_lesson']
         extra_kwargs = {
             'status': {'required': False},
@@ -43,6 +44,8 @@ class ProcessCourseSerializer(serializers.ModelSerializer):
         context = self.context.get('view')
         if context and context.action in ['list', 'create']:
             del instance['process_lesson']
+        instance['last_learn_date'] = datetime.strptime(instance['last_learn_date'], '%Y-%m-%dT%H:%M:%S.%f%z').strftime("%d-%m-%Y")
+        instance['learn_completed_date'] = datetime.strptime(instance['learn_completed_date'], '%Y-%m-%dT%H:%M:%S.%f%z').strftime("%d-%m-%Y") if instance['learn_completed_date'] is not None else None
         return instance
 
     def create(self, validated_data):

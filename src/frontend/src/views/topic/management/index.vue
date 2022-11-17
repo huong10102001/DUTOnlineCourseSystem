@@ -58,16 +58,12 @@
         </el-table-column>
       </el-table>
 
-      <div class="is-flex is-justify-content-center mt-4">
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="total"
-          :current-page="+query.page"
-          :page-size="+query.page_size"
-          @current-change="changePages"
-        />
-      </div>
+      <Pagination
+        :total="total"
+        :page="query.page"
+        :page_size="query.page_size"
+        @changePage="query.page = $event">
+      </Pagination>
     </div>
 
     <el-dialog
@@ -101,10 +97,12 @@ import {ActionTypes} from "@/types/store/ActionTypes";
 import TopicItem from "@/types/course/TopicItem";
 import TopicForm from "@/views/topic/management/TopicForm.vue";
 import {ElMessageBox, ElNotification, FormInstance} from "element-plus";
+import Pagination from "@/components/Pagination.vue";
 
 @Options({
   components: {
-    TopicForm
+    TopicForm,
+    Pagination
   },
   data() {
     return {

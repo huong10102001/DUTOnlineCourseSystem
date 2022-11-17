@@ -26,7 +26,8 @@
               <div class="dropdown is-hoverable">
                 <div class="dropdown-trigger">
                   <figure class="image">
-                    <img class="is-rounded" src="@/assets/vectors/default_avatar.svg" alt="Avatar">
+                    <img v-if="avatar" class="is-rounded" :src="avatar" alt="Avatar">
+                    <img v-else class="is-rounded" src="@/assets/vectors/default_avatar.svg" alt="Avatar">
                   </figure>
                 </div>
                 <div class="dropdown-menu" id="dropdown-menu" role="menu">

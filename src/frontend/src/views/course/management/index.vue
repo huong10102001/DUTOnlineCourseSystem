@@ -2,7 +2,8 @@
   <div class="main-container p-2">
     <div class="course-container">
       <router-link to="/categories/management" class="button is-rounded btn-change">
-        <font-awesome-icon icon="fa-solid fa-tags" class="mr-2"/> |
+        <font-awesome-icon icon="fa-solid fa-tags" class="mr-2"/>
+        |
         <font-awesome-icon icon="fa-solid fa-chalkboard" class="ml-2 mr-2"/>
         Course Management
       </router-link>
@@ -12,19 +13,28 @@
         </el-col>
       </el-row>
     </div>
+
+    <Pagination
+      :total="total"
+      :page="query.page"
+      :page_size="query.page_size"
+      @changePage="query.page = $event">
+    </Pagination>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { mapActions, mapMutations } from "vuex";
+import {Options, Vue} from "vue-class-component";
+import {mapActions, mapMutations} from "vuex";
 import CourseItem from "@/components/CourseItem.vue";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import Course from "@/types/course/CourseItem";
+import Pagination from "@/components/Pagination.vue";
 
 @Options({
   components: {
-    CourseItem
+    CourseItem,
+    Pagination
   },
   data() {
     return {
@@ -43,6 +53,7 @@ import Course from "@/types/course/CourseItem";
       this.SET_LOADING(true)
       let data = await this.FETCH_COURSES(this.query)
       this.courses = data.results as Course[]
+      this.total = data.count
       this.courses.unshift({} as Course)
       this.SET_LOADING(false)
     }
@@ -50,9 +61,9 @@ import Course from "@/types/course/CourseItem";
   watch: {
     query: {
       deep: true,
-      handler: function () {
-        this.getListCourses();
-        this.$router.replace({ query: this.query }).catch((err: any) => err);
+      handler: async function () {
+        await this.getListCourses();
+        this.$router.replace({query: this.query}).catch((err: any) => err);
       },
     }
   },
@@ -64,7 +75,8 @@ import Course from "@/types/course/CourseItem";
   }
 })
 
-export default class CourseManagementPage extends Vue {}
+export default class CourseManagementPage extends Vue {
+}
 </script>
 
 <style scoped lang="scss">
@@ -79,7 +91,7 @@ export default class CourseManagementPage extends Vue {}
     margin-bottom: 10px;
   }
 
-  .btn-change{
+  .btn-change {
     font-size: 0.95rem;
     font-weight: 450;
     margin-bottom: 25px;

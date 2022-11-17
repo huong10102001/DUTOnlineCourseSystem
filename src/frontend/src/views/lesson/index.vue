@@ -4,7 +4,6 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import DetailLesson from "@/views/lesson/detail/index.vue";
 
 @Options({
   
