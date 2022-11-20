@@ -45,7 +45,8 @@ def register_user(request):
 @authentication_classes([])
 @permission_classes([])
 def register_lecturer(request):
-    serializer = RegisterSerializer(data=request.data)
+    request.parser_context.get('view').action = 'lecturer'
+    serializer = RegisterSerializer(data=request.data, context=request.parser_context)
     try:
         if serializer.is_valid(raise_exception=True):
             res_data = serializer.save()
