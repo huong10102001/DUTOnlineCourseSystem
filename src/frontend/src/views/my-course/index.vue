@@ -1,6 +1,15 @@
 <template>
   <div class="main-container p-2">
-    <div class="course-container">
+    <div class="course-container" v-if="search">
+      <h1>My course</h1>
+      <el-row :gutter="40">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in filteredCourse">
+          <CourseItem :course="course"></CourseItem>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="course-container" v-else>
       <h1>My course</h1>
       <el-row :gutter="40">
         <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
@@ -27,6 +36,9 @@ import Course from "@/types/course/CourseItem";
 import Pagination from "@/components/Pagination.vue";
 
 @Options({
+  props: {
+    search: String,
+  },
   components: {
     Pagination,
     CourseItem
@@ -50,6 +62,15 @@ import Pagination from "@/components/Pagination.vue";
       this.courses = data.results as Course[]
       this.total = data.count
       this.SET_LOADING(false)
+    },
+    async searchCourse(){
+      let query = {
+        page: 1,
+        page_size: 12,
+        title: this.search
+      }
+      let data = await this.FETCH_USER_COURSES_PROCESS(query)
+      this.courseList = data.results as Course[]
     }
   },
   async created() {
@@ -66,6 +87,14 @@ import Pagination from "@/components/Pagination.vue";
   },
   mounted() {
     document.title = 'My Course | E-Learning'
+  },
+  async beforeUpdate(){
+    await this.searchCourse()
+  },
+  computed: {
+    filteredCourse() {
+      return this.courseList
+    }
   }
 })
 

@@ -2,12 +2,17 @@
   <div class="base">
     <Sidebar :items="items" @collapse="is_collapse = $event"/>
     <div :class="['main', {'main--collapse': is_collapse}]">
-      <TopBar :userName="userInfo.full_name" :avatar="userInfo.avatar"></TopBar>
+      <TopBar 
+        :userName="userInfo.full_name" 
+        :avatar="userInfo.avatar"
+        @search="onChange"
+      >
+      </TopBar>
       <div class="container p-4">
         <div class="is-loading-bar has-text-centered" :class="{'is-loading': is_loading }">
           <div class="lds-dual-ring"></div>
         </div>
-        <router-view></router-view>
+        <router-view :search="search_text"></router-view>
       </div>
     </div>
   </div>
@@ -35,7 +40,8 @@ import MenuItem from "@/types/sidebar/MenuItem";
         {name: 'course management', icon: 'fa-solid fa-briefcase', route: ROUTES.COURSE_MANAGEMENT},
         {name: 'my course', icon: 'fa-solid fa-bookmark', route: ROUTES.MY_COURSE},
       ] as MenuItem[],
-      is_collapse: true
+      is_collapse: true,
+      search_text: ""
     }
   },
   methods: {
@@ -55,6 +61,10 @@ import MenuItem from "@/types/sidebar/MenuItem";
       this.LOGOUT()
       this.CLEAR_USER_INFO()
       this.goToHome()
+    },
+
+    onChange(value: any) {
+      this.search_text = value
     }
   },
   computed: {

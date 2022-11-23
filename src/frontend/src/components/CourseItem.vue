@@ -4,7 +4,7 @@
 
       <div class="course-item__title columns">
         <h3 class="column p-0">{{ course.title }}</h3>
-
+          
         <div class="column is-flex is-justify-content-end p-0">
           <el-dropdown size="large">
             <span class="course-item__ellipsis el-dropdown-link" @click.prevent="">

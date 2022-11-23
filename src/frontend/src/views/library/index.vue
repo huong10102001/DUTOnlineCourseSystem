@@ -1,5 +1,16 @@
 <template>
-  <div class="main-container p-2">
+  <div class="main-container p-2" v-if="search">
+    <div class="course-container">
+      <h1>Courses</h1>
+      <el-row :gutter="40">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in filteredCourse">
+          <CourseItem :course="course"></CourseItem>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
+
+  <div class="main-container p-2" v-else>
     <div class="course-container">
       <h1>New Courses Today</h1>
       <el-row :gutter="40">
@@ -37,6 +48,9 @@ import {ActionTypes} from "@/types/store/ActionTypes";
 import Course from "@/types/course/CourseItem";
 
 @Options({
+  props: {
+    search: String,
+  },
   components: {
     CourseItem
   },
@@ -48,6 +62,7 @@ import Course from "@/types/course/CourseItem";
         page: 1,
         page_size: 6,
       },
+      courseList: []
     }
   },
   methods: {
@@ -58,6 +73,16 @@ import Course from "@/types/course/CourseItem";
       let data = await this.FETCH_COURSES(this.query)
       this.courses = data.results as Course[]
       this.SET_LOADING(false)
+    },
+    
+    async searchCourse(){
+      let query = {
+        page: 1,
+        page_size: 12,
+        title: this.search
+      }
+      let data = await this.FETCH_COURSES(query)
+      this.courseList = data.results as Course[]
     }
   },
   async created() {
@@ -65,6 +90,14 @@ import Course from "@/types/course/CourseItem";
   },
   mounted() {
     document.title = 'Library | E-Learning'
+  },
+  async beforeUpdate(){
+    await this.searchCourse()
+  },
+  computed: {
+    filteredCourse() {
+      return this.courseList
+    }
   }
 })
 

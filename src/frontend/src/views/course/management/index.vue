@@ -7,7 +7,12 @@
         <font-awesome-icon icon="fa-solid fa-chalkboard" class="ml-2 mr-2"/>
         Course Management
       </router-link>
-      <el-row :gutter="20">
+      <el-row :gutter="20" v-if="search">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in filteredCourse">
+          <CourseItem :course="course" @deleteCourse="getListCourses"></CourseItem>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20" v-else>
         <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
           <CourseItem :course="course" @deleteCourse="getListCourses"></CourseItem>
         </el-col>
@@ -32,6 +37,9 @@ import Course from "@/types/course/CourseItem";
 import Pagination from "@/components/Pagination.vue";
 
 @Options({
+  props: {
+    search: String,
+  },
   components: {
     CourseItem,
     Pagination
@@ -44,6 +52,7 @@ import Pagination from "@/components/Pagination.vue";
         page: 1,
         page_size: 11,
       },
+      courseList: []
     }
   },
   methods: {
@@ -56,6 +65,16 @@ import Pagination from "@/components/Pagination.vue";
       this.total = data.count
       this.courses.unshift({} as Course)
       this.SET_LOADING(false)
+    },
+    
+    async searchCourse(){
+      let query = {
+        page: 1,
+        page_size: 12,
+        title: this.search
+      }
+      let data = await this.FETCH_COURSES(query)
+      this.courseList = data.results as Course[]
     }
   },
   watch: {
@@ -72,6 +91,14 @@ import Pagination from "@/components/Pagination.vue";
   },
   mounted() {
     document.title = 'Course Management | E-Learning'
+  },
+  async beforeUpdate(){
+    await this.searchCourse()
+  },
+  computed: {
+    filteredCourse() {
+      return this.courseList
+    }
   }
 })
 

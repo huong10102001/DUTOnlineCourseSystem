@@ -8,7 +8,7 @@
 
       <el-col  :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="top-bar__search-bar hidden-sm-and-down">
         <p class="control has-icons-left">
-          <input class="input is-rounded" type="text" placeholder="Search">
+          <input v-model="search" @input="onChange($event)" class="input is-rounded" type="text" placeholder="Search">
           <span class="icon is-small is-left">
             <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
           </span>
@@ -69,7 +69,17 @@ import 'element-plus/theme-chalk/display.css'
 @Options({
   props: {
     userName: "",
-    avatar: ""
+    avatar: "",
+  },
+  data() {
+    return {
+      search: ""
+    }
+  },
+  methods: {
+    onChange(event: any) {
+      this.$emit('search', event.target.value)
+    }
   }
 })
 
