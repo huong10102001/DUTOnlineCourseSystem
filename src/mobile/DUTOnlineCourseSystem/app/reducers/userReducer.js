@@ -1,3 +1,5 @@
+import { Alert } from "react-native";
+
 const userState = {
   id: null,
   full_name: null,
@@ -73,6 +75,7 @@ const userReducer = (state = userState, { type, payload }) => {
       };
     case "UPDATE_PROFILE_USER_SUCCESS":
       console.log("@@@@UPDATE",payload)
+      Alert.alert("Success","Update Success")
       return {
         ...state,
         id: payload.id,
@@ -89,7 +92,7 @@ const userReducer = (state = userState, { type, payload }) => {
           email: payload.account.email,
           date_joined: payload.account.date_joined,
         },
-        error: "Update success",
+        error: "",
         isLoading:false
       };
     case "UPDATE_PROFILE_USER_FAILURE":

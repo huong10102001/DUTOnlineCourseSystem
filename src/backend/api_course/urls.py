@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework_extensions.routers import DefaultRouter
 from rest_framework_nested import routers
+from api_process.views import CourseRatingViewSet
 from api_course.views import CourseViewSet, ChapterViewSet, LessonViewSet, DiscussionViewSet
 
 app_name = "api_course"
@@ -8,6 +9,7 @@ router = DefaultRouter()
 router.register(r'', CourseViewSet)
 course_router = routers.NestedSimpleRouter(router, r'', lookup='course')
 course_router.register(r'chapters', ChapterViewSet)
+course_router.register(r'ratings', CourseRatingViewSet)
 
 chapter_router = routers.NestedSimpleRouter(course_router, r'chapters', lookup='chapter')
 chapter_router.register(r'lessons', LessonViewSet)

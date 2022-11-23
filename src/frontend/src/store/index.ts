@@ -8,6 +8,7 @@ import { user } from  "@/store/modules/user";
 import { courseProcess } from "@/store/modules/courseProcess";
 import { lessonProcess } from "@/store/modules/lessonProcess";
 import { discussion } from './modules/discussion';
+import { rating } from './modules/rating'
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -33,6 +34,7 @@ export default createStore({
     lesson,
     courseProcess,
     lessonProcess,
-    discussion
+    discussion,
+    rating
   }
 })

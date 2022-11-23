@@ -33,7 +33,6 @@ import BASE_URL from "../request/url";
 // }
 function* fetch_login(action) {
   try {
-    console.log("@@@@logina")
     const payload = action.payload;
     const data = yield axios.post(`${BASE_URL}/api/v1/auth/login/`, {
       email: payload.username,

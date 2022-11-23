@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View, StyleSheet, Image, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Text, View, StyleSheet, Image, ScrollView,Dimensions } from "react-native";
 import tw from "tailwind-react-native-classnames";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -8,6 +8,14 @@ import Foundation from "react-native-vector-icons/Foundation";
 import CourseProcess from "../components/CourseProcess";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 const MyCourseScreen = ({ navigator }) => {
+  const { width } = Dimensions.get("window");
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const courses = useSelector((state) => state.courses.results);
+  useEffect(() => {
+    dispatch(getListCoursesProcess());
+  }, []);
+  const mycourse = useSelector((state) => state.coursesProcessList.results);
   return (
     <ScrollView>
       <View style={styles.topNavbar}>
@@ -121,11 +129,15 @@ const MyCourseScreen = ({ navigator }) => {
           <Text style={styles.titleView}>New Course Today</Text>
           <Text style={styles.seeAll}>See all</Text>
         </View>
-        <ScrollView>
-          <View style={{ alignItems: "center" }}>
-            <CourseProcess></CourseProcess>
-            <View style={{ marginBottom: 25, marginTop: 25 }}>
-              <CourseProcess></CourseProcess>
+        <ScrollView style={{ width: "100%" }}>
+          <View style={{ alignItems: "center", width: "100%" }}>
+            {/* <CourseProcess></CourseProcess> */}
+            <View style={{ marginBottom: 28 }}>
+              {mycourse.map((e, index) => (
+                <View style={{ marginBottom: 10, width: "100%" }}>
+                  <CourseProcess props={e} width={width}></CourseProcess>
+                </View>
+              ))}
             </View>
           </View>
         </ScrollView>

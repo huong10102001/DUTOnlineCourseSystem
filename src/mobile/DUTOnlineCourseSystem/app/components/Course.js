@@ -1,121 +1,122 @@
-import React from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useEffect } from "react";
+import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import tw from "tailwind-react-native-classnames";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-const Course = (props) =>{
+import { useDispatch } from "react-redux";
+import { getCourseProcess } from "../actions/courseProcessAction";
+import { getCourse } from "../actions/courseAction";
+const Course = (props) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const course_data = props.data;
-  // console.log(props);
-    return (
-      <TouchableOpacity
-        onPress={(data) => {
-          navigation.navigate("Announce", { course_data:course_data });
+  return (
+    <TouchableOpacity
+      onPress={(data) => {
+        dispatch(getCourse({ course_slug: course_data.slug }));
+        navigation.navigate("DetailCourse", { course_id: course_data.id });
+      }}
+      style={[styles.container, { width: props.width }]}
+    >
+      <View style={{ borderRadius: 5 }}>
+        <Image
+          style={styles.image}
+          source={{
+            uri:
+              course_data.background ||
+              "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+          }}
+        ></Image>
+      </View>
+      <View
+        style={{
+          padding: 12,
+          alignContent: "center",
+          justifyContent: "flex-start",
+          flexDirection: "row",
+          width: "100%",
         }}
       >
-        <View style={styles.container}>
-          <View style={{ flex: 1, borderRadius: 5 }}>
-            <Image
-              style={styles.image}
-              source={{
-                uri: course_data.background,
-              }}
-            ></Image>
-          </View>
-
+        <View style={{ width: 80, alignItems: "center" }}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: course_data.user.avatar||"https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+            }}
+          ></Image>
+        </View>
+        <View>
+          <Text style={styles.title}>{course_data.title}</Text>
           <View
             style={{
-              flex: 1,
-              padding: 12,
-              alignContent: "center",
-              justifyContent: "center",
+              opacity: 0.5,
+              flexDirection: "row",
+              paddingTop: 4,
+              width: props.width - 24 - 80,
             }}
           >
-            <Text style={styles.title}>{course_data.title}</Text>
-            <Text style={styles.decription}>{course_data.decription}</Text>
-            <View style={tw`flex flex-row content-center opacity-50 pt-2`}>
-              <FontAwesome
-                size={18}
-                color="black"
-                name="user"
-                width={20}
-                style={{ width: 20 }}
-              />
-              <Text style={styles.text}>{course_data.user.full_name}</Text>
-            </View>
-            <View style={tw`flex flex-row opacity-50 pt-2`}>
-              <View style={{ width: "50%" }}>
-                <View style={tw`flex flex-row content-center`}>
-                  <Ionicons
-                    size={18}
-                    color="black"
-                    name="documents"
-                    width={20}
-                    style={{ width: 20 }}
-                  />
-                  <Text style={styles.text}>B Class</Text>
-                </View>
-              </View>
-              <View style={{ width: "50%" }}>
-                <View style={tw`flex flex-row content-center`}>
-                  <Ionicons
-                    size={18}
-                    color="black"
-                    name="time"
-                    width={20}
-                    style={{ width: 20 }}
-                  />
-                  <Text style={styles.text}>3 hours</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-          <View style={styles.buttonPlay}>
-            <FontAwesome5
+            <FontAwesome
               size={18}
               color="black"
-              name="play"
-              style={{ paddingLeft: 4 }}
-              color="#024547"
+              name="user"
+              width={20}
+              style={{ width: 20 }}
             />
+            <Text style={[styles.text, { width: props.width - 24 - 80 }]}>
+              {course_data.user.full_name}
+            </Text>
           </View>
+          <View style={{ flexShrink: 1, width: props.width - 24 - 80 }}>
+            <Text
+              style={[
+                styles.text,
+                {
+                  paddingTop: 4,
+                  opacity: 0.5,
+                  flexWrap: "wrap",
+                },
+              ]}
+            >
+              {course_data.summary}
+            </Text>
+          </View>
+
+          {/* {checkProcessCourse()} */}
         </View>
-      </TouchableOpacity>
-    );
-}
+      </View>
+    </TouchableOpacity>
+  );
+};
 const styles = StyleSheet.create({
   container: {
-    height: 324,
-    width: 268,
-    borderColor: "#024547",
-    borderWidth: 2,
-    borderBottomWidth: 10,
-    borderRadius: 5,
+    minHeight: 300,
     position: "relative",
     backgroundColor: "#fff",
+    elevation: 2,
   },
   image: {
-    width: 268,
-    height: 158,
-    position: "absolute",
+    width: "105%",
+    height: 200,
     borderRadius: 5,
     top: -2,
     left: -2,
   },
-  logo: {
-    width: 66,
-    height: 58,
+  avatar: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   title: {
-    fontWeight: '700',
+    fontWeight: "700",
     fontSize: 16,
     lineHeight: 21,
     color: "#024547",
   },
   decription: {
-    fontWeight: '400',
+    fontWeight: "400",
     fontSize: 12,
     opacity: 0.6,
     marginVertical: 5,
@@ -123,21 +124,6 @@ const styles = StyleSheet.create({
   },
   text: {
     paddingLeft: 4,
-  },
-  buttonPlay: {
-    position: "absolute",
-    flex:1,
-    justifyContent: "center",
-    alignContent: "center",
-    borderColor: "#024547",
-    backgroundColor:'#fff',
-    width:50,
-    height:50,
-    alignItems:'center',
-    borderRadius:25,
-    top: '42%',
-    right:20,
-    borderWidth:1,
   },
 });
 export default Course;

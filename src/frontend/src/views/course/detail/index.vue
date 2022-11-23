@@ -5,26 +5,28 @@
       <CoverImage :image="course.background" :is_freeze="true"></CoverImage>
     </div>
     <div class="course-detail p-3">
-      <InfoSection :course="course"></InfoSection>
+      <InfoSection :course="course" @addRating="handleAddRating"></InfoSection>
       <DescriptionSection :description="course.description"></DescriptionSection>
       <CertificateSection
         :certificate="course.certificate_frame"
       ></CertificateSection>
       <ChapterSection :chapters="course.chapters"></ChapterSection>
+      <RatingSection :course="course"></RatingSection>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+import {Options, Vue} from 'vue-class-component';
 import InfoSection from './InfoSection.vue'
 import DescriptionSection from './DescriptionSection.vue'
 import CertificateSection from "@/views/course/detail/CertificateSection.vue";
 import ChapterSection from "@/views/course/detail/ChapterSection.vue";
-import { mapActions, mapMutations } from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import TitleBar from "@/components/TitleBar.vue";
 import CoverImage from "@/components/CoverImage.vue";
+import RatingSection from "./RatingSection.vue"
 
 @Options({
   components: {
@@ -33,7 +35,8 @@ import CoverImage from "@/components/CoverImage.vue";
     CertificateSection,
     InfoSection,
     DescriptionSection,
-    CoverImage
+    CoverImage,
+    RatingSection
   },
   data() {
     return {
@@ -46,11 +49,18 @@ import CoverImage from "@/components/CoverImage.vue";
     async getCourseDetail() {
       this.SET_LOADING(true)
       let data = await this.FETCH_COURSE_DETAIL(this.$route.params.course_slug)
-      if (data){
+      if (data) {
         this.course = data
       }
       this.SET_LOADING(false)
+    },
+    handleAddRating(data: any) {
+      data["user"] = this.userInfo
+      this.course.ratings.unshift(data)
     }
+  },
+  computed: {
+    ...mapGetters("user", ["userInfo"])
   },
   async created() {
     await this.getCourseDetail()
@@ -60,11 +70,12 @@ import CoverImage from "@/components/CoverImage.vue";
   }
 })
 
-export default class CourseDetail extends Vue {}
+export default class CourseDetail extends Vue {
+}
 </script>
 
 <style lang="scss" scoped>
-.course-detail{
+.course-detail {
   &__section {
     border-radius: 20px;
     font-size: 1rem;

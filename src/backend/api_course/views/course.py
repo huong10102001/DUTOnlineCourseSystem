@@ -57,7 +57,7 @@ class CourseViewSet(BaseViewSet):
             serializer_class=ListCourseSerializer)
     def slug(self, request, *args, **kwargs):
         course_obj = Course.objects.filter(slug=kwargs['pk']).first()
-        res_data = self.serializer_class(course_obj).data
+        res_data = self.serializer_class(course_obj, context=self.get_parser_context(request)).data
 
         if request.user is not None:
             user_obj = request.user.user

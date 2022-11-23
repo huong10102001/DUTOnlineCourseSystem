@@ -1,1 +1,1 @@
-from .process import ProcessCourse, ProcessLesson
+from .process import ProcessCourse, ProcessLesson, CourseRating

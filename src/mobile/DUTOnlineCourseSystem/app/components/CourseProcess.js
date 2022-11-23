@@ -1,108 +1,168 @@
-import { Text, View, StyleSheet, Image } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import React, { useState } from "react";
 import tw from "tailwind-react-native-classnames";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-const CourseProcess = ({ props }) =>{
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import { PROCESS_STATUS } from "../const/processStatus";
+import { getCourse } from "../actions/courseAction";
+import { useDispatch } from "react-redux";
+const CourseProcess = ({ props, width }) => {
+  console.log(width);
+  const dispatch = useDispatch();
   const [isComplete, setIsComplete] = useState(false);
-    const state = {
-      url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
-      name: "Name of Couse",
-      decription:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius.",
-      author: "DAT",
-      class: "B class",
-      time: "3 Hours",
-      numberOfLession:36,
-      isComplete:36,
-    };
+  const navigation = useNavigation();
+  const numberOfLesson = () => {
+    let count = 0;
+    for (let i = 0; i < props.chapters.length; i++) {
+      count = count + props.chapters[i].lessons.length;
+    }
+    return count;
+  };
+  const state = {
+    url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+    name: "Name of Couse",
+    decription:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius.",
+    author: "DAT",
+    class: "B class",
+    time: "3 Hours",
+    numberOfLession: 36,
+    isComplete: 36,
+  };
+  console.log(props);
+  const checkIconComplete = () => {
+    if (!isComplete) {
+      return (
+        <FontAwesome5
+          size={18}
+          color="black"
+          name="play"
+          style={{ paddingLeft: 4 }}
+          color="#024547"
+        />
+      );
+    } else {
+      return (
+        <MaterialIcons
+          size={22}
+          color="black"
+          name="done-all"
+          color="#024547"
+        />
+      );
+    }
+  };
 
-    const checkIconComplete = () =>{
-      if(!isComplete){
-        return (
-          <FontAwesome5
-            size={18}
-            color="black"
-            name="play"
-            style={{ paddingLeft: 4 }}
-            color="#024547"
-          />
-        );
-      }
-      else{
-        return (
-          <MaterialIcons
-            size={22}
-            color="black"
-            name="done-all"
-            color="#024547"
-          />
-        )
+  const checkProcessCourse = (isComplete, numberOfLession) => {
+    const state = "0%";
+    console.log(state);
+    {
+      switch (props.process_status) {
+        case PROCESS_STATUS.COMPLETED:
+          React.useEffect(() => {
+            setIsComplete(true);
+          }, []);
+          return (
+            <View style={styles.coverProgressComplete}>
+              <Text style={{ color: "white", fontWeight: "700" }}>
+                Complete
+              </Text>
+            </View>
+          );
+        case PROCESS_STATUS.OPEN:
+          return (
+            <View style={styles.coverProgressStart}>
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Start Now
+              </Text>
+            </View>
+          );
+        case PROCESS_STATUS.IN_PROGRESS:
+          let lesson_completed = props.lessons_completed;
+          let number_of_lesson = numberOfLesson();
+          let percent = (lesson_completed / number_of_lesson) * 100;
+          let percent_string = percent.toString() + "%";
+          return (
+            <View style={styles.coverProgress}>
+              <View
+                style={{
+                  backgroundColor: "#024547",
+                  height: "100%",
+                  borderRadius: 10,
+                  width: { percent_string },
+                }}
+              ></View>
+            </View>
+          );
+        default:
+          return (
+            <View style={styles.coverProgress}>
+              <View
+                style={{
+                  backgroundColor: "#024547",
+                  height: "100%",
+                  borderRadius: 10,
+                  width: { state },
+                }}
+              ></View>
+            </View>
+          );
       }
     }
-    
-    const checkProcessCourse = (isComplete, numberOfLession) => {
-      const state = "100%";
-      console.log(state)
-      {
-        switch (state) {
-          case "100%":
-            React.useEffect(() => {
-              setIsComplete(true);
-            }, []);
-            return (
-              <View style={styles.coverProgressComplete}>
-                <Text style={{ color: "white", fontWeight: '700' }}>
-                  Complete
-                </Text>
-              </View>
-            );
-          case "0%":
-            return (
-              <View style={styles.coverProgressStart}>
-              <Text style={{color:'white', fontWeight:'bold'}}>Start Now</Text>
-            </View>
-            )
-          default:
-            // styles.progressBar.width=state
-            return (
-              <View style={styles.coverProgress}>
-                <View
-                  style={{
-                    backgroundColor: "#024547",
-                    height: "100%",
-                    borderRadius: 10,
-                    width:{state}
-                  }}
-                ></View>
-              </View>
-            );
-        }
-      }
-    };
-    props = state
-    return (
-      <View style={styles.container}>
-        <View style={{ flex: 1, borderRadius: 5 }}>
+  };
+  return (
+    <TouchableOpacity
+      style={[styles.container, { width: width }]}
+      onPress={(data) => {
+        dispatch(getCourse({ course_slug: props.slug }));
+        navigation.navigate("DetailCourse", { course_id: props.id });
+      }}
+    >
+      <View>
+        <Image
+          style={styles.image}
+          source={{
+            uri: props.background,
+          }}
+        ></Image>
+      </View>
+      <View
+        style={{
+          padding: 12,
+          alignContent: "center",
+          justifyContent: "flex-start",
+          flexDirection: "row",
+          width: "100%",
+        }}
+      >
+        <View style={{ width: 80, alignItems: "center" }}>
           <Image
-            style={styles.image}
+            style={styles.avatar}
             source={{
-              uri: props.url,
+              uri: props.user.avatar||"https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
             }}
           ></Image>
         </View>
-        <View
-          style={{
-            flex: 1,
-            padding: 12,
-            alignContent: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Text style={styles.title}>{props.name}</Text>
-          <View style={tw`flex flex-row content-center opacity-50 pt-2`}>
+        <View>
+          <Text style={styles.title}>{props.title}</Text>
+          <View
+            style={{
+              opacity: 0.5,
+              flexDirection: "row",
+              paddingTop: 4,
+              width: width - 24 - 80,
+            }}
+          >
             <FontAwesome
               size={18}
               color="black"
@@ -110,34 +170,43 @@ const CourseProcess = ({ props }) =>{
               width={20}
               style={{ width: 20 }}
             />
-            <Text style={styles.text}>{props.author}</Text>
+            <Text style={[styles.text, { width: width - 24 - 80 }]}>
+              {props.user.full_name}
+            </Text>
           </View>
-          {checkProcessCourse()}
-        </View>
+          <View style={{ flexShrink: 1, width: width - 24 - 80 }}>
+            <Text
+              style={[
+                styles.text,
+                {
+                  paddingTop: 4,
+                  opacity: 0.5,
+                  flexWrap: "wrap",
+                },
+              ]}
+            >
+              {props.summary}
+            </Text>
+          </View>
 
-        <View style={styles.buttonPlay}>{checkIconComplete()}</View>
+          {/* {checkProcessCourse()} */}
+        </View>
       </View>
-    );
-}
+
+      {/* <View style={styles.buttonPlay}>{checkIconComplete()}</View> */}
+    </TouchableOpacity>
+  );
+};
 const styles = StyleSheet.create({
   container: {
-    height: 324,
-    width: 268,
-    borderColor: "#024547",
-    borderWidth: 2,
-    borderBottomWidth: 10,
-    borderRadius: 5,
+    minHeight: 300,
     position: "relative",
     backgroundColor: "#fff",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
     elevation: 2,
-    shadowColor: "#000",
   },
   image: {
-    width: 268,
-    height: 158,
-    position: "absolute",
+    width: "105%",
+    height: 200,
     borderRadius: 5,
     top: -2,
     left: -2,
@@ -147,13 +216,13 @@ const styles = StyleSheet.create({
     height: 58,
   },
   title: {
-    fontWeight: '700',
+    fontWeight: "700",
     fontSize: 16,
     lineHeight: 21,
     color: "#024547",
   },
   decription: {
-    fontWeight: '400',
+    fontWeight: "400",
     fontSize: 12,
     opacity: 0.6,
     marginVertical: 5,
@@ -205,6 +274,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#024547",
     height: "100%",
     borderRadius: 10,
+  },
+  avatar: {
+    position: "absolute",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
 });
 export default CourseProcess;

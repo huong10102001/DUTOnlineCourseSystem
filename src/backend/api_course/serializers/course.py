@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from api_course.models import Course, Chapter
 from api_course.services import CourseService
-from api_process.models import ProcessLesson
+from api_process.models import ProcessLesson, ProcessCourse
 from api_process.services import ProcessCourseService, ProcessLessonService
 from api_topic.models import Topic
 from api_topic.serializers import TopicShortSerializer
@@ -9,6 +9,8 @@ from api_user.models import User
 from rest_framework.fields import UUIDField
 from api_course.serializers import ListChapterSerializer
 from api_user.serializers import UserShortSerializer
+from api_process.models import CourseRating
+from django.db.models import Q
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -47,6 +49,20 @@ class CourseSerializer(serializers.ModelSerializer):
         return CourseService.create_course(validated_data)
 
 
+class CourseRatingForListCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseRating
+        fields = ['id', 'title', 'content', 'star_rating', 'created_at', 'process_course_id']
+        extra_kwargs = {
+            'title': {'required': False},
+            'user': {'required': False}
+        }
+
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        instance['user'] = UserShortSerializer(ProcessCourse.objects.filter(id=instance['process_course_id']).first().user).data
+        return instance
+
 class ListCourseSerializer(serializers.ModelSerializer):
     user = UserShortSerializer(read_only=True, required=False)
     topics = TopicShortSerializer(many=True, read_only=True, required=False)
@@ -54,13 +70,14 @@ class ListCourseSerializer(serializers.ModelSerializer):
                                                      queryset=Chapter.objects.all(),
                                                      source='chapters')
     chapters = ListChapterSerializer(many=True, required=False)
+    ratings = CourseRatingForListCourseSerializer(many=True, read_only=True, required=False)
     process_status = serializers.CharField(read_only=True, required=False)
     lessons_completed = serializers.CharField(read_only=True, required=False)
 
     class Meta:
         model = Course
         fields = ['id', 'title', 'summary', 'description', 'background', 'slug', 'status', 'user', 'topics',
-                  'chapter_ids', 'chapters', 'process_status', 'lessons_completed', 'certificate_frame']
+                  'chapter_ids', 'chapters', 'process_status', 'lessons_completed', 'certificate_frame', 'ratings']
         extra_kwargs = {
             'description': {'required': False},
             'user': {'required': False},
@@ -74,7 +91,7 @@ class ListCourseSerializer(serializers.ModelSerializer):
         instance = super().to_representation(instance)
         if context.get('view') and context.get('view').action in ['list']:
             del instance['chapters']
-        if context.get('view') and context.get('view').action in ['retrieve']:
+        if context.get('view') and context.get('view').action in ['retrieve', 'slug']:
             data = instance['chapters']
             result = list(filter(lambda kq: kq['previous_chapter'] is None, data))
             if len(result) != 0:
@@ -89,4 +106,19 @@ class ListCourseSerializer(serializers.ModelSerializer):
                     else:
                         break
                 instance['chapters'] = result
+            course_rating = CourseRating.objects
+            rating = course_rating.filter(process_course__course__id=instance['id'])
+            list_rating = list(rating.values_list('star_rating', flat=True).order_by())
+            instance['ratings'] = CourseRatingForListCourseSerializer(rating, many=True).data
+            instance['total_rating'] = len(list_rating)
+            try:
+                instance['avg_rating'] = sum(list_rating) / instance['total_rating']
+            except ZeroDivisionError:
+                instance['avg_rating'] = 0
+            number_star = context.get('view').request.query_params.get("number_star", "")
+            if len(number_star) != 0:
+                star_rating = instance['ratings']
+                number_rating = list(filter(lambda star: star['star_rating'] is int(number_star), star_rating))
+                instance['ratings'] = number_rating
+        instance['status_rating'] = True if len(CourseRating.objects.filter(Q(process_course__course_id=instance['id']) & Q(process_course__user_id=str(context.get('view').request.user.user.id)))) != 0 else False
         return instance

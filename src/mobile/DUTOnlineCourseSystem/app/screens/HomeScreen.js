@@ -24,7 +24,7 @@ import { getAllCourses } from "../actions/courseAction";
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const {width:screenWidth} = Dimensions.get('window');
+  const {width} = Dimensions.get('window');
     useEffect(() => {
       dispatch(getAllCourses());
       console.log(`getAllCourses`);
@@ -144,7 +144,7 @@ const HomeScreen = ({ navigation }) => {
                 <Image
                   style={styles.image}
                   source={{
-                    uri: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+                    uri: user.avatar||"https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
                   }}
                 ></Image>
               </View>
@@ -186,11 +186,11 @@ const HomeScreen = ({ navigation }) => {
                       width: screenWidth - 80,
                       alignItems: "center",
                       alignContent: "center",
-                      paddingBottom:50
+                      paddingBottom: 10,
                     }}
                     key={index}
                   >
-                    <Course data={e} navigator={navigator} />
+                    <Course data={e} width={width} navigator={navigator} />
                   </View>
                 ))}
               </ScrollView>

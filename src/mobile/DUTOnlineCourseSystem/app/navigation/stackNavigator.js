@@ -5,7 +5,7 @@ import AnnouncementScreen from "../screens/AnnouncementScreen";
 import HomeScreen from "../screens/HomeScreen"
 import ProfileScreen from '../screens/ProfileScreen';
 import MyCourseScreen from '../screens/MyCourseScreen';
-import DetailCourse from "../screens/DetailCourse";
+import DetailCourse from "../screens/DetailCourse/DetailCourse";
 import SettingScreen from "../screens/SettingScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
@@ -18,50 +18,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { StackNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { Text, View, StyleSheet, Image, TouchableOpacity, Button } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import Quizz from "../screens/Quizz"
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator(); 
-// const settingNavigator = createStackNavigator(
-//     {
-//     initialRouteName: "Settings",
-//   },
-//   {
-//     Setting: {
-//       screen: SettingScreen,
-//     },
-//   },
-//   {
-//     defaultNavigationOptions: {
-//       headerStyle: {
-//         backgroundColor: "#006600",
-//       },
-//       headerTitleStyle: {
-//         fontWeight: "bold",
-//         color: "#FFF",
-//       },
-//       headerTintColor: "#FFF",
-//     },
-//   },
 
-// );
-// const settingStack = StackNavigator(
-//   {
-//     Setting: SettingScreen,
-//     Announce: AnnouncementScreen,
-//   },
-//   {
-//     initialRouteName: "Setting",
-//     /* The header config from HomeScreen is now here */
-//     navigationOptions: {
-//       headerStyle: {
-//         backgroundColor: "#f4511e",
-//       },
-//       headerTintColor: "#fff",
-//       headerTitleStyle: {
-//         fontWeight: "bold",
-//       },
-//     },
-//   }
-// );
 const SettingNavigator = () =>{
   return (
     <Stack.Navigator
@@ -102,7 +63,48 @@ const SettingNavigator = () =>{
     </Stack.Navigator>
   );
 }
-
+const HomeNavigator = () =>{
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerBackButtonMenuEnabled: true,
+      }}
+    >
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          headerTitleStyle: {
+            color: "#fff",
+            alignSelf: "center",
+            alignItem: "center",
+          },
+          headerStyle: {
+            backgroundColor: "#024547",
+          },
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetailCourse"
+        component={DetailCourse}
+        options={{
+          title: "Detail course",
+          headerTitleStyle: {
+            color: "#fff",
+            alignSelf: "center",
+            alignItem: "center",
+          },
+          headerStyle: {
+            backgroundColor: "#024547",
+          },
+          headerShown: false,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
 const MainNavigator = () => 
 {   
   let isLogin = useSelector((state)=>state.auth.isLogin)
@@ -168,7 +170,17 @@ const MainNavigator = () =>
           />
           <Tab.Screen
             options={{
-              headerShown: false,
+              headerShown: true,
+              title: "Lesson",
+              headerTitleStyle: {
+                color: "#fff",
+                alignSelf: "center",
+                alignItem: "center",
+              },
+              headerTitleAlign: "center",
+              headerStyle: {
+                backgroundColor: "#024547",
+              },
               showIcon: true,
               tabBarIcon: ({ color }) => (
                 <FontAwesome size={18} color={color} name="bell" />

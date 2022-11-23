@@ -1,3 +1,4 @@
+
 import pathlib
 import uuid
 from django.utils.text import slugify
@@ -8,6 +9,7 @@ from django.utils import timezone
 
 from api_process.constants import ProcessCourseStatus, ProcessLessonStatus
 from api_user.models import User
+from api_course.constants import StarRating
 
 
 def upload_path(instance, filename):
@@ -42,4 +44,15 @@ class ProcessLesson(TimeStampedModel):
 
     class Meta:
         db_table = "process_lesson"
+        ordering = ('-created_at',)
+
+
+class CourseRating(TimeStampedModel):
+    title = models.CharField(max_length=50, default='Send Rating For Course')
+    star_rating = models.IntegerField(choices=StarRating.choices(), default=StarRating.FIVE.value)
+    content = models.CharField(max_length=255, null=True, blank=True)
+    process_course = models.OneToOneField(ProcessCourse, null=True, blank=True, on_delete=models.SET_NULL, related_name="ratings")
+
+    class Meta:
+        db_table = "course_rating"
         ordering = ('-created_at',)
