@@ -33,6 +33,7 @@ Sentry.init({
   dsn: "https://d64daf164ae14fbb8f6dda79e25cdfd3@o4504201565503488.ingest.sentry.io/4504201703129092",
   integrations: [
     new BrowserTracing({
+      tracingOrigins: ["*"],
       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
       tracePropagationTargets: ["localhost", "my-site-url.com", /^\//],
     }),

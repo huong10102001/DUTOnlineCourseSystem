@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
                 ('status', models.CharField(choices=[('OPEN', 'OPEN'), ('IN_PROGRESS', 'IN_PROGRESS'), ('COMPLETED', 'COMPLETED')], default='OPEN', max_length=50)),
                 ('course_title', models.CharField(default='', max_length=50)),
                 ('last_learn_date', models.DateTimeField(default=django.utils.timezone.now, max_length=50)),
+                ('learn_completed_date', models.DateTimeField(blank=True, null=True, max_length=50)),
                 ('course', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='process_course', to='api_course.course')),
                 ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='process_course', to='api_user.user')),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),

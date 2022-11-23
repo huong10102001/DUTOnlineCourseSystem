@@ -16,6 +16,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@sentry/tracing": "^7.21.1",
+    "@sentry/vue": "^7.21.1",
     "@videojs-player/vue": "^1.0.0",
     "@vueup/vue-quill": "^1.0.0",
     "axios": "^0.27.2",

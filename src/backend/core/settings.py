@@ -73,7 +73,8 @@ REST_USE_JWT = True
 SITE_ID = 1
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -83,7 +84,20 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-
+# CORS_ALLOWED_ORIGINS = [
+#     "http://pbl6elearning.me",
+#     "http://188.166.239.51:8000",
+#     "http://localhost:8081",
+#     "http://127.0.0.1:801"
+# ]
+# CORS_ALLOW_METHODS = [
+#     'DELETE',
+#     'GET',
+#     'OPTIONS',
+#     'PATCH',
+#     'POST',
+#     'PUT',
+# ]
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -226,7 +240,8 @@ STATIC_ROOT = join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api_user.Account'
-
+SENTRY_URL_PREFIX = 'http://pbl6elearning.me'  # No trailing slash!
+SENTRY_ALLOW_ORIGIN = "http://pbl6elearning.me"
 sentry_sdk.init(
     dsn=os.getenv('SENTRY_DSN'),
     integrations=[
@@ -243,35 +258,35 @@ sentry_sdk.init(
     send_default_pii=True
 )
 
-LOGGING = {
-    'version': 1,
-    'formatters': {
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'logfile': {
-            'level': 'WARNING',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),
-        },
-        'logstash': {
-            'level': 'DEBUG',
-            'class': 'logstash.TCPLogstashHandler',
-            'host': '146.190.92.238',
-            'port': 9600,  # Default value: 5959
-            'version': 1,
-            # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
-            'message_type': 'django',  # 'type' field in logstash message. Default value: 'logstash'.
-            'fqdn': False,  # Fully qualified domain name. Default value: false.
-            'tags': ['django.request'],  # list of tags. Default: None.
-        },
-    },
-    'loggers': {
-        'django.server': {  # Here is the change
-            'handlers': ['logstash'],
-            'level': 'DEBUG',
-        }
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'formatters': {
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'logfile': {
+#             'level': 'WARNING',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'debug.log'),
+#         },
+#         'logstash': {
+#             'level': 'DEBUG',
+#             'class': 'logstash.TCPLogstashHandler',
+#             'host': '146.190.92.238',
+#             'port': 9600,  # Default value: 5959
+#             'version': 1,
+#             # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+#             'message_type': 'django',  # 'type' field in logstash message. Default value: 'logstash'.
+#             'fqdn': False,  # Fully qualified domain name. Default value: false.
+#             'tags': ['django.request'],  # list of tags. Default: None.
+#         },
+#     },
+#     'loggers': {
+#         'django.server': {  # Here is the change
+#             'handlers': ['logstash'],
+#             'level': 'DEBUG',
+#         }
+#     },
+# }
