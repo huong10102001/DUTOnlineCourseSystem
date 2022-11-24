@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     "corsheaders",
+    'django_crontab',
     'storages',
     "django.contrib.sites",
     # Add the following django-allauth apps
@@ -55,9 +56,10 @@ INSTALLED_APPS = [
     'api_topic',
     'api_course',
     'api_process',
-    'api_quiz',
+    'api_report',
     # swagger
     'drf_yasg',
+
 ]
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
@@ -149,8 +151,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,  # IMPORTANT
-    'BLACKLIST_AFTER_ROTATION': True,  # IMPORTANT
+    'ROTATE_REFRESH_TOKENS': True, # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': True, # IMPORTANT
     'UPDATE_LAST_LOGIN': True,
 }
 
@@ -170,6 +172,19 @@ DATABASES = {
         }
     }
 }
+
+CRONJOBS = [
+    ('*/59 23 * * *', 'api_report.cron_tab.lecturer_report_daily'),
+    ('*/59 23 28 * *', 'api_report.cron_tab.admin_report_monthly'),
+]
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

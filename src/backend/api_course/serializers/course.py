@@ -120,5 +120,10 @@ class ListCourseSerializer(serializers.ModelSerializer):
                 star_rating = instance['ratings']
                 number_rating = list(filter(lambda star: star['star_rating'] is int(number_star), star_rating))
                 instance['ratings'] = number_rating
-        instance['status_rating'] = True if len(CourseRating.objects.filter(Q(process_course__course_id=instance['id']) & Q(process_course__user_id=str(context.get('view').request.user.user.id)))) != 0 else False
+        try:
+            instance['status_rating'] = True if len(CourseRating.objects.filter(
+                Q(process_course__course_id=instance['id']) & Q(
+                    process_course__user_id=str(context.get('view').request.user.user.id)))) != 0 else False
+        except TypeError:
+            instance['status_rating'] = False
         return instance

@@ -21,6 +21,7 @@ import ProfileBasePage from "@/views/profile/index.vue";
 import ProfileDetail from "@/views/profile/detail/index.vue";
 import ProfileEdit from "@/views/profile/edit/index.vue";
 import CertificationPage from '@/views/certification/index.vue';
+import ReportPage from "@/views/report/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -122,6 +123,11 @@ const routes: Array<RouteRecordRaw> = [
           },
         ]
       },
+      {
+        path: 'report',
+        name: 'overview',
+        component: ReportPage
+      }
     ]
   },
   {

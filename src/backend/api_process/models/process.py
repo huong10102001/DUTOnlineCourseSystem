@@ -31,7 +31,7 @@ class ProcessCourse(TimeStampedModel):
 
     class Meta:
         db_table = "process_course"
-        ordering = ('-created_at',)
+        # ordering = ('-created_at',)
 
 
 class ProcessLesson(TimeStampedModel):

@@ -17,6 +17,12 @@ export const ROUTES = {
     roles: [ROLES.ADMIN, ROLES.LECTURER]
   },
 
+  REPORT: {
+    name: 'report',
+    path: '/report',
+    roles: [ROLES.ADMIN, ROLES.LECTURER]
+  },
+
   COURSE_DETAIL: 'course-detail',
   EDIT_COURSE: 'edit-course',
 

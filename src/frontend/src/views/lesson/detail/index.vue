@@ -141,7 +141,7 @@ import {ElNotification} from "element-plus";
           this.lesson.status = PROCESS_STATUS.TESTING
           ElNotification({
             title: 'Quiz is started',
-            message: 'Complete the quiz below before you can continue on next lesson!',
+            message: 'Complete the quiz at the left of next button before you can continue on next lesson!',
             type: 'info',
           })
         } else {
