@@ -3,7 +3,7 @@ pipeline {
   agent none
 
   environment {
-    DOCKER_IMAGE_BACKEND = "bangpham2325/backend_image"
+    DOCKER_IMAGE_BACKEND = "bangpham2325/backend-image"
     DOCKER_IMAGE_FRONTEND = "bangpham2325/frontend-image"
   }
 
