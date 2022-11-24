@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     'api_user',
     'api_topic',
     'api_course',
-    'api_quiz',
     'api_process',
     'api_quiz',
     # swagger
@@ -97,6 +96,25 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     'POST',
 #     'PUT',
 # ]
+
+SENTRY_URL_PREFIX = 'http://pbl6elearning.me'  # No trailing slash!
+SENTRY_ALLOW_ORIGIN = "http://pbl6elearning.me"
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_DSN'),
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -229,23 +247,7 @@ STATIC_ROOT = join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api_user.Account'
-SENTRY_URL_PREFIX = 'http://pbl6elearning.me'  # No trailing slash!
-SENTRY_ALLOW_ORIGIN = "http://pbl6elearning.me"
-sentry_sdk.init(
-    dsn=os.getenv('SENTRY_DSN'),
-    integrations=[
-        DjangoIntegration(),
-    ],
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
-
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
 
 # LOGGING = {
 #     'version': 1,
