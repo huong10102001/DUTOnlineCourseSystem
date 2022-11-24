@@ -9,23 +9,62 @@
         Prev
       </button>
 
-      <button
-        :disabled="isNextDisabled"
-        @click="handleNextLesson"
-        class="button is-light"
-      >
-        Next
-        <font-awesome-icon icon="fa-solid fa-chevron-right" class="ml-2"/>
-      </button>
+      <div>
+        <span v-if="needToDoQuiz">
+          <button
+            @click="openQuiz = true"
+            class="button is-info mr-2"
+          >
+            <font-awesome-icon icon="fa-solid fa-feather" class="mr-2"/>Quiz
+          </button>
+        </span>
+        <span v-if="hasQuizResult">
+          <button
+            @click="openQuizResult = true"
+            class="button is-info mr-2"
+          >
+            <font-awesome-icon icon="fa-solid fa-feather" class="mr-2"/>Quiz Result
+          </button>
+        </span>
+        <button
+          :disabled="isNextDisabled"
+          @click="handleNextLesson"
+          class="button is-light"
+        >
+          Next
+          <font-awesome-icon icon="fa-solid fa-chevron-right" class="ml-2"/>
+        </button>
+      </div>
     </div>
 
     <div class="mt-5">
       <ChapterCollapse
         :chapters="course.chapters"
+        :chapter="chapter"
         :course_id="course.id"
         :course_title="course.title"
       ></ChapterCollapse>
     </div>
+  </div>
+
+  <div v-if="needToDoQuiz">
+    <QuizSection
+      v-show="lesson.quizzes.length != 0 && openQuiz"
+      :quiz="lesson.quizzes[0]"
+      :lesson="lesson"
+      :open-quiz="openQuiz"
+      @closeQuiz="openQuiz = false"
+      @completedQuiz="$emit('completedQuiz')"
+    ></QuizSection>
+  </div>
+  <div v-if="hasQuizResult">
+    <QuizResultSection
+      v-show="lesson.quizzes.length != 0 && openQuizResult"
+      :quiz="lesson.quizzes[0]"
+      :lesson="lesson"
+      :openQuizResult="openQuizResult"
+      @closeQuizResult="openQuizResult = false"
+    ></QuizResultSection>
   </div>
 </template>
 
@@ -35,23 +74,33 @@ import ChapterCollapse from "@/components/ChapterCollapse.vue";
 import {PROCESS_STATUS} from '@/const/process_status';
 import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
-import {lesson} from '@/store/modules/lesson';
+import QuizSection from "@/views/lesson/detail/QuizSection.vue";
+import QuizResultSection from "@/views/lesson/detail/QuizResultSection.vue";
 
 @Options({
   components: {
-    ChapterCollapse
+    ChapterCollapse,
+    QuizSection,
+    QuizResultSection
   },
   props: {
     course: {} as any,
     chapter: {} as any,
-    lesson: {} as any,
+    lesson: {
+      status: "",
+      quizzes: [],
+      quiz_result: []
+    } as any,
     previousLesson: null,
     nextLesson: null,
   },
   data() {
     return {
+      PROCESS_STATUS: PROCESS_STATUS,
       isPrevDisabled: false,
       isNextDisabled: false,
+      openQuiz: false,
+      openQuizResult: false
     }
   },
   methods: {
@@ -68,9 +117,7 @@ import {lesson} from '@/store/modules/lesson';
           chapter_slug: chapter.slug,
           lesson_slug: this.previousLesson.slug
         },
-        meta: {
-          reload: true
-        }
+        query: { course_id: this.course.id }
       })
     },
 
@@ -85,9 +132,7 @@ import {lesson} from '@/store/modules/lesson';
           chapter_slug: chapter.slug,
           lesson_slug: this.nextLesson.slug
         },
-        meta: {
-          reload: true
-        }
+        query: { course_id: this.course.id }
       })
     },
 
@@ -98,7 +143,7 @@ import {lesson} from '@/store/modules/lesson';
         this.isPrevDisabled = false
       }
 
-      if (this.nextLesson) {
+      if (this.nextLesson && this.lesson.status != PROCESS_STATUS.TESTING) {
         if (this.nextLesson.status == PROCESS_STATUS.LOCK)
           this.isNextDisabled = true
         else this.isNextDisabled = false
@@ -113,6 +158,17 @@ import {lesson} from '@/store/modules/lesson';
       handler() {
         this.checkNavigation()
       }
+    }
+  },
+  computed: {
+    needToDoQuiz() {
+      return this.lesson.quizzes.length != 0
+        && this.lesson.status == PROCESS_STATUS.TESTING
+    },
+    hasQuizResult() {
+      if (!this.lesson.quiz_result) return false
+      return this.lesson.quiz_result.length != 0
+        && this.lesson.status == PROCESS_STATUS.COMPLETED
     }
   },
   beforeUpdate() {

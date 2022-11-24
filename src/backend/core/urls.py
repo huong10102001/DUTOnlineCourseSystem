@@ -29,5 +29,7 @@ urlpatterns = [
     url(r"api/v1/users/", include('api_user.urls')),
     url(r"api/v1/topics/", include('api_topic.urls')),
     url(r"api/v1/courses/", include('api_course.urls')),
+    url(r"api/v1/quizzes/", include('api_quiz.urls')),
     url(r"api/v1/process_course/", include('api_process.urls')),
+    url(r"api/v1/quizzes/", include('api_quiz.urls')),
 ]

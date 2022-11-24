@@ -37,7 +37,7 @@ class CourseViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=True, url_path="process-retrieve")
     def process_retrieve(self, request, *args, **kwargs):
-        course_obj = ListCourseSerializer(self.get_object()).data
+        course_obj = ListCourseSerializer(self.get_object(), context=self.get_parser_context(request)).data
         user_obj = request.user.user
         res_data = CourseService.get_with_process(user_obj, course_obj)
         process_course = ProcessCourse.objects.filter(Q(course_id=self.kwargs['pk']) & Q(user_id=user_obj.pk)).order_by(

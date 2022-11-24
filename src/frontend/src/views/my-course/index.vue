@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container p-2">
+  <div class="main-container p-2" v-show="!is_loading">
     <div class="course-container">
       <h1>My course</h1>
       <el-row :gutter="40">
@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { mapActions, mapMutations } from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import CourseItem from "@/components/CourseItem.vue";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import Course from "@/types/course/CourseItem";
@@ -63,6 +63,9 @@ import Pagination from "@/components/Pagination.vue";
         this.$router.replace({query: this.query}).catch((err: any) => err);
       },
     }
+  },
+  computed: {
+    ...mapState(["is_loading"])
   },
   mounted() {
     document.title = 'My Course | E-Learning'

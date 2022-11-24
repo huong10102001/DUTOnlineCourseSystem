@@ -22,6 +22,7 @@
           :lesson="lesson"
           :previous-lesson="previousLesson"
           :next-lesson="nextLesson"
+          @completedQuiz="updateLessonCompleted"
         ></NavigationSection>
       </el-col>
     </el-row>
@@ -64,10 +65,12 @@ import {ElNotification} from "element-plus";
         attachment: {
           file_type: ""
         },
+        quizzes: []
       },
       chapter: {},
       lesson_index: -1,
       chapter_index: -1,
+      quiz_result: []
     }
   },
   methods: {
@@ -79,9 +82,10 @@ import {ElNotification} from "element-plus";
     async verifyLessonProcess() {
       if (this.lesson.status == PROCESS_STATUS.OPEN) {
         if (this.lesson.attachment.file_type == 'Document') {
+          this.lesson.status = PROCESS_STATUS.IN_PROGRESS
           await this.updateLessonCompleted()
         } else {
-          const response : any = await this.UPDATE_LESSON_PROCESS({
+          const response: any = await this.UPDATE_LESSON_PROCESS({
             course_id: this.course.id,
             data: {
               status: PROCESS_STATUS.IN_PROGRESS,
@@ -122,6 +126,35 @@ import {ElNotification} from "element-plus";
     },
 
     async updateLessonCompleted() {
+      if (this.lesson.status == PROCESS_STATUS.IN_PROGRESS
+        && this.lesson.quizzes.length != 0) {
+
+        const response: any = await this.UPDATE_LESSON_PROCESS({
+          course_id: this.course.id,
+          data: {
+            status: PROCESS_STATUS.TESTING,
+            lesson_id: this.lesson.id
+          }
+        })
+
+        if (response.status == 204) {
+          this.lesson.status = PROCESS_STATUS.TESTING
+          ElNotification({
+            title: 'Quiz is started',
+            message: 'Complete the quiz below before you can continue on next lesson!',
+            type: 'info',
+          })
+        } else {
+          ElNotification({
+            title: 'Error',
+            message: 'An error occurred!',
+            type: 'error',
+          })
+        }
+
+        return
+      }
+
       const response: any = await this.UPDATE_LESSON_PROCESS({
         course_id: this.course.id,
         data: {
@@ -145,7 +178,7 @@ import {ElNotification} from "element-plus";
       }
     },
 
-    async handleVideoLesson(){
+    async handleVideoLesson() {
       if (this.lesson.status != PROCESS_STATUS.IN_PROGRESS) return
       await this.updateLessonCompleted()
     }

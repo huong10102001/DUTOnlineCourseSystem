@@ -1,13 +1,11 @@
 <template>
-  <router-view></router-view>
+  <router-view :key="$route.params.lesson_slug"></router-view>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 
-@Options({
-  
-})
+@Options({})
 
 export default class LessonBasePage extends Vue {
 }

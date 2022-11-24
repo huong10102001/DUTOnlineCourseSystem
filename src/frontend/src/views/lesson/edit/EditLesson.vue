@@ -1,100 +1,102 @@
 <template>
-  <CoverImage
-    :image="course.background"
-    :is_freeze="true"
-  >
-  </CoverImage>
+  <div class="edit-section">
+    <CoverImage
+      :image="course.background"
+      :is_freeze="true"
+    >
+    </CoverImage>
 
-  <el-form
-    ref="formRef"
-    label-position="top"
-    label-width="100px"
-    :model="lesson"
-    size="large"
-    class="p-6"
-    :disabled="is_freeze"
-    :rules="rules"
-  >
+    <el-form
+      ref="formRef"
+      label-position="top"
+      label-width="100px"
+      :model="lesson"
+      size="large"
+      class="p-6"
+      :disabled="is_freeze"
+      :rules="rules"
+    >
 
-    <div class="tags are-large is-flex is-justify-content-end">
-      <span class="is-size-6">{{ info_text}}</span>
-    </div>
+      <div class="tags are-large is-flex is-justify-content-end">
+        <span class="is-size-6">{{ info_text }}</span>
+      </div>
 
-    <el-form-item prop="title">
-      <span class="title is-5">Title</span>
-      <el-input v-model="lesson.title" placeholder="Enter lesson title"/>
-    </el-form-item>
+      <el-form-item prop="title">
+        <span class="title is-5">Title</span>
+        <el-input v-model="lesson.title" placeholder="Enter lesson title"/>
+      </el-form-item>
 
-    <el-form-item prop="type">
-      <span class="title is-5 mt-3" style="width: 100%">Type</span>
-      <el-radio-group v-model="type" size="large">
-        <el-radio-button label="Video"/>
-        <el-radio-button label="Document"/>
-      </el-radio-group>
-    </el-form-item>
+      <el-form-item prop="type">
+        <span class="title is-5 mt-3" style="width: 100%">Type</span>
+        <el-radio-group v-model="type" size="large">
+          <el-radio-button label="Video"/>
+          <el-radio-button label="Document"/>
+        </el-radio-group>
+      </el-form-item>
 
-    <FileUpload :type="type" @changeFile="file = $event"></FileUpload>
+      <FileUpload :type="type" @changeFile="file = $event"></FileUpload>
 
-    <el-form-item>
+      <el-form-item>
       <span class="title is-5">
         Current Attachment
         <a :href="lesson.attachment.file" target="_blank">
           <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square"/>
         </a>
       </span>
-      <el-tooltip
-        class="box-item"
-        effect="dark"
-        :content="copyContent"
-        placement="top"
-      >
-        <el-input
-          v-model="lesson.attachment.file"
-          placeholder="Enter lesson title"
-          readonly
-          suffix-icon="Link"
-          @click="copyURL(lesson.attachment.file)"
-        />
-      </el-tooltip>
-    </el-form-item>
+        <el-tooltip
+          class="box-item"
+          effect="dark"
+          :content="copyContent"
+          placement="top"
+        >
+          <el-input
+            v-model="lesson.attachment.file"
+            placeholder="Enter lesson title"
+            readonly
+            suffix-icon="Link"
+            @click="copyURL(lesson.attachment.file)"
+          />
+        </el-tooltip>
+      </el-form-item>
 
-    <span class="title is-5 mt-3">
-      Content
-      <button class="button is-light ml-2" style="font-size: 0.6rem" @click.prevent="expandEditor = true">
-        <font-awesome-icon icon="fa-solid fa-up-right-and-down-left-from-center" class="mr-1"/> Expand
-      </button>
-    </span>
-    <div :class="['mt-4', {expandEditor: expandEditor}]">
-      <div :class="{expandEditor__content: expandEditor}">
-        <TextEditor
-          ref="editor"
-          :is_freeze="is_freeze"
-          :init_content="lesson.content"
-          @contentChange="lesson.content = $event"
-        />
-        <div class="is-flex is-justify-content-center">
-          <button v-show="expandEditor" class="button is-rounded" @click.prevent="expandEditor = false">Close</button>
+      <span class="title is-5 mt-3">
+        Content
+        <button class="button is-light ml-2" style="font-size: 0.6rem" @click.prevent="expandEditor = true">
+          <font-awesome-icon icon="fa-solid fa-up-right-and-down-left-from-center" class="mr-1"/> Expand
+        </button>
+      </span>
+      <div :class="['mt-4', {expandEditor: expandEditor}]">
+        <div :class="{expandEditor__content: expandEditor}">
+          <TextEditor
+            ref="editor"
+            :is_freeze="is_freeze"
+            :init_content="lesson.content"
+            @contentChange="lesson.content = $event"
+          />
+          <div class="is-flex is-justify-content-center">
+            <button v-show="expandEditor" class="button is-rounded" @click.prevent="expandEditor = false">Close</button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="is-flex is-justify-content-space-between">
-      <button
-        class="button is-success is-rounded"
-        @click.prevent="handleSubmit($refs.formRef)"
-        :disabled="is_freeze">
-        <el-icon v-if="is_freeze" class="is-loading mr-2">
-          <Loading/>
-        </el-icon>
-        Save
-      </button>
-      <button
-        class="button is-dark is-rounded"
-        @click.prevent="resetForm($refs.formRef)"
-        :disabled="is_freeze">
-        Reset
-      </button>
-    </div>
-  </el-form>
+      <div class="is-flex is-justify-content-space-between">
+        <button
+          class="button is-success is-rounded"
+          @click.prevent="handleSubmit($refs.formRef)"
+          :disabled="is_freeze">
+          <el-icon v-if="is_freeze" class="is-loading mr-2">
+            <Loading/>
+          </el-icon>
+          Save
+        </button>
+        <button
+          class="button is-dark is-rounded"
+          @click.prevent="resetForm($refs.formRef)"
+          :disabled="is_freeze">
+          Reset
+        </button>
+      </div>
+    </el-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -115,15 +117,26 @@ import FileUpload from "@/components/FileUpload.vue";
   },
   props: {
     course: {} as CourseItem,
-    options: []
+    options: [],
+    lesson: {
+      type: Object,
+      default: {
+        title: "",
+        content: "",
+        attachment: {
+          file_type: "Video"
+        },
+      },
+    },
+    chapter: {
+      type: Object,
+      default: {
+        title: "",
+      },
+    },
   },
   data() {
     return {
-      lesson: {
-        title: "",
-        content: "",
-        attachment: {},
-      },
       type: "Video",
       file: {} as any,
       is_freeze: false,
@@ -148,7 +161,7 @@ import FileUpload from "@/components/FileUpload.vue";
         if (valid) {
           let formData = new FormData();
 
-          if (this.file != null){
+          if (this.file != null) {
             formData.append("file", this.file.raw ? this.file.raw : this.file)
           }
 
@@ -161,7 +174,7 @@ import FileUpload from "@/components/FileUpload.vue";
 
           const response: any = await this.UPDATE_LESSON({
             course_id: this.course.id,
-            chapter_id: this.currentChapter.id,
+            chapter_id: this.chapter.id,
             lesson_id: this.lesson.id,
             formData: formData
           })
@@ -199,35 +212,29 @@ import FileUpload from "@/components/FileUpload.vue";
       formEl.resetFields()
     },
     async copyURL(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-      this.copyContent = "Copied to clipboard!"
-      setTimeout(() => {this.copyContent = "Click to copy link"}, 3000)
-    } catch($e) {
+      try {
+        await navigator.clipboard.writeText(text);
+        this.copyContent = "Copied to clipboard!"
+        setTimeout(() => {
+          this.copyContent = "Click to copy link"
+        }, 3000)
+      } catch ($e) {
+      }
     }
-  }
   },
   computed: {
-    ...mapGetters("authentication", ["tokenInfo"]),
-    currentChapter() {
-      let index = this.course.chapters.map((chapter: any) => chapter.slug).indexOf(this.$route.params.chapter_slug)
-      return this.course.chapters[index]
-    }
+    ...mapGetters("authentication", ["tokenInfo"])
   },
   updated() {
-    this.info_text = this.info_text + `"${this.currentChapter.title}"`
+    this.info_text = this.info_text + `"${this.chapter.title}"`
   },
-  beforeUpdate() {
-    let chapters = this.course.chapters
-    let chapter_index = chapters.map((chapter: any) => chapter.slug).indexOf(this.$route.params.chapter_slug)
-    let lessons = chapters[chapter_index].lessons
-    let lesson_index = lessons.map((lesson: any) => lesson.slug).indexOf(this.$route.params.lesson_slug)
-    this.lesson = lessons[lesson_index]
+  mounted() {
     this.type = this.lesson.attachment.file_type
   }
 })
 
-export default class EditLesson extends Vue {}
+export default class EditLesson extends Vue {
+}
 </script>
 
 <style lang="scss" scoped>

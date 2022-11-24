@@ -69,7 +69,10 @@ import 'element-plus/theme-chalk/display.css'
 @Options({
   props: {
     userName: "",
-    avatar: ""
+    avatar: {
+      type: String,
+      default: ""
+    }
   }
 })
 

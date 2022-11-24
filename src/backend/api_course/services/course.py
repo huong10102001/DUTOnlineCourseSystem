@@ -28,6 +28,8 @@ class CourseService(BaseService):
 
     @classmethod
     def get_with_process(cls, user_obj, course_obj):
+        from api_process.serializers import ProcessLessonSerializer
+
         process_lesson = ProcessLesson.objects.filter(
                 Q(process_course__course_id=course_obj['id']) & Q(process_course__user_id=user_obj.id))
 
@@ -46,6 +48,7 @@ class CourseService(BaseService):
                 lesson['status'] = \
                     process_lesson_item.status if process_lesson_item else ProcessLessonStatus.LOCK.value
                 lesson['process_lesson_id'] = None if not process_lesson_item else process_lesson_item.id
+                lesson['quiz_result'] = ProcessLessonSerializer(process_lesson_item).data['quiz_results']
         process = ProcessCourse.objects.filter(Q(course_id=course_obj['id']) & Q(user_id=user_obj.pk)).first()
         course_obj['process_status'] = process.status
         return course_obj

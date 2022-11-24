@@ -4,11 +4,13 @@
       style="width: 100%"
       v-for="(chapter, index) in chapters"
       size="large"
+      v-model="activeChapter"
       :key="chapter.id"
     >
 
       <el-collapse-item
-        :name="chapter.id">
+        :name="chapter.id"
+      >
         <template #title>
           <div class="collapse-chapter-header">
             <span>Chapter {{ index + 1 }}: {{ chapter.title }}</span>
@@ -50,7 +52,8 @@
           :key="lesson"
         >
           <div
-            :class="['mt-4', 'm-0', 'child-collapse', 'columns', 'is-vcentered']"
+            :class="['mt-4', 'm-0', 'child-collapse', 'columns', 'is-vcentered',
+              {'isActive': $route.params.lesson_slug == lesson.slug}]"
             @click="
               $route.name == ROUTES.LESSON_DETAIL ?
                 changeLesson(chapter, lesson) : handleLessonPreview(chapter, lesson)"
@@ -102,7 +105,8 @@ import {PROCESS_STATUS} from "@/const/process_status";
   props: {
     chapters: null,
     course_id: String,
-    course_title: String
+    course_title: String,
+    chapter: {id: ""}
   },
   emits: ["updateChapter", "deleteChapter", "deleteLesson"],
   components: {
@@ -116,7 +120,8 @@ import {PROCESS_STATUS} from "@/const/process_status";
       current_chapter: {},
       ROLES: ROLES,
       ROUTES: ROUTES,
-      PROCESS_STATUS: PROCESS_STATUS
+      PROCESS_STATUS: PROCESS_STATUS,
+      activeChapter: ""
     };
   },
   methods: {
@@ -223,15 +228,18 @@ import {PROCESS_STATUS} from "@/const/process_status";
           chapter_slug: chapter.slug,
           lesson_slug: lesson.slug
         },
-        meta: {
-          reload: true
-        }
+        query: { course_id: this.course_id }
       })
     }
   },
   computed: {
     ...mapGetters("authentication", ["tokenInfo"]),
     ...mapGetters("user", ["userInfo"]),
+  },
+  beforeUpdate() {
+    if (this.chapter)
+      this.activeChapter = this.chapter.id
+    else this.activeChapter = this.chapters[0].id
   }
 })
 export default class ChapterCollapse extends Vue {
@@ -260,12 +268,20 @@ export default class ChapterCollapse extends Vue {
   padding-left: 5px;
   font-size: 0.9rem;
   font-weight: 450;
+  transition: all 0.2s linear;
 }
 
-.child-collapse:hover {
+.isActive {
+  cursor: pointer;
+  background-color: #024547 !important;
+  color: #fff;
+}
+
+.child-collapse:not(.isActive):hover {
   cursor: pointer;
   background: #ccc !important;
 }
+
 
 .collapse-chapter-header {
   font-size: 16px;
@@ -276,5 +292,4 @@ export default class ChapterCollapse extends Vue {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 </style>
