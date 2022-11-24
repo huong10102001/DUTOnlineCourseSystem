@@ -11,7 +11,6 @@ from api_process.services import ProcessLessonService
 from common.constants.api_constants import HttpMethod
 from rest_framework import status
 from django.db.models import Q
-from api_user.constants import Roles
 
 
 class CourseViewSet(BaseViewSet):
@@ -21,37 +20,6 @@ class CourseViewSet(BaseViewSet):
         "list": ListCourseSerializer,
         "retrieve": ListCourseSerializer,
     }
-
-    def list(self, request, *args, **kwargs):
-        user_obj = request.user.user
-        params = request.query_params
-        res_data = CourseService.get_list_courses(user_obj, params)
-
-        page = self.paginate_queryset(res_data)
-
-        if page:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(res_data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @action(methods=[HttpMethod.GET], detail=False, url_path="management")
-    def get_course_management(self, request, *args, **kwargs):
-        user_obj = request.user.user
-        params = request.query_params
-        if user_obj.role != Roles.USER.value:
-            res_data = CourseService.get_course_management(user_obj, params)
-
-            page = self.paginate_queryset(res_data)
-
-            if page:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
-
-            serializer = self.get_serializer(res_data, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(data=None, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=True, lookup_field="slug", url_path="content",
             serializer_class=ListCourseSerializer)

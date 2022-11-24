@@ -13,7 +13,6 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.colors import HexColor
 from io import BytesIO
 from django.core.files.base import ContentFile
-from django.db.models.functions import Lower
 
 
 class CourseService(BaseService):
@@ -30,7 +29,7 @@ class CourseService(BaseService):
     @classmethod
     def get_with_process(cls, user_obj, course_obj):
         process_lesson = ProcessLesson.objects.filter(
-            Q(process_course__course_id=course_obj['id']) & Q(process_course__user_id=user_obj.id))
+                Q(process_course__course_id=course_obj['id']) & Q(process_course__user_id=user_obj.id))
 
         if not process_lesson.exists():
             data = {
@@ -39,7 +38,7 @@ class CourseService(BaseService):
             }
             ProcessCourseService.create_process(data, course_obj)
             process_lesson = ProcessLesson.objects.filter(
-                Q(process_course__course_id=course_obj['id']) & Q(process_course__user_id=user_obj.id))
+                    Q(process_course__course_id=course_obj['id']) & Q(process_course__user_id=user_obj.id))
 
         for chapter in course_obj['chapters']:
             for lesson in chapter['lessons']:
@@ -100,33 +99,6 @@ class CourseService(BaseService):
         c.drawCentredString(230, 150, "dd-mm-yyyy")
         c.save()
         # save pdf
-        file_data = ContentFile(buffer.getvalue(), name='certificate.pdf')
+        file_data = ContentFile(buffer.getvalue(),  name='certificate.pdf')
         buffer.close()
         return file_data
-
-    @classmethod
-    def get_list_courses(cls, user_obj, params=None):
-        ft = Q(status=CourseStatus.PUBLISHED.value)
-
-        if params.get('title'):
-            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
-        if params.getlist('topic_ids'):
-            ft &= Q(topics__id__in=params.getlist('topic_ids'))
-
-        return Course.objects.annotate(title_lower=Lower('title')).filter(ft)
-
-    @classmethod
-    def get_course_management(cls, user_obj, params=None):
-        ft = Q()
-
-        if user_obj.role == Roles.LECTURER.value:
-            ft &= Q(user=user_obj)
-
-        if params.get('title'):
-            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
-        if params.get('status'):
-            ft &= Q(status=params.get('status'))
-        if params.getlist('topic_ids'):
-            ft &= Q(topics__id__in=params.getlist('topic_ids'))
-
-        return Course.objects.annotate(title_lower=Lower('title')).filter(ft)
