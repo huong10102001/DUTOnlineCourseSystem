@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     "corsheaders",
+    'django_elasticsearch_dsl',
     'django_crontab',
     'storages',
     "django.contrib.sites",
@@ -60,6 +63,51 @@ INSTALLED_APPS = [
     'drf_yasg',
 
 ]
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
+LOGGING = {
+  'version': 1,
+  'disable_existing_loggers': False,
+  'formatters': {
+      'simple': {
+          'format': '[%(asctime)s] %(levelname)s|%(name)s|%(message)s',
+          'datefmt': '%Y-%m-%d %H:%M:%S',
+      },
+  },
+  'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'logstash': {
+            'level': 'WARNING',
+            'class': 'logstash.TCPLogstashHandler',
+            'host': '146.190.92.238',
+            'port': 5044, # Default value: 5044
+            'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+            'message_type': 'django',  # 'type' field in logstash message. Default value: 'logstash'.
+            'fqdn': True, # Fully qualified domain name. Default value: false.
+            'tags': ['django.request'], # list of tags. Default: None.
+        },
+  },
+  'loggers': {
+        'django.request': {
+            'handlers': ['console', 'logstash'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        'django': {
+          'handlers': ['console', 'logstash'],
+          'level': 'INFO',
+          'propagate': True,
+        }
+    }
+}
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -97,8 +145,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     'POST',
 #     'PUT',
 # ]
-
-
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
@@ -133,8 +179,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True, # IMPORTANT
-    'BLACKLIST_AFTER_ROTATION': True, # IMPORTANT
+    'ROTATE_REFRESH_TOKENS': True,  # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': True,  # IMPORTANT
     'UPDATE_LAST_LOGIN': True,
 }
 
@@ -244,37 +290,3 @@ STATIC_ROOT = join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api_user.Account'
-
-
-# LOGGING = {
-#     'version': 1,
-#     'formatters': {
-#         'simple': {
-#             'format': '%(levelname)s %(message)s'
-#         },
-#     },
-#     'handlers': {
-#         'logfile': {
-#             'level': 'WARNING',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'debug.log'),
-#         },
-#         'logstash': {
-#             'level': 'DEBUG',
-#             'class': 'logstash.TCPLogstashHandler',
-#             'host': '146.190.92.238',
-#             'port': 9600,  # Default value: 5959
-#             'version': 1,
-#             # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
-#             'message_type': 'django',  # 'type' field in logstash message. Default value: 'logstash'.
-#             'fqdn': False,  # Fully qualified domain name. Default value: false.
-#             'tags': ['django.request'],  # list of tags. Default: None.
-#         },
-#     },
-#     'loggers': {
-#         'django.server': {  # Here is the change
-#             'handlers': ['logstash'],
-#             'level': 'DEBUG',
-#         }
-#     },
-# }
