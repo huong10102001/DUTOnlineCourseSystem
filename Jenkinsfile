@@ -62,6 +62,9 @@ pipeline {
                sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker pull bangpham2325/backend-image:latest"
                sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker pull bangpham2325/frontend-image:latest"
                sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker-compose up -d"
+               sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker exec -i django_container service cron start"
+               sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker exec -i django_container service cron status"
+               sh "ssh  -o StrictHostKeyChecking=no  bangpham@10.104.0.3 sudo docker exec -i django_container python3 manage.py crontab add"
             }
             echo "success login"
         }

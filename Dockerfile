@@ -1,7 +1,7 @@
 FROM python:3.7-slim
 ENV PYTHONUNBUFFERED=1
-ARG APP_USER=appuser
-RUN groupadd -r ${APP_USER} && useradd --no-log-init -r -g ${APP_USER} ${APP_USER}
+#ARG APP_USER=appuser
+#RUN groupadd -r ${APP_USER} && useradd --no-log-init -r -g ${APP_USER} ${APP_USER}
 RUN mkdir /django/
 WORKDIR /django/
 # ADD src /django
@@ -15,6 +15,8 @@ RUN set -ex \
     && apt-get update && apt-get install -y $RUN_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update
+RUN apt-get install -y cron && touch /var/log/cron.log
 #use python3
 RUN ln -s /usr/bin/python3 /usr/bin/python & \
     ln -s /usr/bin/pip3 /usr/bin/pip
@@ -61,11 +63,11 @@ ENV UWSGI_STATIC_MAP="/static/=/code/static/" UWSGI_STATIC_EXPIRES_URI="/static/
 # Deny invalid hosts before they get to Django (uncomment and change to your hostname(s)):
 # ENV UWSGI_ROUTE_HOST="^(?!localhost:8000$) break:400"
 
-# Change to a non-root user
-USER ${APP_USER}:${APP_USER}
-
-# Uncomment after creating your docker-entrypoint.sh
-# ENTRYPOINT ["/code/docker-entrypoint.sh"]
-
-# Start uWSGI
-CMD ["uwsgi", "--buffer-size=32768 --show-config"]
+## Change to a non-root user
+#USER ${APP_USER}:${APP_USER}
+#
+## Uncomment after creating your docker-entrypoint.sh
+## ENTRYPOINT ["/code/docker-entrypoint.sh"]
+#
+## Start uWSGI
+#CMD ["uwsgi", "--buffer-size=32768 --show-config"]
