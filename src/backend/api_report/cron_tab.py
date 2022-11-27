@@ -1,12 +1,14 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db.models import Count
-
 from api_course.models import Course
 from api_process.models import ProcessCourse
+from api_process.serializers import ProcessCourseReminderSerializer
 from api_report.models import LecturerReport, AdminReport
 from api_user.models import User
 from django.db.models import Q
+from django.core.mail import send_mail, send_mass_mail
+from api_notification.models import Notification
 
 
 def lecturer_report_daily():
@@ -36,3 +38,20 @@ def admin_report_monthly():
     lecturer_month = user.filter(Q(role='LECTURER') & Q(created_at__month=str(current_month))).count()
     AdminReport(month=datetime.now().date(), total_course=course_month,
                 total_user=user_month, total_lecturer=lecturer_month).save()
+
+
+def reminder_after_three_day():
+    subject = 'Elearning Reminder'
+    message_list = []
+    notification = []
+    email_from = 'elearningpbl6@gmail.com'
+    course_list = ProcessCourse.objects.select_related('user').exclude(Q(user__role='ADMIN') | Q(status='COMPLETED'))\
+        .filter(Q(last_learn_date__day=(datetime.now() - timedelta(days=15)).day) | Q(last_learn_date__month=(datetime.now() - timedelta(days=30)).month))
+    course_process = ProcessCourseReminderSerializer(course_list, many=True).data
+    for course_reminder in course_process:
+        content = f'Hi {course_reminder.get("user")["full_name"]}, This is a friendly reminder from elearning that you have active courses is {course_reminder.get("course_title")} that are incomplete'
+        message = (subject, content, email_from, [course_reminder.get('user').get('account')['email']])
+        message_list.append(message)
+        notification.append(Notification(title=subject, content=content, user_reminder_id=course_reminder.get("user")["id"], course_id=str(course_reminder.get("course"))))
+    Notification.objects.bulk_create(notification)
+    send_mass_mail(tuple(message_list), fail_silently=False)
