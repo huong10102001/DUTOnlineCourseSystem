@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="16">
+  <el-row v-if="userInfo.role == ROLES.ADMIN" :gutter="16">
     <el-col :sm="6" :xs="12">
       <div class="total">
         <h1>Learners</h1>
@@ -25,10 +25,32 @@
       </div>
     </el-col>
   </el-row>
+  <el-row v-if="userInfo.role == ROLES.LECTURER" :gutter="16">
+    <el-col :sm="8" :xs="24">
+      <div class="total">
+        <h1>Learners</h1>
+        <span>{{ report.total_user }}</span>
+      </div>
+    </el-col>
+    <el-col :sm="8" :xs="24">
+      <div class="total">
+        <h1>Courses</h1>
+        <span>{{ report.total_course }}</span>
+      </div>
+    </el-col>
+    <el-col :sm="8" :xs="24">
+      <div class="total">
+        <h1>Profit</h1>
+        <span>$0.0</span>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import {ROLES} from "@/const/roles";
+import {mapGetters, mapState} from "vuex";
 
 @Options({
   props: {
@@ -40,9 +62,12 @@ import {Options, Vue} from 'vue-class-component';
   },
   data() {
     return {
-
+      ROLES: ROLES
     }
-  }
+  },
+  computed: {
+    ...mapGetters("user", ["userInfo"]),
+  },
 })
 export default class TotalSection extends Vue {
 }

@@ -6,13 +6,13 @@
         <strong class="tag is-dark">Score achieved: {{ lesson.quiz_result[0].score }} points</strong>
       </div>
 
-      <button
-        class="button is-info mb-4 is-uppercase"
-        @click="showAnswer = !showAnswer"
+      <span
+        class="button is-light is-info mb-4 is-uppercase"
         style="width: 100%; font-weight: 500"
+        @click="showAnswer = !showAnswer"
       >
-        {{ showAnswer ? 'Hide correct answers' : 'Show correct answers' }}
-      </button>
+        {{ showAnswer ? 'Correct answers' : 'Show correct answers' }}
+      </span>
 
       <el-scrollbar class="quiz-section__content mb-4" v-show="showAnswer">
         <el-form label-position="top" size="large">
@@ -135,15 +135,21 @@ import {QUIZ_PRIORITY} from "@/const/quiz_priority";
       QUIZ_TYPES: QUIZ_TYPES,
       QUIZ_LEVEL: QUIZ_PRIORITY,
       radio_temp: [],
-      showAnswer: false,
+      showAnswer: true,
     }
   },
   methods: {
-    mapLevel(level: string){
-      switch (level){
-        case QUIZ_PRIORITY.LOW: return 'EASY'; break;
-        case QUIZ_PRIORITY.MEDIUM: return level; break;
-        case QUIZ_PRIORITY.HIGH: return 'HARD'; break;
+    mapLevel(level: string) {
+      switch (level) {
+        case QUIZ_PRIORITY.LOW:
+          return 'EASY';
+          break;
+        case QUIZ_PRIORITY.MEDIUM:
+          return level;
+          break;
+        case QUIZ_PRIORITY.HIGH:
+          return 'HARD';
+          break;
       }
     }
   },
@@ -177,6 +183,7 @@ export default class QuizResultSection extends Vue {
     z-index: 2000;
     padding: 20px;
     width: 96%;
+    max-width: 1200px;
     max-height: 90vh;
     background-color: white;
     transform: translate(-50%, -50%);
@@ -200,7 +207,7 @@ export default class QuizResultSection extends Vue {
     padding: 20px;
     border: 2px dashed #eee;
     border-radius: 4px;
-    height: 500px;
+    height: calc(90vh - 300px);
   }
 }
 </style>

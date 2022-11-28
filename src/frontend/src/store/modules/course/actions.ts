@@ -21,6 +21,10 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+  [ActionTypes.FETCH_COURSE_MANAGEMENT](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
   [ActionTypes.FETCH_COURSE_DETAIL](
     { commit }: AugmentedActionContext,
     slug: string
@@ -42,6 +46,11 @@ export interface Actions {
 export const actions: ActionTree<State, State> & Actions = {
   async [ActionTypes.FETCH_COURSES]({ commit }, params) {
     let data: any = await CourseService.getAll(params)
+    return data
+  },
+
+  async [ActionTypes.FETCH_COURSE_MANAGEMENT]({ commit }, params) {
+    let data: any = await CourseService.get_course_management(params)
     return data
   },
 

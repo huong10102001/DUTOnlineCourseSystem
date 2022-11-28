@@ -65,7 +65,12 @@
       <restricted-view :routes="[ROUTES.MY_COURSE.name]">
         <div class="is-flex is-justify-content-end mt-3 mr-2"
              style="font-size: 0.8rem; font-weight: 450; color: #777777">
-          {{ course.lessons_completed }} / {{ total_lesson }}
+          <span v-if="course.lessons_completed != total_lesson">
+            {{ course.lessons_completed }} / {{ total_lesson }}
+          </span>
+          <span v-else>
+            Completed
+          </span>
         </div>
         <div class="progress-bar">
           <el-progress

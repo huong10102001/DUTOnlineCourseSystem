@@ -7,7 +7,7 @@
         <small style="font-size: 0.8rem">Need minimum {{ quiz.threshold }} points to pass this quiz</small>
       </div>
 
-      <el-scrollbar max-height="60vh" class="mb-4" style="padding: 20px">
+      <el-scrollbar class="quiz-section__content mb-4" style="padding: 20px">
         <el-form :model="quizForm" label-position="top" size="large">
           <div
             class="quiz-section__question"
@@ -267,6 +267,12 @@ export default class QuizSection extends Vue {
     }
   }
 
+  &__content {
+    padding: 20px;
+    border: 2px dashed #eee;
+    border-radius: 4px;
+    height: calc(90vh - 300px);
+  }
 }
 
 </style>

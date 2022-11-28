@@ -2,7 +2,7 @@
   <div v-show="!is_loading" class="p-3">
     <title-bar :title="'Overview'"></title-bar>
     <TotalSection :report="total_report"></TotalSection>
-    <ChartSection :report="course_report"></ChartSection>
+    <ChartSection v-if="userInfo.role == ROLES.ADMIN" :report="course_report"></ChartSection>
     <ListSection
       :top_users="total_report.top_user"
       :courses="course_report.courses"
@@ -56,6 +56,7 @@ import {ROLES} from "@/const/roles";
         page: 1,
         ordering: "-title",
       },
+      ROLES: ROLES
     }
   },
   methods: {

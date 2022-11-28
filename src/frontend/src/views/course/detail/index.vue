@@ -57,6 +57,7 @@ import RatingSection from "./RatingSection.vue"
     handleAddRating(data: any) {
       data["user"] = this.userInfo
       this.course.ratings.unshift(data)
+      this.course.status_rating = true
     }
   },
   computed: {

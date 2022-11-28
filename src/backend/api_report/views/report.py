@@ -30,23 +30,30 @@ class ReportViewSet(BaseViewSet):
     @action(methods=[HttpMethod.GET], detail=False, url_path="lecturer-report", serializer_class=ReportSerializer)
     def lecturer_report(self, request, *args, **kwargs):
         user_obj = request.user.user
-        res_data = Course.objects.filter(Q(user__id=user_obj.pk))
-        courses = self.get_serializer(res_data, many=True).data
+        rest_data = Course.objects.filter(Q(user__id=user_obj.pk))
+        courses = self.get_serializer(rest_data, many=True).data
         total_user, total_cost = 0, 0
+        total_course = rest_data.count()
         for course in courses:
             total_user += course['total_user_per_course']
             total_cost += course['total_cost_per_course']
-        ordering = request.query_params.get('ordering')
-        if ordering is not None:
-            try:
-                if ordering.startswith("-"):
-                    ordering = ordering[1:]
-                    courses = sorted(courses, key=lambda d: d[ordering], reverse=False)
-                else:
-                    courses = sorted(courses, key=lambda d: d[ordering], reverse=True)
-            except:
-                pass
-        data = {'total_course': res_data.count(), 'total_user': total_user, 'total_cost': total_cost,
+        page = self.paginate_queryset(courses)
+        if page is not None:
+            ordering = request.query_params.get('ordering')
+            if ordering is not None:
+                try:
+                    if ordering.startswith("-"):
+                        ordering = ordering[1:]
+                        page = sorted(page, key=lambda d: d[ordering], reverse=False)
+                    else:
+                        page = sorted(page, key=lambda d: d[ordering], reverse=True)
+                except:
+                    pass
+            serializer = self.get_serializer(page, many=True).data
+            data = {'total_course': total_course, 'total_user': total_user, 'total_cost': total_cost,
+                    'course': serializer}
+            return Response(data, status=status.HTTP_200_OK)
+        data = {'total_course': total_course, 'total_user': total_user, 'total_cost': total_cost,
                 'course': courses}
         return Response(data, status=status.HTTP_200_OK)
 
