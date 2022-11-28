@@ -41,6 +41,17 @@ class LessonSerializer(serializers.ModelSerializer):
         }
         depth = 1
 
+    def to_representation(self, instance):
+        context = self.context
+        instance = super().to_representation(instance)
+        if context.get('view') and context.get('view').action in ['retrieve', 'list']:
+            data = instance['discussions']
+            instance['total_discussion'] = len(data)
+            if len(data) != 0:
+                result = list(filter(lambda kq: kq['parent_discussion'] is None, data))
+                instance['discussions'] = result
+        return instance
+
 
 class CreateLessonSerializer(serializers.ModelSerializer):
     chapter_id = serializers.PrimaryKeyRelatedField(required=False, queryset=Chapter.objects.all(),
