@@ -48,22 +48,29 @@
       </el-table-column>
 
 
-<!--      <el-table-column-->
-<!--        fixed="right"-->
-<!--        label="Operations"-->
-<!--        width="160"-->
-<!--        align="center"-->
-<!--        prop="id"-->
-<!--      >-->
-<!--        <template #default="scope">-->
-<!--          <el-button text size="default" class="p-1" icon="View"-->
-<!--                     @click=""></el-button>-->
-<!--          <el-button text size="default" class="p-1" icon="Edit"-->
-<!--                     @click=""></el-button>-->
-<!--          <el-button text size="default" class="p-1" icon="Lock"></el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column
+        fixed="right"
+        label="Operations"
+        width="160"
+        align="center"
+        prop="id"
+      >
+        <template #default="scope">
+          <el-button text size="default" class="p-1" icon="View"
+                     @click=""></el-button>
+          <el-button text size="default" class="p-1" icon="Edit"
+                     @click=""></el-button>
+          <el-button text size="default" class="p-1" icon="Lock"></el-button>
+        </template>
+      </el-table-column>
     </el-table>
+
+    <Pagination
+      :total="total"
+      :page="query.page"
+      :page_size="query.page_size"
+      @changePage="$emit('changePage', $event)">
+    </Pagination>
   </el-main>
 </template>
 
@@ -88,19 +95,15 @@ import Pagination from "@/components/Pagination.vue";
         } as any
       ]
     },
+    total: 0,
+    query: {
+      page: 1,
+      page_size: 12
+    },
+    loading: false,
   },
   components: {
     Pagination
-  },
-  data() {
-    return {
-      loading: false,
-      total: 0,
-      query: {
-        page: 1,
-        ordering: "-title",
-      },
-    }
   },
 })
 export default class UserSection extends Vue {

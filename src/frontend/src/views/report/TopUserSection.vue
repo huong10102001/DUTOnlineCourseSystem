@@ -3,15 +3,15 @@
     <el-scrollbar max-height="500px">
       <div v-for="(user, index) in top_users" :key="user.id" class="user-record">
         <div class="columns is-flex is-vcentered">
+          <div class="column is-one-fifth is-flex is-justify-content-center">#{{ index+1 }}</div>
           <div class="column is-flex is-justify-content-center">
             <div class="columns is-flex is-vcentered">
-              <div class="column">#{{ index+1 }}</div>
               <div class="column is-flex is-justify-content-center">
                 <el-avatar :size="60" :src="user.avatar">
                   <img src="@/assets/vectors/default_avatar.svg"/>
                 </el-avatar>
               </div>
-              <div class="column is-flex is-justify-content-center is-capitalized">
+              <div class="column is-capitalized" style="min-width: 200px">
                 <strong>{{ user.full_name }}</strong>
               </div>
             </div>
