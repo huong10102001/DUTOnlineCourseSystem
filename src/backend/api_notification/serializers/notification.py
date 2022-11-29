@@ -7,7 +7,7 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ['id', 'title', 'content', 'user_reply', 'user_reminder', 'discussion', 'course', 'isRead']
+        fields = ['id', 'title', 'content', 'user_reply', 'user_reminder', 'discussion', 'course_id', 'isRead']
         extra_kwargs = {
             'user_reply': {'required': False},
             'discussion': {'required': False},
@@ -24,6 +24,6 @@ class NotificationSerializer(serializers.ModelSerializer):
             course = Course.objects.filter(id=chapter['course_id']).values('slug').first()
             instance['link_comment'] = '/courses/' + course['slug'] + '/chapters/' + str(chapter['id']) + '/lessons/' + str(lesson['id']) + '/'
         if instance['user_reminder'] is not None:
-            course = Course.objects.filter(id=instance['course']).values('slug').first()
+            course = Course.objects.filter(id=instance['course_id']).values('slug').first()
             instance['link_course_reminder'] = '/courses/' + course['slug'] + '/' if course['slug'] is not None else ""
         return instance
