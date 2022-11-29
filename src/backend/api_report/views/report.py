@@ -17,7 +17,6 @@ from common.constants.api_constants import HttpMethod
 from rest_framework import status
 from django.db.models import Q
 from django.db.models import Count
-from django.db.models import F, Func, Value, CharField
 
 MONTH_LIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
               'November', 'December']
@@ -118,6 +117,7 @@ class ReportViewSet(BaseViewSet):
         report_data = {'month': MONTH_LIST, 'total_course': total_course}
         page = self.paginate_queryset(rest_data)
         if page is not None:
+            rest_data = page
             ordering = request.query_params.get('ordering')
             if ordering is not None:
                 try:
@@ -148,6 +148,7 @@ class ReportViewSet(BaseViewSet):
         report_data = {**report_data, **report_user}
         page = self.paginate_queryset(rest_data)
         if page is not None:
+            rest_data = page
             ordering = request.query_params.get('ordering')
             if ordering is not None:
                 try:
