@@ -16,10 +16,10 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 class UserViewSet(BaseViewSet):
     queryset = User.objects.all()
-    permission_classes = [UserPermission]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     permission_map = {
-        "retrieve": UserPermission
+        "retrieve": [IsAuthenticated]
     }
 
     def create(self, request, *args, **kwargs):
@@ -42,7 +42,7 @@ class UserViewSet(BaseViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'], url_path="change-password", permission_classes=[UserPermission])
+    @action(detail=False, methods=['post'], url_path="change-password", permission_classes=[IsAuthenticated])
     def change_password(self, request, *args, **kwargs):
         user_obj = request.user.user
         account = Account.objects.filter(id=user_obj.account_id)
