@@ -2,7 +2,7 @@
   <el-row v-if="userInfo.role == ROLES.ADMIN" :gutter="16">
     <el-col :sm="6" :xs="12">
       <div class="total">
-        <h1>Learners</h1>
+        <h1>Users</h1>
         <span>{{ report.total_user }}</span>
       </div>
     </el-col>
@@ -28,7 +28,7 @@
   <el-row v-if="userInfo.role == ROLES.LECTURER" :gutter="16">
     <el-col :sm="8" :xs="24">
       <div class="total">
-        <h1>Learners</h1>
+        <h1>Users</h1>
         <span>{{ report.total_user }}</span>
       </div>
     </el-col>

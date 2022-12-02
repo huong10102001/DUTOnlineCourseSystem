@@ -66,12 +66,12 @@
       </el-table-column>
     </el-table>
 
-<!--    <Pagination-->
-<!--      :total="total"-->
-<!--      :page="query.page"-->
-<!--      :page_size="12"-->
-<!--      @changePage="query.page = $event">-->
-<!--    </Pagination>-->
+    <Pagination
+      :total="total"
+      :page="query.page"
+      :page_size="query.page_size"
+      @changePage="$emit('changePage', $event)">
+    </Pagination>
   </el-main>
 </template>
 
@@ -101,19 +101,20 @@ import Pagination from "@/components/Pagination.vue";
         },
       ]
     },
+    total: 0,
+    query: {
+      page: 1,
+      page_size: 12,
+      ordering: "-title",
+    },
+    loading: false,
   },
   components: {
     Pagination
   },
   data() {
     return {
-      loading: false,
       COURSE_STATUS: COURSE_STATUS,
-      total: 0,
-      query: {
-        page: 1,
-        ordering: "-title",
-      },
     }
   },
 })
