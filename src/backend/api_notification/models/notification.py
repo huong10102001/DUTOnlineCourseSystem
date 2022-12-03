@@ -8,7 +8,7 @@ from api_course.models import Discussion, Course
 class Notification(TimeStampedModel):
     title = models.CharField(max_length=150)
     content = models.TextField(null=True, blank=True)
-    user_reminder = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="notification_user_reminder")
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="notification_user")
     user_reply = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="notification_user_reply")
     discussion = models.ForeignKey(Discussion, null=True, blank=True, on_delete=models.SET_NULL, related_name="notification")
     course = models.ForeignKey(Course, null=True, blank=True, on_delete=models.SET_NULL,

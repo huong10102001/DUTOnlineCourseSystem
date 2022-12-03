@@ -10,6 +10,7 @@
     </div>
     <div class="dropdown-menu" id="dropdown-notification" role="menu">
       <div class="dropdown-content">
+        <p class="p-3" style="font-size: 1rem">Notifications</p>
         <el-scrollbar
           height="400px"
           @scroll="handleScroll"
@@ -18,8 +19,8 @@
             <div
               v-for="noti in notifications"
               :key="noti.id"
-              @mouseenter="handleChangeState"
-              @mouseleave="isHover = false"
+              @mouseenter="handleChangeState(); isHover = true"
+              @mouseleave="isHover = false; query.page=1"
             >
               <router-link
                 :to="noti.link_comment"
@@ -40,25 +41,28 @@
                   </div>
                 </div>
               </router-link>
-              <div
-                :class="['columns', 'is-flex', 'is-vcentered', 'notification-item', {'isRead': noti.isRead}]"
-                v-if="noti.user_reminder"
+              <router-link
+                :to="noti.link_course_reminder"
+                v-if="noti.link_course_reminder"
+                :class="['notification-item', {'isRead': noti.isRead}]"
               >
-                <div class="column is-one-quarter">
-                  <figure class="image is-64x64">
-                    <img src="@/assets/images/notification-bell.png" class="is-rounded"
-                         style="height: 100%">
-                  </figure>
+                <div class="columns is-flex is-vcentered">
+                  <div class="column is-one-quarter">
+                    <figure class="image is-64x64">
+                      <img src="@/assets/images/notification-bell.png" class="is-rounded"
+                           style="height: 100%">
+                    </figure>
+                  </div>
+                  <div class="column">
+                    <p>{{ noti.title }}</p>
+                    <p style="font-size: 0.9rem; color: #999">{{ noti.content }}</p>
+                  </div>
                 </div>
-                <div class="column">
-                  <p>{{ noti.title }}</p>
-                  <p style="font-size: 0.9rem; color: #999">{{ noti.content }}</p>
-                </div>
-              </div>
+              </router-link>
             </div>
           </div>
-          <span class="p-6 is-flex is-justify-content-center">
-            <button v-if="loading" class="button is-text" disabled style="text-decoration: none">
+          <span v-if="loading" class="p-6 is-flex is-justify-content-center">
+            <button class="button is-text" disabled style="text-decoration: none">
               <el-icon class="is-loading mr-2">
                 <Loading/>
               </el-icon>
@@ -75,6 +79,7 @@
 import {Options, Vue} from 'vue-class-component';
 import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
+import {ElNotification} from 'element-plus';
 
 @Options({
   data() {
@@ -90,7 +95,7 @@ import {ActionTypes} from "@/types/store/ActionTypes";
             "full_name": "",
             "avatar": "",
           },
-          "user_reminder": null,
+          "user": null,
           "discussion": {
             "id": "",
             "user": "",
@@ -99,15 +104,17 @@ import {ActionTypes} from "@/types/store/ActionTypes";
           "course_id": "",
           "isRead": false,
           "link_comment": "",
-          "time_comment": ""
+          "time_comment": "",
+          "link_course_reminder": ""
         }
-      ],
+      ] as any[],
       hasUnread: 0,
       query: {
         page: 1,
         page_size: 12,
         isStateChanged: false
       },
+      next_page: null,
       total_notification: 0,
       maxScrollHeight: 0,
       isHover: false
@@ -121,11 +128,12 @@ import {ActionTypes} from "@/types/store/ActionTypes";
         this.notifications = response.data.results.list_notification
         this.hasUnread = response.data.results.number_notification
         this.total_notification = response.data.count
+        this.next_page = response.data.next
+        this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
       }
-
-      this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
     },
     async handleScroll(distance: any) {
+      if (!this.next_page)  return
       if (distance.scrollTop == this.maxScrollHeight) {
         this.loading = true
 
@@ -136,19 +144,34 @@ import {ActionTypes} from "@/types/store/ActionTypes";
           this.notifications.push(response.data.results.list_notification)
           this.hasUnread = response.data.results.number_notification
           this.total_notification = response.data.count
+          this.next_page = response.data.next
           await this.handleChangeState()
+          this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
+        } else {
+          this.query.page--
         }
-
-        this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
 
         this.loading = false
       }
     },
     async handleChangeState() {
-      this.isHover = true
       if (this.query.isStateChanged) return
       this.CHANGE_NOTIFICATIONS_STATE({page: this.query.page})
       this.query.isStateChanged = true
+    }
+  },
+  watch: {
+    hasUnread(newVal: number, oldVal: number) {
+      if (newVal > oldVal) {
+        for (let i = 0; i < newVal - oldVal; i++) {
+          ElNotification({
+            title: 'Notification',
+            message: this.notifications[i].title,
+            position: 'bottom-right',
+            icon: "Notification"
+          })
+        }
+      }
     }
   },
   async mounted() {

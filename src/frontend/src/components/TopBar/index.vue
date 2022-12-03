@@ -7,12 +7,7 @@
       </el-col>
 
       <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8" class="top-bar__search-bar hidden-sm-and-down">
-        <p class="control has-icons-left">
-          <input class="input is-rounded" type="text" placeholder="Search">
-          <span class="icon is-small is-left">
-            <font-awesome-icon icon="fa-solid fa-magnifying-glass"/>
-          </span>
-        </p>
+        <SearchBar :q="q" @textChange="q = $event"></SearchBar>
       </el-col>
 
       <el-col :xs="8" :sm="12" :md="8" :lg="8" :xl="8">
@@ -49,12 +44,7 @@
     </el-row>
     <el-row justify="center">
       <el-col :span="22" class="top-bar__search-bar hidden-md-and-up">
-        <p class="control has-icons-left">
-          <input class="input is-rounded" type="text" placeholder="Search">
-          <span class="icon is-small is-left">
-            <font-awesome-icon icon="fa-solid fa-magnifying-glass"/>
-          </span>
-        </p>
+        <SearchBar :q="q" @textChange="q = $event"></SearchBar>
       </el-col>
     </el-row>
   </div>
@@ -64,9 +54,11 @@
 import {Options, Vue} from 'vue-class-component';
 import 'element-plus/theme-chalk/display.css'
 import Notification from "@/components/TopBar/Notification.vue";
+import SearchBar from "@/components/TopBar/SearchBar.vue";
 
 @Options({
   components: {
+    SearchBar,
     Notification
   },
   props: {
@@ -74,6 +66,11 @@ import Notification from "@/components/TopBar/Notification.vue";
     avatar: {
       type: String,
       default: ""
+    }
+  },
+  data() {
+    return {
+      q: ""
     }
   }
 })
