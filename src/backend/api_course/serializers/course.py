@@ -51,8 +51,9 @@ class CourseSerializer(serializers.ModelSerializer):
         return CourseService.create_course(validated_data)
 
     def update(self, instance, validated_data):
-        instance.slug = slugify(f"{validated_data['title']} {instance.id.hex[:5]}")
-        instance.certificate_frame = make_certificate(instance, "course")
+        if validated_data['title'] is not None:
+            instance.slug = slugify(f"{validated_data['title']} {instance.id.hex[:5]}")
+            instance.certificate_frame = make_certificate(instance, "course")
         return super().update(instance, validated_data)
 
 

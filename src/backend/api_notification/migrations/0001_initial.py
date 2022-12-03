@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('api_course', '0004_merge_0003_auto_20221123_1855_0003_auto_20221127_1621'),
+        ('api_course', '0003_auto_20221127_1621'),
         ('api_user', '0004_alter_user_avatar'),
     ]
 
