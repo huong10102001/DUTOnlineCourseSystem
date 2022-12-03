@@ -113,15 +113,19 @@ import UserSection from "@/views/report/UserSection.vue";
         page: 1,
         page_size: 12,
         ordering: "-title",
+        status: ""
       },
       total_course: 0,
       user_query: {
         page: 1,
         page_size: 12,
+        role: ""
       },
       total_user: 0,
       ROLES: ROLES,
-      table_loading: false
+      table_loading: false,
+      timeOut: null,
+      timer: 300,
     }
   },
   methods: {
@@ -162,29 +166,38 @@ import UserSection from "@/views/report/UserSection.vue";
     course_query: {
       deep: true,
       async handler() {
-        this.table_loading = true
-        if (this.userInfo.role == ROLES.ADMIN) {
-          const course_report_response: any = await this.FETCH_ADMIN_REPORT_COURSE(this.course_query)
-          this.course_report = course_report_response.data.results
-          this.total_course = course_report_response.data.count
-        }
+        clearTimeout(this.timeOut);
 
-        if (this.userInfo.role == ROLES.LECTURER) {
-          const response: any = await this.FETCH_LECTURER_REPORT()
-          this.course_report.courses = response.data.course
-          this.total_course = response.data.count
-        }
-        this.table_loading = false
+        this.timeOut = setTimeout(async () => {
+          this.table_loading = true
+          if (this.userInfo.role == ROLES.ADMIN) {
+            const course_report_response: any = await this.FETCH_ADMIN_REPORT_COURSE(this.course_query)
+            this.course_report = course_report_response.data.results
+            this.total_course = course_report_response.data.count
+          }
+
+          if (this.userInfo.role == ROLES.LECTURER) {
+            const response: any = await this.FETCH_LECTURER_REPORT()
+            this.course_report.courses = response.data.course
+            this.total_course = response.data.count
+          }
+
+          this.table_loading = false
+        }, this.timer);
       },
     },
     user_query: {
       deep: true,
       async handler() {
-        this.table_loading = true
-        const user_report_response: any = await this.FETCH_ADMIN_REPORT_USER(this.user_query)
-        this.user_report = user_report_response.data.results
-        this.total_user = user_report_response.data.count
-        this.table_loading = false
+        clearTimeout(this.timeOut);
+
+        this.timeOut = setTimeout(async () => {
+          this.table_loading = true
+          const user_report_response: any = await this.FETCH_ADMIN_REPORT_USER(this.user_query)
+          this.user_report = user_report_response.data.results
+          this.total_user = user_report_response.data.count
+          this.table_loading = false
+        }, this.timer);
       },
     }
   },

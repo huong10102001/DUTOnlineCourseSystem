@@ -80,3 +80,11 @@ class ProcessCourseReportSerializer(serializers.ModelSerializer):
         instance['learn_completed_date'] = datetime.strptime(instance['learn_completed_date'], '%Y-%m-%dT%H:%M:%S.%f%z')\
             .strftime("%d-%m-%Y") if instance['learn_completed_date'] is not None else None
         return instance
+
+
+class ProcessCourseReminderSerializer(serializers.ModelSerializer):
+    user = UserShortSerializer(read_only=True)
+
+    class Meta:
+        model = ProcessCourse
+        fields = ['id', 'course_title', 'status', 'user', 'course']

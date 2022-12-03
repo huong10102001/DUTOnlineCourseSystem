@@ -11,6 +11,8 @@ from api_course.serializers import ListChapterSerializer
 from api_user.serializers import UserShortSerializer
 from api_process.models import CourseRating
 from django.db.models import Q
+from django.utils.text import slugify
+from certificate_package import make_certificate
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -47,6 +49,11 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return CourseService.create_course(validated_data)
+
+    def update(self, instance, validated_data):
+        instance.slug = slugify(f"{validated_data['title']} {instance.id.hex[:5]}")
+        instance.certificate_frame = make_certificate(instance, "course")
+        return super().update(instance, validated_data)
 
 
 class CourseRatingForListCourseSerializer(serializers.ModelSerializer):

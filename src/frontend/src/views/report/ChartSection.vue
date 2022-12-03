@@ -97,69 +97,12 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
       ],
     }
   },
-  methods: {
-    fillData() {
-      let data0 = [
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt()
-      ]
-      let data1 = [
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt()
-      ]
-      let data2 = [
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt()
-      ]
-      this.chartData.datasets[0].data = data0
-      this.chartData.datasets[1].data = data1
-      this.chartData.datasets[2].data = data2
-    },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-    }
-  },
   beforeUpdate() {
     this.chartData.labels = this.course_report.month
     this.chartData.datasets[0].data = this.course_report.total_course
     this.chartData.datasets[1].data = this.user_report.total_user
     this.chartData.datasets[2].data = this.user_report.total_lecturer
-  },
-  // mounted() {
-  //   setInterval(() => {
-  //     this.fillData()
-  //   }, 2500)
-  // }
+  }
 })
 export default class ChartSection extends Vue {
 }
