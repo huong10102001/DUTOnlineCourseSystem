@@ -2,12 +2,62 @@
   <div v-show="!is_loading" class="p-3">
     <title-bar :title="'Overview'"></title-bar>
     <TotalSection :report="total_report"></TotalSection>
-    <ChartSection v-if="userInfo.role == ROLES.ADMIN" :report="course_report"></ChartSection>
-    <ListSection
-      :top_users="total_report.top_user"
-      :courses="course_report.courses"
-      :users="user_report.users"
-    ></ListSection>
+    <ChartSection
+      v-if="userInfo.role == ROLES.ADMIN"
+      :course_report="course_report"
+      :user_report="user_report"
+    ></ChartSection>
+
+    <div class="list-section">
+      <el-tabs>
+        <restricted-view :roles="[ROLES.ADMIN]">
+          <el-tab-pane>
+            <template #label>
+          <span class="custom-tabs-label">
+            <el-icon size="large"><Histogram/></el-icon>
+            <span>Rank</span>
+          </span>
+            </template>
+            <TopUserSection :top_users="total_report.top_user"></TopUserSection>
+          </el-tab-pane>
+        </restricted-view>
+
+        <el-tab-pane>
+          <template #label>
+          <span class="custom-tabs-label">
+            <el-icon size="large"><Management/></el-icon>
+            <span>Courses</span>
+          </span>
+          </template>
+          <CourseSection
+            :loading="table_loading"
+            :courses="course_report.courses"
+            :total="total_course"
+            :query="course_query"
+            @changePage="course_query.page = $event"
+          ></CourseSection>
+        </el-tab-pane>
+
+        <restricted-view :roles="[ROLES.ADMIN]">
+          <el-tab-pane>
+            <template #label>
+          <span class="custom-tabs-label">
+            <el-icon size="large"><UserFilled/></el-icon>
+            <span>Users</span>
+          </span>
+            </template>
+            <UserSection
+              :loading="table_loading"
+              :query="user_query"
+              :users="user_report.users"
+              :total="total_user"
+              @changePage="user_query.page = $event"
+            ></UserSection>
+          </el-tab-pane>
+        </restricted-view>
+      </el-tabs>
+    </div>
+
   </div>
 </template>
 
@@ -20,13 +70,20 @@ import TitleBar from "@/components/TitleBar.vue";
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import {ROLES} from "@/const/roles";
+import RestrictedView from "@/components/RestrictedView.vue";
+import TopUserSection from "@/views/report/TopUserSection.vue";
+import CourseSection from "@/views/report/CourseSection.vue";
+import UserSection from "@/views/report/UserSection.vue";
 
 @Options({
   components: {
     TitleBar,
     TotalSection,
     ChartSection,
-    ListSection
+    RestrictedView,
+    TopUserSection,
+    CourseSection,
+    UserSection
   },
   data() {
     return {
@@ -52,11 +109,23 @@ import {ROLES} from "@/const/roles";
       user_report: {
         users: []
       },
-      query: {
+      course_query: {
         page: 1,
+        page_size: 12,
         ordering: "-title",
+        status: ""
       },
-      ROLES: ROLES
+      total_course: 0,
+      user_query: {
+        page: 1,
+        page_size: 12,
+        role: ""
+      },
+      total_user: 0,
+      ROLES: ROLES,
+      table_loading: false,
+      timeOut: null,
+      timer: 300,
     }
   },
   methods: {
@@ -74,20 +143,62 @@ import {ROLES} from "@/const/roles";
         const total_report_response: any = await this.FETCH_ADMIN_REPORT_TOP_USER()
         this.total_report = total_report_response.data
 
-        const course_report_response: any = await this.FETCH_ADMIN_REPORT_COURSE(this.query)
+        const course_report_response: any = await this.FETCH_ADMIN_REPORT_COURSE(this.course_query)
         this.course_report = course_report_response.data.results
+        this.total_course = course_report_response.data.count
 
-        const user_report_response: any = await this.FETCH_ADMIN_REPORT_USER()
+        const user_report_response: any = await this.FETCH_ADMIN_REPORT_USER(this.user_query)
         this.user_report = user_report_response.data.results
+        this.total_user = user_report_response.data.count
       }
 
       if (this.userInfo.role == ROLES.LECTURER) {
         const response: any = await this.FETCH_LECTURER_REPORT()
         this.total_report = response.data
         this.course_report.courses = response.data.course
+        this.total_course = response.data.count
       }
 
       this.SET_LOADING(false)
+    }
+  },
+  watch: {
+    course_query: {
+      deep: true,
+      async handler() {
+        clearTimeout(this.timeOut);
+
+        this.timeOut = setTimeout(async () => {
+          this.table_loading = true
+          if (this.userInfo.role == ROLES.ADMIN) {
+            const course_report_response: any = await this.FETCH_ADMIN_REPORT_COURSE(this.course_query)
+            this.course_report = course_report_response.data.results
+            this.total_course = course_report_response.data.count
+          }
+
+          if (this.userInfo.role == ROLES.LECTURER) {
+            const response: any = await this.FETCH_LECTURER_REPORT()
+            this.course_report.courses = response.data.course
+            this.total_course = response.data.count
+          }
+
+          this.table_loading = false
+        }, this.timer);
+      },
+    },
+    user_query: {
+      deep: true,
+      async handler() {
+        clearTimeout(this.timeOut);
+
+        this.timeOut = setTimeout(async () => {
+          this.table_loading = true
+          const user_report_response: any = await this.FETCH_ADMIN_REPORT_USER(this.user_query)
+          this.user_report = user_report_response.data.results
+          this.total_user = user_report_response.data.count
+          this.table_loading = false
+        }, this.timer);
+      },
     }
   },
   computed: {
@@ -103,5 +214,23 @@ export default class ReportPage extends Vue {
 </script>
 
 <style>
+.list-section {
+  margin-top: 30px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 20px 40px;
+}
 
+.custom-tabs-label .el-icon {
+  vertical-align: middle;
+}
+
+.custom-tabs-label span {
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.el-main {
+  padding: 0;
+}
 </style>

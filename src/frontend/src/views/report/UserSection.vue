@@ -1,5 +1,32 @@
 <template>
   <el-main>
+    <el-input
+      v-model="query.q"
+      placeholder="Search for user..."
+      size="large"
+      class="mb-5"
+    >
+      <template #prepend>
+        <el-button icon="Search"/>
+      </template>
+      <template #append>
+        <el-select
+          v-model="query.role"
+          clearable
+          placeholder="Role"
+          size="large"
+          style="width: 115px"
+        >
+          <el-option
+            v-for="item in role_options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </template>
+    </el-input>
+
     <el-table
       highlight-current-row
       :data="users"
@@ -46,30 +73,21 @@
           </div>
         </template>
       </el-table-column>
-
-
-<!--      <el-table-column-->
-<!--        fixed="right"-->
-<!--        label="Operations"-->
-<!--        width="160"-->
-<!--        align="center"-->
-<!--        prop="id"-->
-<!--      >-->
-<!--        <template #default="scope">-->
-<!--          <el-button text size="default" class="p-1" icon="View"-->
-<!--                     @click=""></el-button>-->
-<!--          <el-button text size="default" class="p-1" icon="Edit"-->
-<!--                     @click=""></el-button>-->
-<!--          <el-button text size="default" class="p-1" icon="Lock"></el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
     </el-table>
+
+    <Pagination
+      :total="total"
+      :page="query.page"
+      :page_size="query.page_size"
+      @changePage="$emit('changePage', $event)">
+    </Pagination>
   </el-main>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import Pagination from "@/components/Pagination.vue";
+import {ROLES} from "@/const/roles";
 
 @Options({
   props: {
@@ -88,20 +106,28 @@ import Pagination from "@/components/Pagination.vue";
         } as any
       ]
     },
+    total: 0,
+    query: {
+      page: 1,
+      page_size: 12,
+      q: "",
+      role: ""
+    },
+    loading: false,
   },
   components: {
     Pagination
   },
   data() {
     return {
-      loading: false,
-      total: 0,
-      query: {
-        page: 1,
-        ordering: "-title",
-      },
+      role_options: [
+        {label: "All", value: ""},
+        {label: "Admin", value: ROLES.ADMIN},
+        {label: "Lecturer", value: ROLES.LECTURER},
+        {label: "User", value: ROLES.USER},
+      ]
     }
-  },
+  }
 })
 export default class UserSection extends Vue {
 }

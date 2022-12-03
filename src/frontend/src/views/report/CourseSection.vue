@@ -1,5 +1,31 @@
 <template>
   <el-main>
+    <el-input
+      v-model="query.q"
+      placeholder="Search for course..."
+      size="large"
+      class="mb-5"
+    >
+      <template #prepend>
+        <el-button icon="Search"/>
+      </template>
+      <template #append>
+        <el-select
+          v-model="query.status"
+          clearable
+          placeholder="Status"
+          size="large"
+          style="width: 115px"
+        >
+          <el-option
+            v-for="item in status_options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </template>
+    </el-input>
     <el-table
       highlight-current-row
       :data="courses"
@@ -66,12 +92,12 @@
       </el-table-column>
     </el-table>
 
-<!--    <Pagination-->
-<!--      :total="total"-->
-<!--      :page="query.page"-->
-<!--      :page_size="12"-->
-<!--      @changePage="query.page = $event">-->
-<!--    </Pagination>-->
+    <Pagination
+      :total="total"
+      :page="query.page"
+      :page_size="query.page_size"
+      @changePage="$emit('changePage', $event)">
+    </Pagination>
   </el-main>
 </template>
 
@@ -101,19 +127,28 @@ import Pagination from "@/components/Pagination.vue";
         },
       ]
     },
+    total: 0,
+    query: {
+      page: 1,
+      page_size: 12,
+      ordering: "-title",
+      q: "",
+      status: ""
+    },
+    loading: false,
   },
   components: {
     Pagination
   },
   data() {
     return {
-      loading: false,
       COURSE_STATUS: COURSE_STATUS,
-      total: 0,
-      query: {
-        page: 1,
-        ordering: "-title",
-      },
+      status_options: [
+        {label: "All", value: ""},
+        {label: "Published", value: COURSE_STATUS.PUBLISHED},
+        {label: "Draft", value: COURSE_STATUS.DRAFT},
+        {label: "Deactivated", value: COURSE_STATUS.DEACTIVATED},
+      ]
     }
   },
 })

@@ -22,11 +22,19 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
     Bar
   },
   props: {
-    report: {
+    course_report: {
       type: Object,
       default: {
         month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         total_course: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      }
+    },
+    user_report: {
+      type: Object,
+      default: {
+        month: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        total_user: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        total_lecturer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       }
     }
   },
@@ -42,7 +50,19 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
             backgroundColor: '#2196f3',
             borderRadius: '4',
             data: [100, 95, 90, 85, 80, 70, 60, 50, 40, 30, 20, 10]
-          }
+          },
+          {
+            label: 'Users',
+            backgroundColor: '#008394',
+            borderRadius: '4',
+            data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 80]
+          },
+          {
+            label: 'Lecturers',
+            backgroundColor: '#ffc107',
+            borderRadius: '4',
+            data: [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 80]
+          },
         ]
       },
       value2: "",
@@ -77,66 +97,12 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
       ],
     }
   },
-  methods: {
-    fillData() {
-      let data0 = [
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt()
-      ]
-      let data1 = [
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt()
-      ]
-      let data2 = [
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt(),
-        this.getRandomInt()
-      ]
-      this.chartData.datasets[0].data = data0
-      this.chartData.datasets[1].data = data1
-      this.chartData.datasets[2].data = data2
-    },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-    }
-  },
   beforeUpdate() {
-    this.chartData.datasets[0].data = this.report.total_course
-  },
-  // mounted() {
-  //   setInterval(() => {
-  //     this.fillData()
-  //   }, 2500)
-  // }
+    this.chartData.labels = this.course_report.month
+    this.chartData.datasets[0].data = this.course_report.total_course
+    this.chartData.datasets[1].data = this.user_report.total_user
+    this.chartData.datasets[2].data = this.user_report.total_lecturer
+  }
 })
 export default class ChartSection extends Vue {
 }
