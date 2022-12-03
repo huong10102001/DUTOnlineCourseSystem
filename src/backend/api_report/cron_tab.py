@@ -12,10 +12,12 @@ from api_notification.models import Notification
 
 
 def lecturer_report_daily():
-    course_in_process = ProcessCourse.objects.filter(created_at__contains=datetime.now().strftime("%Y-%m-%d"))\
+    course_in_process = ProcessCourse.objects\
+        .filter(Q(created_at__contains=datetime.now().strftime("%Y-%m-%d")) & Q(course__user__role='LECTURER'))\
         .values('course_id').annotate(total_user=Count('user', distinct=True))
-    list_course_id = list(ProcessCourse.objects.all()\
-        .values_list('course_id', flat=True).order_by('course_id').distinct())
+    list_course_id = list(ProcessCourse.objects.filter(Q(course__user__role='LECTURER'))
+                          .exclude(Q(created_at__contains=datetime.now().strftime("%Y-%m-%d")))
+                          .values_list('course_id', flat=True).order_by('course_id').distinct())
     course_report = []
     for i in course_in_process:
         course_report.append(LecturerReport(date_one=datetime.now().strftime("%d-%m-%Y"), total_user=i['total_user'],
