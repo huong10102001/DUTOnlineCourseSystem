@@ -18,22 +18,29 @@ class NotificationViewSet(BaseViewSet):
     def list_notification(self, request, *args, **kwargs):
         user_obj = request.user.user
         instance = Notification.objects.filter(Q(discussion__user_id=user_obj.pk) | Q(user_reminder=user_obj.pk))
+        page = self.paginate_queryset(instance)
+
+        if page is not None:
+            notification = self.get_serializer(page,  many=True).data
+            number_notification = instance.filter(isRead=False).count()
+            rest_data = {'list_notification': notification, 'number_notification': number_notification}
+            return self.get_paginated_response(rest_data)
+
+        notification = self.serializer_class(instance, many=True).data
         number_notification = instance.filter(isRead=False).count()
+        rest_data = {'list_notification': notification, 'number_notification': number_notification}
+        return Response(rest_data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['put'], url_path="change-state")
+    def change_state(self, request, *args, **kwargs):
+        user_obj = request.user.user
+        instance = Notification.objects.filter(Q(discussion__user_id=user_obj.pk) | Q(user_reminder=user_obj.pk))
         page = self.paginate_queryset(instance)
         if page is not None:
-            serializer = self.get_serializer(page, many=True).data
-            rest_date = {'list_notification': serializer, 'number_notification': number_notification}
-            return Response(rest_date, status=status.HTTP_200_OK)
-        notification = self.serializer_class(instance, many=True).data
-        rest_date = {'list_notification': notification, 'number_notification': number_notification}
-        return Response(rest_date, status=status.HTTP_200_OK)
+            for i in range(len(page)):
+                page[i].isRead = True
 
-    @action(detail=True, methods=['put'], url_path="change-state")
-    def change_state(self, request, *args, **kwargs):
-        notification_id = self.kwargs['pk']
-        instance = Notification.objects.filter(id=notification_id).first()
-        serializer = self.serializer_class(instance, data={"id": notification_id, "isRead": True},
-                                           partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            Notification.objects.bulk_update(page, ['isRead'])
+            serializer = self.serializer_class(page, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)

@@ -113,7 +113,9 @@ class ReportViewSet(BaseViewSet):
         year_query = request.query_params.get("year")
         total_course = ReportService.get_total_course_by_month(course, year_query)
         search_query = request.query_params.get("q", "")
-        rest_data = course.filter(Q(title__icontains=search_query) | Q(user__full_name__icontains=search_query))
+        status_query = request.query_params.get("status", "")
+        rest_data = course.filter((Q(title__icontains=search_query) | Q(user__full_name__icontains=search_query))
+                                  & Q(status__icontains=status_query))
         report_data = {'month': MONTH_LIST, 'total_course': total_course}
         page = self.paginate_queryset(rest_data)
         if page is not None:

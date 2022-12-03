@@ -11,6 +11,7 @@ import { discussion } from '@/store/modules/discussion';
 import { rating } from '@/store/modules/rating'
 import { quiz } from '@/store/modules/quiz'
 import { report } from "@/store/modules/report";
+import { notification } from "@/store/modules/notification";
 import createPersistedState from "vuex-persistedstate";
 
 export default createStore({
@@ -39,6 +40,7 @@ export default createStore({
     discussion,
     rating,
     quiz,
-    report
+    report,
+    notification
   }
 })

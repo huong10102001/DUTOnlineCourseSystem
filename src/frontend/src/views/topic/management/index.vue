@@ -20,7 +20,7 @@
         <el-form-item>
           <el-input
             prefix-icon="Search"
-            v-model="searchText"
+            v-model="query.q"
             size="large"
             placeholder="Input here for searching..."/>
         </el-form-item>
@@ -111,12 +111,15 @@ import Pagination from "@/components/Pagination.vue";
       query: {
         page: 1,
         page_size: 10,
+        q: ""
       },
       loading: false,
       searchText: "",
       formContent: {},
       mode: 'add',
-      dialogVisible: false
+      dialogVisible: false,
+      timeOut: null,
+      timer: 300,
     }
   },
   methods: {
@@ -222,12 +225,21 @@ import Pagination from "@/components/Pagination.vue";
     query: {
       deep: true,
       handler: async function () {
-        await this.getListTopics();
-        this.$router.replace({query: this.query}).catch((err: any) => err);
+        clearTimeout(this.timeOut);
+
+        this.timeOut = setTimeout(async () => {
+          await this.getListTopics();
+          this.$router.replace({query: this.query}).catch((err: any) => err);
+        }, this.timer);
       },
     }
   },
   async created() {
+    if (this.$route.query){
+      this.query = this.$route.query
+      return
+    }
+
     await this.getListTopics();
   },
   mounted() {

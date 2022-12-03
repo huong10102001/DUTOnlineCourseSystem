@@ -1,5 +1,31 @@
 <template>
   <el-main>
+    <el-input
+      v-model="query.q"
+      placeholder="Search for course..."
+      size="large"
+      class="mb-5"
+    >
+      <template #prepend>
+        <el-button icon="Search"/>
+      </template>
+      <template #append>
+        <el-select
+          v-model="query.status"
+          clearable
+          placeholder="Status"
+          size="large"
+          style="width: 115px"
+        >
+          <el-option
+            v-for="item in status_options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </template>
+    </el-input>
     <el-table
       highlight-current-row
       :data="courses"
@@ -106,6 +132,8 @@ import Pagination from "@/components/Pagination.vue";
       page: 1,
       page_size: 12,
       ordering: "-title",
+      q: "",
+      status: ""
     },
     loading: false,
   },
@@ -115,6 +143,12 @@ import Pagination from "@/components/Pagination.vue";
   data() {
     return {
       COURSE_STATUS: COURSE_STATUS,
+      status_options: [
+        {label: "All", value: ""},
+        {label: "Published", value: COURSE_STATUS.PUBLISHED},
+        {label: "Draft", value: COURSE_STATUS.DRAFT},
+        {label: "Deactivated", value: COURSE_STATUS.DEACTIVATED},
+      ]
     }
   },
 })

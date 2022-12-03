@@ -17,7 +17,7 @@
 import {Options, Vue} from 'vue-class-component';
 import {mapState, mapGetters, mapMutations} from "vuex";
 import Sidebar from "@/components/Sidebar.vue";
-import TopBar from "@/components/TopBar.vue";
+import TopBar from "@/components/TopBar/index.vue";
 import {ROUTES} from '@/const/routes'
 import {ROLES} from "@/const/roles";
 import {MutationTypes} from "@/types/store/MutationTypes";
