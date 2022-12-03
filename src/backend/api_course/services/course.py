@@ -111,12 +111,17 @@ class CourseService(BaseService):
     def get_list_courses(cls, user_obj, params=None):
         ft = Q(status=CourseStatus.PUBLISHED.value)
 
-        if params.get('title'):
-            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
-        if params.getlist('topic_ids'):
-            ft &= Q(topics__id__in=params.getlist('topic_ids'))
+        if params.get('q'):
+            ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
 
-        return Course.objects.annotate(title_lower=Lower('title')).filter(ft)
+        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft)
+
+        if params.getlist('categories[]'):
+            topic_ids = params.getlist('categories[]')
+            for topic_id in topic_ids:
+                courses = courses.filter(topics__id=topic_id)
+
+        return courses
 
     @classmethod
     def get_course_management(cls, user_obj, params=None):

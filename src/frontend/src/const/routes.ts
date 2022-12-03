@@ -23,6 +23,11 @@ export const ROUTES = {
     roles: [ROLES.ADMIN, ROLES.LECTURER]
   },
 
+  BROWSE: {
+    name: 'browse-course',
+    path: '/courses/browse',
+  },
+
   COURSE_DETAIL: 'course-detail',
   EDIT_COURSE: 'edit-course',
 

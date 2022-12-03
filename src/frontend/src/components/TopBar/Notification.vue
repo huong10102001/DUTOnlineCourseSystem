@@ -129,14 +129,13 @@ import {ElNotification} from 'element-plus';
         this.hasUnread = response.data.results.number_notification
         this.total_notification = response.data.count
         this.next_page = response.data.next
-        this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
       }
     },
+
     async handleScroll(distance: any) {
       if (!this.next_page)  return
       if (distance.scrollTop == this.maxScrollHeight) {
         this.loading = true
-
         this.query.page++
         this.query.isStateChanged = false
         const response: any = await this.FETCH_NOTIFICATION(this.query)
@@ -146,7 +145,6 @@ import {ElNotification} from 'element-plus';
           this.total_notification = response.data.count
           this.next_page = response.data.next
           await this.handleChangeState()
-          this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
         } else {
           this.query.page--
         }
@@ -174,14 +172,17 @@ import {ElNotification} from 'element-plus';
       }
     }
   },
-  async mounted() {
-    await setInterval(async () => {
-      if (!this.isHover) await this.fetchNotification()
+  mounted() {
+    setInterval( () => {
+      if (!this.isHover) this.fetchNotification()
     }, 5000)
   },
   async created() {
     await this.fetchNotification()
     this.loading = false
+  },
+  updated(){
+    this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
   }
 })
 export default class Notification extends Vue {

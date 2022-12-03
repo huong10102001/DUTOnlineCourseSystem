@@ -32,6 +32,7 @@ import MenuItem from "@/types/sidebar/MenuItem";
     return {
       items: [
         {name: 'library', icon: 'fa-solid fa-swatchbook', route: ROUTES.LIBRARY},
+        {name: 'browse', icon: 'fa-solid fa-table-columns', route: ROUTES.BROWSE},
         {name: 'overview', icon: 'fa-solid fa-chart-column', route: ROUTES.REPORT},
         {name: 'course management', icon: 'fa-solid fa-briefcase', route: ROUTES.COURSE_MANAGEMENT},
         {name: 'my course progress', icon: 'fa-solid fa-bars-progress', route: ROUTES.MY_COURSE},

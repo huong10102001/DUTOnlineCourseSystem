@@ -55,6 +55,7 @@ import {Options, Vue} from 'vue-class-component';
 import 'element-plus/theme-chalk/display.css'
 import Notification from "@/components/TopBar/Notification.vue";
 import SearchBar from "@/components/TopBar/SearchBar.vue";
+import {ROUTES} from "@/const/routes";
 
 @Options({
   components: {
@@ -70,7 +71,26 @@ import SearchBar from "@/components/TopBar/SearchBar.vue";
   },
   data() {
     return {
-      q: ""
+      q: "",
+      timeOut: null,
+      timer: 500,
+    }
+  },
+  watch: {
+    q() {
+      clearTimeout(this.timeOut);
+
+      this.timeOut = setTimeout(() => {
+        this.$router.push({
+          name: ROUTES.BROWSE.name,
+          query: {
+            page: 1,
+            page_size: 12,
+            q: this.q,
+            categories: []
+          }
+        })
+      }, this.timer);
     }
   }
 })

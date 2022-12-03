@@ -60,7 +60,7 @@
       <span class="title is-5 mt-3">
         Description
         <button class="button is-light ml-2" style="font-size: 0.6rem" @click.prevent="expandEditor = true">
-          <font-awesome-icon icon="fa-solid fa-up-right-and-down-left-from-center" class="mr-1" /> Expand
+          <font-awesome-icon icon="fa-solid fa-up-right-and-down-left-from-center" class="mr-1"/> Expand
         </button>
       </span>
       <div :class="['mt-4', {expandEditor: expandEditor}]">
@@ -82,7 +82,7 @@
           @click.prevent="handleSubmit($refs.formRef)"
           :disabled="is_freeze">
           <el-icon v-if="is_freeze" class="is-loading mr-2">
-            <Loading />
+            <Loading/>
           </el-icon>
           Save
         </button>
@@ -102,7 +102,7 @@
           <button
             class="button is-danger is-rounded"
             @click.prevent="dialogVisible = true">
-            <font-awesome-icon icon="fa-solid fa-trash" />
+            <font-awesome-icon icon="fa-solid fa-trash"/>
           </button>
         </div>
       </div>
@@ -128,12 +128,12 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import {Options, Vue} from "vue-class-component";
 import TopicItem from "@/types/course/TopicItem";
 import TextEditor from "@/components/TextEditor.vue"
-import { ElMessage, ElNotification, FormInstance } from "element-plus";
-import { COURSE_STATUS } from "@/const/course_status";
-import { mapActions } from "vuex";
+import {ElMessage, ElNotification, FormInstance} from "element-plus";
+import {COURSE_STATUS} from "@/const/course_status";
+import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import CoverImage from "@/components/CoverImage.vue";
 
@@ -144,7 +144,9 @@ import CoverImage from "@/components/CoverImage.vue";
   },
   props: {
     options: null,
-    course: {}
+    course: {
+      status: COURSE_STATUS.DRAFT
+    }
   },
   data() {
     return {
@@ -155,8 +157,8 @@ import CoverImage from "@/components/CoverImage.vue";
       expandEditor: false,
       rules: {
         title: [
-          { required: true, message: 'Please input title', trigger: 'blur' },
-          { min: 5, max: 100, message: 'Length should be 5 to 100', trigger: 'blur' },
+          {required: true, message: 'Please input title', trigger: 'blur'},
+          {min: 5, max: 100, message: 'Length should be 5 to 100', trigger: 'blur'},
         ],
         topics: [
           {
@@ -167,15 +169,15 @@ import CoverImage from "@/components/CoverImage.vue";
           },
         ],
         summary: [
-          { required: true, message: 'Please input summary for this course', trigger: 'blur' },
-          { min: 20, max: 200, message: 'Length should be 20 to 200', trigger: 'blur' },
+          {required: true, message: 'Please input summary for this course', trigger: 'blur'},
+          {min: 20, max: 200, message: 'Length should be 20 to 200', trigger: 'blur'},
         ]
       } as any,
     }
   },
   methods: {
-    ...mapActions("course",[ActionTypes.UPDATE_COURSE_INFO, ActionTypes.DELETE_COURSE]),
-    async handleSubmit(formEl: FormInstance | undefined){
+    ...mapActions("course", [ActionTypes.UPDATE_COURSE_INFO, ActionTypes.DELETE_COURSE]),
+    async handleSubmit(formEl: FormInstance | undefined) {
       if (!formEl) return
 
       await formEl.validate(async (valid, fields) => {
@@ -186,7 +188,7 @@ import CoverImage from "@/components/CoverImage.vue";
           formData.append("title", this.course.title);
           formData.append("summary", this.course.summary);
           formData.append("description", this.course.description);
-          formData.append("status", COURSE_STATUS.DRAFT);
+          formData.append("status", this.course.status);
           if (this.background != null)
             formData.append("background", this.background?.raw)
 
@@ -228,9 +230,9 @@ import CoverImage from "@/components/CoverImage.vue";
       })
     },
 
-    async handleDelete(){
+    async handleDelete() {
       this.is_freeze = true
-      let response:any = await this.DELETE_COURSE(this.course.id)
+      let response: any = await this.DELETE_COURSE(this.course.id)
       if (response.status == 204) {
         this.$router.push('/')
         ElMessage({
@@ -241,7 +243,7 @@ import CoverImage from "@/components/CoverImage.vue";
       } else {
         ElMessage.error('Delete course failed.')
       }
-      this.dialogVisible= false
+      this.dialogVisible = false
       this.is_freeze = false
     },
 
@@ -251,6 +253,9 @@ import CoverImage from "@/components/CoverImage.vue";
       formData.append("title", this.course.title);
       formData.append("summary", this.course.summary);
       formData.append("status", COURSE_STATUS.PUBLISHED);
+      this.course.topics.map((topic_id: string) => {
+        formData.append("topic_ids", topic_id ? topic_id : "")
+      })
 
       const response: any = await this.UPDATE_COURSE_INFO({
         form: formData,
@@ -282,6 +287,9 @@ import CoverImage from "@/components/CoverImage.vue";
       formData.append("title", this.course.title);
       formData.append("summary", this.course.summary);
       formData.append("status", COURSE_STATUS.DRAFT);
+      this.course.topics.map((topic_id: string) => {
+        formData.append("topic_ids", topic_id ? topic_id : "")
+      })
 
       const response: any = await this.UPDATE_COURSE_INFO({
         form: formData,

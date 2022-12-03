@@ -3,7 +3,6 @@
     <input
       class="input is-rounded"
       v-model="_q"
-      @change="$emit('textChange', _q)"
       type="text"
       placeholder="Search">
     <span class="icon is-small is-left">
@@ -23,7 +22,13 @@ import {Options, Vue} from 'vue-class-component';
     return {
       _q: this.q
     }
-  }
+  },
+  watch: {
+    _q(){
+      this.$emit('textChange', this._q)
+    }
+  },
+  emits: ['textChange']
 })
 export default class SearchBar extends Vue {
 }

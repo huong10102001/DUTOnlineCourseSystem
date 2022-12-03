@@ -217,9 +217,6 @@ import Pagination from "@/components/Pagination.vue";
       this.mode = 'add'
       this.dialogVisible = true
     },
-    changePages(newPage: number) {
-      this.query.page = newPage
-    },
   },
   watch: {
     query: {
@@ -235,7 +232,7 @@ import Pagination from "@/components/Pagination.vue";
     }
   },
   async created() {
-    if (this.$route.query){
+    if (Object.keys(this.$route.query).length != 0){
       this.query = this.$route.query
       return
     }

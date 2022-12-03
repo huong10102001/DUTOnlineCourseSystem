@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import HomePage from '@/views/home/index.vue';
 import LoginPage from '@/views/login/index.vue';
 import ProfilePage from '@/views/profile/index.vue';
@@ -22,6 +22,7 @@ import ProfileDetail from "@/views/profile/detail/index.vue";
 import ProfileEdit from "@/views/profile/edit/index.vue";
 import CertificationPage from '@/views/certification/index.vue';
 import ReportPage from "@/views/report/index.vue";
+import BrowseCoursePage from "@/views/course/browse/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -91,6 +92,11 @@ const routes: Array<RouteRecordRaw> = [
             path: ':course_slug/certificate',
             name: 'certification',
             component: CertificationPage
+          },
+          {
+            path: 'browse',
+            name: 'browse-course',
+            component: BrowseCoursePage
           }
         ]
       },
@@ -156,7 +162,7 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    return { top: 0 }
+    return {top: 0}
   },
 })
 
