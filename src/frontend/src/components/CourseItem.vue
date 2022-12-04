@@ -25,8 +25,8 @@
                     </el-dropdown-item>
                   </router-link>
 
-                  <el-dropdown-item icon="Delete" @click="dialogVisible = true">
-                    Delete
+                  <el-dropdown-item icon="Lock" @click="dialogVisible = true">
+                    Deactivate
                   </el-dropdown-item>
                 </restricted-view>
               </el-dropdown-menu>
@@ -40,9 +40,15 @@
       </div>
 
       <div class="course-item__info">
-        <p class="course-item__info__instructor">
-          <font-awesome-icon icon="fa-solid fa-chalkboard-user" class="mr-1"/>
-          {{ course.user.full_name }}
+        <p class="course-item__info__instructor is-flex is-justify-content-space-between">
+          <span>
+            <font-awesome-icon icon="fa-solid fa-chalkboard-user" class="mr-1"/>
+            {{ course.user.full_name }}
+          </span>
+          <span v-if="course.avg_rating">
+            {{ course.avg_rating }} / 5
+            <font-awesome-icon icon="fa-solid fa-star" class="ml-1"/>
+          </span>
         </p>
         <restricted-view :routes="[ROUTES.COURSE_MANAGEMENT.name]">
           <span
@@ -148,7 +154,7 @@ import {ROUTES} from "@/const/routes";
   computed: {
     course_progress() {
       if (!this.total_lesson || !this.course.lessons_completed) return 0
-      return Math.round(this.course.lessons_completed*100 / this.total_lesson)
+      return Math.round(this.course.lessons_completed * 100 / this.total_lesson)
     },
     total_lesson() {
       if (!this.course.chapters) return 0

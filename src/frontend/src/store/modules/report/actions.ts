@@ -46,7 +46,7 @@ export const actions: ActionTree<State, State> & Actions = {
     let response: any = await ReportService.get_admin_report_course(params)
     return response
   },
-  async [ActionTypes.FETCH_ADMIN_REPORT_USER]({ commit }, params=null) {
+  async [ActionTypes.FETCH_ADMIN_REPORT_USER]({ commit }, params) {
     let response: any = await ReportService.get_admin_report_user(params)
     return response
   },

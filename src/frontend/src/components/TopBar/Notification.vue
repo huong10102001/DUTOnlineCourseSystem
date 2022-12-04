@@ -28,7 +28,7 @@
                 :class="['notification-item', {'isRead': noti.isRead}]"
               >
                 <div class="columns is-flex is-vcentered">
-                  <div class="column is-one-quarter">
+                  <div class="column is-one-quarter" style="max-width: 80px">
                     <figure class="image is-64x64">
                       <img v-if="noti.user_reply.avatar" :src="noti.user_reply.avatar" class="is-rounded"
                            style="height: 100%">
@@ -47,7 +47,7 @@
                 :class="['notification-item', {'isRead': noti.isRead}]"
               >
                 <div class="columns is-flex is-vcentered">
-                  <div class="column is-one-quarter">
+                  <div class="column is-one-quarter" style="max-width: 80px">
                     <figure class="image is-64x64">
                       <img src="@/assets/images/notification-bell.png" class="is-rounded"
                            style="height: 100%">
@@ -196,7 +196,7 @@ export default class Notification extends Vue {
   width: 350px;
   top: 50px;
   left: -280px;
-  z-index: 1;
+  z-index: 100;
   border-radius: 14px;
   color: #777;
 

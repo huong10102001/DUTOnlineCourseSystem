@@ -2,7 +2,7 @@
   <div class="main-container p-2" v-show="!is_loading">
     <div class="course-container">
       <h1>My Course Progress</h1>
-      <el-row :gutter="40">
+      <el-row :gutter="20">
         <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
           <CourseItem :course="course"></CourseItem>
         </el-col>

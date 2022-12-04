@@ -81,15 +81,27 @@ import {ROUTES} from "@/const/routes";
       clearTimeout(this.timeOut);
 
       this.timeOut = setTimeout(() => {
-        this.$router.push({
-          name: ROUTES.BROWSE.name,
-          query: {
-            page: 1,
-            page_size: 12,
-            q: this.q,
-            categories: []
-          }
-        })
+        if (this.$route.name != ROUTES.COURSE_MANAGEMENT.name) {
+          this.$router.push({
+            name: ROUTES.BROWSE.name,
+            query: {
+              page: 1,
+              page_size: 12,
+              q: this.q,
+              categories: []
+            }
+          })
+        } else {
+          this.$router.replace({
+            query: {
+              page: 1,
+              page_size: 11,
+              q: this.q,
+              status: "ALL",
+              categories: []
+            }
+          })
+        }
       }, this.timer);
     }
   }

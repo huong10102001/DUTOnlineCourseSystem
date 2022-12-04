@@ -1,13 +1,33 @@
 <template>
   <div class="chart-section">
-    <h3 class="is-size-5 mb-2" style="font-weight: 500">Overall</h3>
+    <div class="columns is-flex is-vcentered">
+      <div class="column">
+        <h3 class="is-size-5 mb-2" style="font-weight: 500">Overall</h3>
+      </div>
+      <div class="column is-flex is-justify-content-end">
+        <el-select
+          v-model="_year"
+          class="m-2"
+          placeholder="Year"
+          size="large"
+          style="width: 100px"
+          @change="$emit('changeYear', _year)"
+        >
+          <el-option
+            v-for="item in yearOptions"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </div>
+    </div>
     <Bar
       :width="width"
       :height="height"
       :chart-data="chartData"
     />
   </div>
-
 </template>
 
 <script lang="ts">
@@ -36,10 +56,12 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
         total_user: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         total_lecturer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       }
-    }
+    },
+    year: 2022
   },
   data() {
     return {
+      _year: this.year,
       width: 400,
       height: 200,
       chartData: {
@@ -65,36 +87,7 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
           },
         ]
       },
-      value2: "",
-      shortcuts: [
-        {
-          text: 'Last week',
-          value: () => {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-            return [start, end]
-          },
-        },
-        {
-          text: 'Last month',
-          value: () => {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-            return [start, end]
-          },
-        },
-        {
-          text: 'Last 3 months',
-          value: () => {
-            const end = new Date()
-            const start = new Date()
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-            return [start, end]
-          },
-        },
-      ],
+      yearOptions: []
     }
   },
   beforeUpdate() {
@@ -102,6 +95,11 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
     this.chartData.datasets[0].data = this.course_report.total_course
     this.chartData.datasets[1].data = this.user_report.total_user
     this.chartData.datasets[2].data = this.user_report.total_lecturer
+  },
+  created() {
+    for (let i = 2020; i <= new Date().getFullYear(); i++) {
+      this.yearOptions.push(i)
+    }
   }
 })
 export default class ChartSection extends Vue {

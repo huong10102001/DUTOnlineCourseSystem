@@ -193,11 +193,17 @@ import {QUIZ_PRIORITY} from "@/const/quiz_priority";
         });
       }
     },
-    mapLevel(level: string){
-      switch (level){
-        case QUIZ_PRIORITY.LOW: return 'EASY'; break;
-        case QUIZ_PRIORITY.MEDIUM: return level; break;
-        case QUIZ_PRIORITY.HIGH: return 'HARD'; break;
+    mapLevel(level: string) {
+      switch (level) {
+        case QUIZ_PRIORITY.LOW:
+          return 'EASY';
+          break;
+        case QUIZ_PRIORITY.MEDIUM:
+          return level;
+          break;
+        case QUIZ_PRIORITY.HIGH:
+          return 'HARD';
+          break;
       }
     }
   },

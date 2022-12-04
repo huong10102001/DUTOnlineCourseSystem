@@ -6,6 +6,8 @@
       v-if="userInfo.role == ROLES.ADMIN"
       :course_report="course_report"
       :user_report="user_report"
+      :year="year"
+      @changeYear="year = $event"
     ></ChartSection>
 
     <div class="list-section">
@@ -87,6 +89,7 @@ import UserSection from "@/views/report/UserSection.vue";
   },
   data() {
     return {
+      year: new Date().getFullYear(),
       total_report: {
         total_course: 0,
         total_user: 0,
@@ -113,18 +116,21 @@ import UserSection from "@/views/report/UserSection.vue";
         page: 1,
         page_size: 12,
         ordering: "-title",
-        status: ""
+        status: "",
+        year: new Date().getFullYear()
       },
       total_course: 0,
       user_query: {
         page: 1,
         page_size: 12,
-        role: ""
+        role: "",
+        year: new Date().getFullYear()
       },
       total_user: 0,
       ROLES: ROLES,
       table_loading: false,
-      timeOut: null,
+      timeOut1: null,
+      timeOut2: null,
       timer: 300,
     }
   },
@@ -163,10 +169,14 @@ import UserSection from "@/views/report/UserSection.vue";
     }
   },
   watch: {
+    year(){
+      this.course_query.year = this.year
+      this.user_query.year = this.year
+    },
     course_query: {
       deep: true,
-      async handler() {
-        clearTimeout(this.timeOut);
+      handler() {
+        clearTimeout(this.timeOut1);
 
         this.timeOut = setTimeout(async () => {
           this.table_loading = true
@@ -188,8 +198,8 @@ import UserSection from "@/views/report/UserSection.vue";
     },
     user_query: {
       deep: true,
-      async handler() {
-        clearTimeout(this.timeOut);
+      handler() {
+        clearTimeout(this.timeOut2);
 
         this.timeOut = setTimeout(async () => {
           this.table_loading = true

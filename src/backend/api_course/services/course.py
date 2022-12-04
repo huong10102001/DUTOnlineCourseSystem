@@ -130,11 +130,17 @@ class CourseService(BaseService):
         if user_obj.role == Roles.LECTURER.value:
             ft &= Q(user=user_obj)
 
-        if params.get('title'):
-            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
+        if params.get('q'):
+            ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
         if params.get('status'):
-            ft &= Q(status=params.get('status'))
-        if params.getlist('topic_ids'):
-            ft &= Q(topics__id__in=params.getlist('topic_ids'))
+            if params.get('status') != "ALL":
+                ft &= Q(status=params.get('status'))
 
-        return Course.objects.annotate(title_lower=Lower('title')).filter(ft)
+        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft)
+
+        if params.getlist('categories[]'):
+            topic_ids = params.getlist('categories[]')
+            for topic_id in topic_ids:
+                courses = courses.filter(topics__id=topic_id)
+
+        return courses

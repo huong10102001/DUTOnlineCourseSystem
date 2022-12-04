@@ -47,12 +47,9 @@ class CourseViewSet(BaseViewSet):
 
             page = self.paginate_queryset(res_data)
 
-            if page:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-            serializer = self.get_serializer(res_data, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(data=None, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=True, lookup_field="slug", url_path="content",

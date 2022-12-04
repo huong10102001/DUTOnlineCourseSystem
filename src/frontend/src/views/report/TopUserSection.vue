@@ -11,7 +11,7 @@
                   <img src="@/assets/vectors/default_avatar.svg"/>
                 </el-avatar>
               </div>
-              <div class="column is-capitalized" style="min-width: 200px">
+              <div class="column is-capitalized" style="min-width: 250px">
                 <strong>{{ user.full_name }}</strong>
               </div>
             </div>

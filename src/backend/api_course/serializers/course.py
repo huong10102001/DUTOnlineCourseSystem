@@ -20,8 +20,7 @@ class CourseSerializer(serializers.ModelSerializer):
                                                  queryset=User.objects.all(),
                                                  pk_field=UUIDField(format='hex'),
                                                  source='user')
-    topic_ids = serializers.PrimaryKeyRelatedField(required=False, write_only=True, many=True, allow_null=True,
-                                                   allow_empty=True,
+    topic_ids = serializers.PrimaryKeyRelatedField(required=False, write_only=True, many=True,
                                                    queryset=Topic.objects.all(), pk_field=UUIDField(format='hex'),
                                                    source='topics')
     user = UserShortSerializer(read_only=True, required=False)
@@ -37,7 +36,9 @@ class CourseSerializer(serializers.ModelSerializer):
             'topics': {'required': False},
             'status': {'required': False},
             'slug': {'read_only': True},
-            'background': {'required': False}
+            'background': {'required': False},
+            'summary': {'required': False},
+            'title': {'required': False},
         }
 
     def to_internal_value(self, data):
@@ -51,9 +52,13 @@ class CourseSerializer(serializers.ModelSerializer):
         return CourseService.create_course(validated_data)
 
     def update(self, instance, validated_data):
-        if validated_data['title'] is not None:
+        if validated_data.pop('topics') == 0:
+            validated_data.pop('topics')
+        if 'title' in validated_data:
             instance.slug = slugify(f"{validated_data['title']} {instance.id.hex[:5]}")
             instance.certificate_frame = make_certificate(instance, "course")
+            data_res = super().update(instance, validated_data)
+            return data_res
         return super().update(instance, validated_data)
 
 
@@ -114,20 +119,21 @@ class ListCourseSerializer(serializers.ModelSerializer):
                     else:
                         break
                 instance['chapters'] = result
-            course_rating = CourseRating.objects
-            rating = course_rating.filter(process_course__course__id=instance['id'])
-            list_rating = list(rating.values_list('star_rating', flat=True).order_by())
-            instance['ratings'] = CourseRatingForListCourseSerializer(rating, many=True).data
-            instance['total_rating'] = len(list_rating)
-            try:
-                instance['avg_rating'] = sum(list_rating) / instance['total_rating']
-            except ZeroDivisionError:
-                instance['avg_rating'] = 0
-            number_star = context.get('view').request.query_params.get("number_star", "")
-            if len(number_star) != 0:
-                star_rating = instance['ratings']
-                number_rating = list(filter(lambda star: star['star_rating'] is int(number_star), star_rating))
-                instance['ratings'] = number_rating
+        course_rating = CourseRating.objects
+        rating = course_rating.filter(process_course__course__id=instance['id'])
+        list_rating = list(rating.values_list('star_rating', flat=True).order_by())
+        instance['ratings'] = CourseRatingForListCourseSerializer(rating, many=True).data
+        instance['total_rating'] = len(list_rating)
+        instance['has_user'] = ProcessCourse.objects.filter(course__id=instance['id']).count() > 0
+        try:
+            instance['avg_rating'] = sum(list_rating) / instance['total_rating']
+        except ZeroDivisionError:
+            instance['avg_rating'] = 0
+        number_star = context.get('view').request.query_params.get("number_star", "")
+        if len(number_star) != 0:
+            star_rating = instance['ratings']
+            number_rating = list(filter(lambda star: star['star_rating'] is int(number_star), star_rating))
+            instance['ratings'] = number_rating
         try:
             instance['status_rating'] = True if len(CourseRating.objects.filter(
                 Q(process_course__course_id=instance['id']) & Q(

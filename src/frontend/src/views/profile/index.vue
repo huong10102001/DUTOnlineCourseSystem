@@ -7,12 +7,7 @@ import {Options, Vue} from 'vue-class-component';
 import ProfileDetail from "@/views/profile/detail/index.vue";
 import ProfileEdit from "@/views/profile/edit/index.vue";
 
-@Options({
-  components: {
-    ProfileDetail,
-    ProfileEdit
-  }
-})
+@Options({})
 
 export default class ProfileBasePage extends Vue {
 }

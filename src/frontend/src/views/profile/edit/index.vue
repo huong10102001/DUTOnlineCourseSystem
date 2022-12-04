@@ -1,20 +1,15 @@
 <template>
-      <AvatarSection 
-        :user="user"
-        @changeAvatar="user.avatar = $event"
-      ></AvatarSection>
-      <el-row
-        style="background-color: white; border-radius: 10px"
-        class="p-5 m-3"
-      >
-        <InfoSection :editForm="editForm"></InfoSection>
-      </el-row>
+  <AvatarSection
+    :user="user"
+    @changeAvatar="user.avatar = $event"
+  ></AvatarSection>
+  <InfoSection :editForm="editForm"></InfoSection>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import { mapActions, mapMutations, mapGetters } from "vuex";
-import { ActionTypes } from "@/types/store/ActionTypes";
+import {Options, Vue} from "vue-class-component";
+import {mapActions, mapMutations, mapGetters} from "vuex";
+import {ActionTypes} from "@/types/store/ActionTypes";
 import AvatarSection from "./AvatarSection.vue";
 import InfoSection from "./InfoSection.vue";
 
@@ -33,7 +28,7 @@ import InfoSection from "./InfoSection.vue";
           email: "",
         },
       } as any,
-      
+
     };
   },
   methods: {
@@ -56,7 +51,8 @@ import InfoSection from "./InfoSection.vue";
     await this.getProfileDetail();
   },
 })
-export default class ProfileEdit extends Vue {}
+export default class ProfileEdit extends Vue {
+}
 </script>
 
 <style>
