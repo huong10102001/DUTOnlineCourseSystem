@@ -13,14 +13,14 @@ class ReportService(BaseService):
         total_course = [0 for i in range(12)]
         current_month = datetime.now().month
         total_course_in_month = 0
-        if year_query is not None:
+        if int(year_query) != int(datetime.now().year):
             total_course_by_month = list(course_admin_report.filter(month__year=str(year_query)).values('total_course', 'month').order_by('created_at'))
         else:
             total_course_in_month = course.filter(created_at__month=str(current_month)).count()
             total_course_by_month = list(course_admin_report.filter(month__year=str(datetime.now().year)).values('total_course', 'month').order_by('created_at'))
         for i in total_course_by_month:
             total_course[int(i['month'].strftime('%m')) - 1] = i['total_course']
-        if year_query is None:
+        if int(year_query) == int(datetime.now().year):
             if total_course[current_month - 1] != 0:
                 total_course[current_month - 1] += total_course_in_month
             else:
@@ -34,7 +34,7 @@ class ReportService(BaseService):
         total_user_list = [0 for i in range(12)]
         total_lecturer_list = [0 for i in range(12)]
         current_month = datetime.now().month
-        if year_query is not None:
+        if int(year_query) != int(datetime.now().year):
             total_user_by_month = list(admin_report.filter(month__year=str(year_query)).values('total_user', 'total_lecturer', 'month').order_by('created_at'))
         else:
             list_users = user.filter(created_at__month=str(current_month)).values('role').annotate(total=Count('role')).order_by()
@@ -51,7 +51,7 @@ class ReportService(BaseService):
         for i in total_user_by_month:
             total_user_list[int(i['month'].strftime('%m')) - 1] = i['total_user']
             total_lecturer_list[int(i['month'].strftime('%m')) - 1] = i['total_lecturer']
-        if year_query is None:
+        if int(year_query) == int(datetime.now().year):
             if total_user_list[current_month - 1] != 0:
                 total_user_list[current_month - 1] += total_user
             else:

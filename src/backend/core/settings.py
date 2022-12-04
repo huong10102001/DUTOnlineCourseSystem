@@ -14,8 +14,6 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -71,15 +69,15 @@ ELASTICSEARCH_DSL = {
     },
 }
 LOGGING = {
-  'version': 1,
-  'disable_existing_loggers': False,
-  'formatters': {
-      'simple': {
-          'format': '[%(asctime)s] %(levelname)s|%(name)s|%(message)s',
-          'datefmt': '%Y-%m-%d %H:%M:%S',
-      },
-  },
-  'handlers': {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '[%(asctime)s] %(levelname)s|%(name)s|%(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
@@ -89,23 +87,24 @@ LOGGING = {
             'level': 'WARNING',
             'class': 'logstash.TCPLogstashHandler',
             'host': '146.190.92.238',
-            'port': 5044, # Default value: 5044
-            'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+            'port': 5044,  # Default value: 5044
+            'version': 1,
+            # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
             'message_type': 'django',  # 'type' field in logstash message. Default value: 'logstash'.
-            'fqdn': True, # Fully qualified domain name. Default value: false.
-            'tags': ['django.request'], # list of tags. Default: None.
+            'fqdn': True,  # Fully qualified domain name. Default value: false.
+            'tags': ['django.request'],  # list of tags. Default: None.
         },
-  },
-  'loggers': {
+    },
+    'loggers': {
         'django.request': {
             'handlers': ['console', 'logstash'],
             'level': 'WARNING',
             'propagate': True,
         },
         'django': {
-          'handlers': ['console', 'logstash'],
-          'level': 'INFO',
-          'propagate': True,
+            'handlers': ['console', 'logstash'],
+            'level': 'INFO',
+            'propagate': True,
         }
     }
 }
@@ -132,26 +131,27 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+
 # CORS_ALLOWED_ORIGINS = [
 #     "http://pbl6elearning.me",
 #     "http://188.166.239.51:8000",
 #     "http://localhost:8081",
 #     "http://127.0.0.1:801"
 # ]
-# CORS_ALLOW_METHODS = [
-#     'DELETE',
-#     'GET',
-#     'OPTIONS',
-#     'PATCH',
-#     'POST',
-#     'PUT',
-# ]
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'mysite/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -203,7 +203,8 @@ DATABASES = {
 }
 
 CRONJOBS = [
-    ('*/59 23 * * *', 'api_report.cron_tab.lecturer_report_daily'),
+    ('*/59 17 * * *', 'api_report.cron_tab.lecturer_report_daily'),
+    ('*/59 10 * * *', 'api_report.cron_tab.reminder_after_three_day'),
     ('*/59 23 28 * *', 'api_report.cron_tab.admin_report_monthly'),
 ]
 
@@ -302,3 +303,22 @@ STATIC_ROOT = join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api_user.Account'
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn=os.getenv('SENTRY_DSN'),
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
