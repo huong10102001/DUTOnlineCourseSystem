@@ -24,20 +24,4 @@ class Migration(migrations.Migration):
             name='certificate_frame',
             field=models.FileField(blank=True, null=True, upload_to=api_course.models.course.upload_path_certificate),
         ),
-        migrations.CreateModel(
-            name='Discussion',
-            fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('content', models.TextField(blank=True, null=True)),
-                ('lesson', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='discussions', to='api_course.lesson')),
-                ('parent_discussion', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='child_discussions', to='api_course.discussion')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='discussions', to='api_user.user')),
-            ],
-            options={
-                'db_table': 'discussions',
-                'ordering': ('-created_at',),
-            },
-        ),
     ]

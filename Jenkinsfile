@@ -8,7 +8,7 @@ pipeline {
   }
 
   stages {
-    stage("build image backend") {
+    stage("test image backend") {
       agent { node {label 'master'}}
       environment {
         DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
@@ -17,6 +17,16 @@ pipeline {
         sh "docker build -t ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG} . "
         sh "docker tag ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG} ${DOCKER_IMAGE_BACKEND}:latest"
         sh "docker image ls | grep ${DOCKER_IMAGE_BACKEND}"
+        sh "docker-compose run app sh -c 'python manage.py test'"
+      }
+    }
+
+    stage("build and push image backend") {
+      agent { node {label 'master'}}
+      environment {
+        DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
+      }
+      steps {
         withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
             sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
             sh "docker push ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}"

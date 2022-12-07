@@ -6,13 +6,13 @@ from api_course.views import CourseViewSet, ChapterViewSet, LessonViewSet, Discu
 
 app_name = "api_course"
 router = DefaultRouter()
-router.register(r'', CourseViewSet)
+router.register(r'', CourseViewSet, basename='course')
 course_router = routers.NestedSimpleRouter(router, r'', lookup='course')
-course_router.register(r'chapters', ChapterViewSet)
+course_router.register(r'chapters', ChapterViewSet, basename='chapter')
 course_router.register(r'ratings', CourseRatingViewSet)
 
 chapter_router = routers.NestedSimpleRouter(course_router, r'chapters', lookup='chapter')
-chapter_router.register(r'lessons', LessonViewSet)
+chapter_router.register(r'lessons', LessonViewSet, basename='lesson')
 
 lesson_router = routers.NestedSimpleRouter(chapter_router, r'lessons', lookup='lesson')
 lesson_router.register(r'discussions', DiscussionViewSet)
