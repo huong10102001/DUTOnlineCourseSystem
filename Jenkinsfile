@@ -8,7 +8,28 @@ pipeline {
   }
 
   stages {
-    stage("build image backend") {
+    stage("test image backend") {
+      agent { node {label 'master'}}
+      environment {
+        DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
+      }
+      steps {
+        sh 'ls'
+        sh '''echo "DB_HOST=$DB_HOST
+                  DB_NAME=$DB_NAME
+                  DB_PASSWORD=$DB_PASSWORD
+                  DB_PORT=$DB_PORT
+                  DB_USER=$DB_USER
+                  SECRET_KEY=$SECRET_KEY"> src/backend/.env'''
+        sh 'cat src/backend/.env'
+        withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            sh "docker pull ${DOCKER_IMAGE_BACKEND}:36"
+        }
+        sh "docker run ${DOCKER_IMAGE_BACKEND}:36"
+      }
+    }
+
+    stage("build and push image backend") {
       agent { node {label 'master'}}
       environment {
         DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
@@ -22,7 +43,6 @@ pipeline {
             sh "docker push ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}"
             sh "docker push ${DOCKER_IMAGE_BACKEND}:latest"
         }
-
         //clean to save disk
         sh "docker image rm ${DOCKER_IMAGE_BACKEND}:${DOCKER_TAG}"
         sh "docker image rm ${DOCKER_IMAGE_BACKEND}:latest"
@@ -43,7 +63,7 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                 sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin'
                 sh "docker push ${DOCKER_IMAGE_FRONTEND}:${DOCKER_TAG}"
-                sh "docker push ${DOCKER_IMAGE_FRONTEND}:latest"
+//                 sh "docker push ${DOCKER_IMAGE_FRONTEND}:latest"
             }
 
             //clean to save disk

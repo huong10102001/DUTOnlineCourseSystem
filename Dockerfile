@@ -70,4 +70,4 @@ ENV DJANGO_SETTINGS_MODULE=core.settings
 ## ENTRYPOINT ["/code/docker-entrypoint.sh"]
 #
 ## Start uWSGI
-#CMD ["uwsgi", "--buffer-size=32768 --show-config"]
+CMD python3 manage.py test

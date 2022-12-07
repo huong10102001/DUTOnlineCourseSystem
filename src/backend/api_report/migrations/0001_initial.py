@@ -11,7 +11,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('api_course', '0002_auto_20221028_0005'),
     ]
 
     operations = [

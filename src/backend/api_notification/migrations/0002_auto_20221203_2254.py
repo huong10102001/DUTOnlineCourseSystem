@@ -7,8 +7,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api_course', '0004_merge_0003_auto_20221123_1855_0003_auto_20221127_1621'),
-        ('api_user', '0004_alter_user_avatar'),
         ('api_notification', '0001_initial'),
     ]
 

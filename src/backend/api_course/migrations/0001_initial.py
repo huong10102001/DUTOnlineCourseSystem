@@ -14,7 +14,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('api_topic', '__first__'),
-        ('api_user', '0003_alter_account_managers'),
     ]
 
     operations = [

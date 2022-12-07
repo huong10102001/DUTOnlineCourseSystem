@@ -11,7 +11,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('api_user', '0003_alter_account_managers'),
         ('api_course', '0001_initial'),
     ]
 

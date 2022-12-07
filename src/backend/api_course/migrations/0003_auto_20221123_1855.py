@@ -10,7 +10,6 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api_user', '0004_alter_user_avatar'),
         ('api_course', '0002_auto_20221028_0005'),
     ]
 

@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('api_process', '0001_initial'),
-        ('api_user', '0003_alter_account_managers'),
-        ('api_course', '0002_auto_20221028_0005'),
     ]
 
     operations = [
