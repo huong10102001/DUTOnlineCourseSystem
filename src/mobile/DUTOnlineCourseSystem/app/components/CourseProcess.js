@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { PROCESS_STATUS } from "../const/processStatus";
 import { getCourse } from "../actions/courseAction";
 import { useDispatch } from "react-redux";
+import { getAvatar } from "../../utils/avatar";
 const CourseProcess = ({ props, width }) => {
   console.log(width);
   const dispatch = useDispatch();
@@ -149,7 +150,7 @@ const CourseProcess = ({ props, width }) => {
           <Image
             style={styles.avatar}
             source={{
-              uri: props.user.avatar||"https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+              uri: props.user.avatar || getAvatar(),
             }}
           ></Image>
         </View>

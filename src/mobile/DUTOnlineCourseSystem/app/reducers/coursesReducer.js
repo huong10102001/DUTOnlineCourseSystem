@@ -9,7 +9,7 @@ const coursesState = {
 const coursesReducer = (state = coursesState, { type, payload }) => {
   console.log(`coursesReducer type: ${type} with payload: ${payload}`);
   switch (type) {
-    case "GET_ALL_COURSES":
+    case "GET_COURSES":
       return {
         ...state,
       };
@@ -17,20 +17,17 @@ const coursesReducer = (state = coursesState, { type, payload }) => {
       const { count, next, previous, results } = payload;
       return {
         ...state,
-        count: count,
-        next: next,
-        previous: previous,
         results: results,
       };
     case "GET_COURSES_FAILURE":
       return {
         ...state,
-        error: payload.detail,
+        error: payload.error,
       };
     case "LOGOUT":
-      return coursesState
+      return coursesState;
     default:
       return state;
-    }
+  }
 };
 export default coursesReducer;

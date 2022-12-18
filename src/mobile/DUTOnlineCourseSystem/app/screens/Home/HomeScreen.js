@@ -1,0 +1,223 @@
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  TouchableHighlight,
+  StatusBar,
+  Image,
+  ScrollView,
+  Dimensions,
+} from "react-native";
+import tw from "tailwind-react-native-classnames";
+import Foundation from "@expo/vector-icons/Foundation";
+import React, { useState, useEffect } from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { registerAction } from "../../actions/registerAction";
+import { connect, useDispatch, useSelector } from "react-redux";
+import Course from "../../components/Course";
+import { getCourses } from "../../actions/coursesAction";
+import { getAvatar } from "../../../utils/avatar";
+const HomeScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const { width } = Dimensions.get("window");
+  useEffect(() => {
+    dispatch(getCourses());
+  }, []);
+  let courses = useSelector((state) => state.courses.results);
+  
+  return (
+    <ScrollView style={{}}>
+      <StatusBar
+        barStyle="white-content"
+        hidden={false}
+        backgroundColor="#024547"
+        translucent={true}
+        color="white"
+      />
+      {/* Tim kiem va profile */}
+      <View>
+        <View style={styles.topNavbar}>
+          <View
+            style={{
+              flex: 6,
+              flexDirection: "row",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flex: 3 }}>
+              <View
+                style={{ flexDirection: "row", alignItems: "center", marginTop:30 }}
+              >
+                <Text
+                  style={{
+                    // fontStyle: "normal",
+                    fontWeight: "400",
+                    fontSize: 20,
+                    color: "white",
+                  }}
+                >
+                  Hi
+                </Text>
+                <FontAwesome
+                  size={18}
+                  color="black"
+                  name="heart"
+                  style={{ paddingLeft: 4 }}
+                  color="white"
+                />
+              </View>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "700",
+                  fontSize: 20,
+                  color: "white",
+                  marginTop:4
+                }}
+              >
+                {user.full_name}
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+                <View
+                  style={{
+                    flex: 1,
+                    padding: 12,
+                    alignItems: "center",
+                    borderRadius: 28,
+                    borderWidth: 1,
+                    borderColor: "gray",
+                    backgroundColor: "white",
+                    position: "absolute",
+                    bottom: 0,
+                    width: 56,
+                    marginRight:4
+                  }}
+                >
+                  <Foundation
+                    size={26}
+                    color="black"
+                    name="magnifying-glass"
+                    color="#024547"
+                    height="20"
+                    width="20"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  flex: 1,
+                  // padding: 12,
+                  alignItems: "center",
+                  borderRadius: 28,
+                  borderWidth: 1,
+                  borderColor: "gray",
+                  backgroundColor: "white",
+                  position: "absolute",
+                  bottom: 0,
+                  width: 56,
+                  height: 56,
+                  overflow: "hidden",
+                }}
+              >
+                <Image
+                  style={styles.image}
+                  source={{
+                    uri: user.avatar || getAvatar(),
+                  }}
+                ></Image>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+      {/* Course */}
+      <View style={{ marginBottom: 15 }}>
+        <ScrollView
+          pagingEnabled
+          contentContainerStyle={{
+            height: "100%",
+          }}
+        >
+          {/* New course To day */}
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                padding: 25,
+              }}
+            >
+              <Text style={styles.titleView}>All Course</Text>
+              <Text style={styles.seeAll}>{courses.length} courses</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <ScrollView pagingEnabled>
+                {courses.map((e, index) => (
+                  <View
+                    style={{
+                      alignItems: "center",
+                      alignContent: "center",
+                      paddingBottom: 10,
+                    }}
+                    key={index.toString()}
+                  >
+                    <Course data={e} width={width} navigator={navigator} />
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </ScrollView>
+  );
+};
+export default HomeScreen;
+const styles = StyleSheet.create({
+  topNavbar: {
+    // flex:1,
+    backgroundColor: "#024547",
+    width: "100%",
+    // borderBottomLeftRadius: 15,
+    // borderBottomRightRadius: 15,
+    padding: 25,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-end",
+    position: "relative",
+  },
+  search: {
+    backgroundColor: "white",
+    borderColor: "",
+    borderWidth: "1",
+    flex: 1,
+    padding: 20,
+    width: "50",
+    height: "50",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "white",
+  },
+  titleView: {
+    fontWeight: "700",
+    fontSize: 16,
+    lineHeight: 24,
+    letterSpacing: 0.02,
+  },
+  seeAll: {
+    color: "#024547",
+    fontWeight: "500",
+  },
+});

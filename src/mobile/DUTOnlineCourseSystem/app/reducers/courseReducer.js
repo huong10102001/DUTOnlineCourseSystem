@@ -38,7 +38,8 @@ const courseState = {
 const courseReducer = (state = courseState, { type, payload }) => {
   console.log(`coursesReducer type: ${type} with payload: ${payload}`);
   switch (type) {
-    case "GET_COURSE_DETAIL":
+
+    case "GET_COURSE":
       return {
         ...state,
         isLoading: true,

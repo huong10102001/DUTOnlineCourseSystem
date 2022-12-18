@@ -15,7 +15,9 @@ import { TextInput } from "react-native-paper";
 import { WebView } from "react-native-webview";
 import { useDispatch, useSelector } from "react-redux";
 import { DeleteDiscussion } from "../actions/discussionAction";
-const Discussion = ({props}) =>{
+import { getAvatar } from "../../utils/avatar";
+
+const Discussion = ({ props }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const lesson = useSelector((state) => state.lesson);
@@ -34,25 +36,21 @@ const Discussion = ({props}) =>{
   const renderDiscussions = () => {
     if (props.child_discussions.length >= 1) {
       return (
-        <View style={{ flexDirection: "column", paddingTop: 12}}>
+        <View style={{ flexDirection: "column", paddingTop: 12 }}>
           {props.child_discussions.map((e, index) => {
             return (
-              <View key={index} style={{ flexDirection: "row" }}>
+              <View key={e} style={{ flexDirection: "row" }}>
                 <View
                   style={{ width: "25%", alignItems: "center", minHeight: 60 }}
                 >
                   <Image
                     style={styles.avatar}
                     source={{
-                      uri:
-                        e.user.avatar ||
-                        "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+                      uri: e.user.avatar || getAvatar(),
                     }}
                   ></Image>
                 </View>
-                <View
-                  style={{ width: "75%", minHeight: 60 }}
-                >
+                <View style={{ width: "75%", minHeight: 60 }}>
                   <Text
                     style={{
                       width: "100%",
@@ -71,16 +69,23 @@ const Discussion = ({props}) =>{
                     </Text>
                     <Text> {e.content}</Text>
                   </Text>
-                  <View style={{flexDirection:"row",alignContent:"flex-start",alignItems:"flex-start",justifyContent:"flex-start"}}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "flex-start",
+                      alignItems: "flex-start",
+                      justifyContent: "flex-start",
+                    }}
+                  >
                     <View>
                       <Text
                         style={{
                           fontStyle: "italic",
                           opacity: 0.5,
-                          fontSize:12
+                          fontSize: 12,
                         }}
                       >
-                        {e.time_comment.split(",")[0]  }
+                        {e.time_comment.split(",")[0]}
                       </Text>
                     </View>
                     <View>
@@ -90,7 +95,18 @@ const Discussion = ({props}) =>{
                             deleteDiscussion(e.id);
                           }}
                         >
-                          <Text style={{ color:"gray", fontWeight: "500",  fontStyle: "italic",  opacity: 0.5, fontSize:12}}>  Delete</Text>
+                          <Text
+                            style={{
+                              color: "gray",
+                              fontWeight: "500",
+                              fontStyle: "italic",
+                              opacity: 0.5,
+                              fontSize: 12,
+                            }}
+                          >
+                            {" "}
+                            Delete
+                          </Text>
                         </TouchableOpacity>
                       ) : (
                         <></>
@@ -128,7 +144,7 @@ const Discussion = ({props}) =>{
             <Image
               style={styles.avatar}
               source={{
-                uri: props.user.avatar||"https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+                uri: props.user.avatar || getAvatar(),
               }}
             ></Image>
           </View>
@@ -265,7 +281,7 @@ const Discussion = ({props}) =>{
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   avatar: {
@@ -283,12 +299,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   showComment: {
-    paddingTop: 8,
     alignSelf: "center",
     fontStyle: "italic",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 12,
+    fontSize: 10,
+    opacity:0.8,
   },
 });
 export default Discussion;

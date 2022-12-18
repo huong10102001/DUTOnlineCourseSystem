@@ -18,13 +18,13 @@ const RatingSection = ({ props }) => {
     if (number > numberViewRating) {
       number = numberViewRating;
     }
-    // return course.ratings.slice(0, number).map((e, index) => {
-    //   return (
-    //     <View>
-    //       <Rating props={e}></Rating>
-    //     </View>
-    //   );
-    // });
+    return course.ratings.slice(0, number).map((e, index) => {
+      return (
+        <View>
+          <Rating props={e}></Rating>
+        </View>
+      );
+    });
   };
   return (
     <View>
@@ -38,7 +38,7 @@ const RatingSection = ({ props }) => {
         <Text style={styles.title}>Ratings</Text>
         <View style={{ flexDirection: "row" }}>
           <Text style={{ fontWeight: "500", paddingRight: 4 }}>
-            {course.avg_rating}/5
+            {course.avg_rating.toString().substring(0,4)}/5
           </Text>
           <FontAwesome
             size={18}

@@ -16,7 +16,6 @@ import {
   registerFailureAction,
 } from "../actions/registerAction";
 import { getUser } from "../actions/userAction";
-import BASE_URL from "../request/url";
 // function* login_request(state) {
 //   console.log("@@@@ loginrequest");
 //   const payload = state.payload;
@@ -41,10 +40,8 @@ function* fetch_login(action) {
     yield put(loginSuccess(data.data));
     yield put(getUser());
   } catch (error) {
-    // yield put(loginFailed(error.response.data));
-    console.error(error);
+    yield put(loginFailed(error.response.data));
+    console.log(error.response.data);
   }
   return;
 }
-
-export default fetch_login;

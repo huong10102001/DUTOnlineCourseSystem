@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  // WebView,
   TouchableOpacity,
   Alert,
 } from "react-native";
@@ -31,8 +32,14 @@ import { Modal } from "../../components/Modal";
 import { getCourseProcess } from "../../actions/courseProcessAction";
 import RatingSection from "./RatingSection";
 import { createRating } from "../../actions/coursesAction";
-const ratingState = [true, false, false, false, false];
+import { PROCESS_STATUS } from "../../const/processStatus";
+import { getAvatar } from "../../../utils/avatar";
+// import Pdf from "react-native-pdf";
+import RNPdfToImage from "react-native-pdf-to-image";
+
+
 const DetailCourse = ({ route, navigation }) => {
+  const ratingState = [true, false, false, false, false];
   const dispatch = useDispatch();
   const { course_id } = route.params;
   const [isModalVisible, setIsModalVisible] = React.useState(false);
@@ -51,6 +58,12 @@ const DetailCourse = ({ route, navigation }) => {
     content: "",
     star_rating: 0,
   });
+  console.log(
+    // RNPdfToImage.convert(
+    //   "https://sgp1.digitaloceanspaces.com/elearning-bk/media/courses/certificate_frames/Lap_Trinh_pythonbang_pham4f0afe56-73d0-11ed-91a4-0242ac140002.pdf?AWSAccessKeyId=DO00ZV8UC3BCHHTQ6UJG&Signature=PHUrY6GR7u%2BePm4vkI8AI07%2Ff%2Fo%3D&Expires=1670435472"
+    // )
+    // RNPdfToImage.conv
+  );
   const user = useSelector((state) => state.user);
   const getMyRating = () => {
     if (course_data.status_rating) {
@@ -87,7 +100,8 @@ const DetailCourse = ({ route, navigation }) => {
         title: ratingTitle,
         content: ratingContent,
         star_rating: currentRating,
-        course_id: course_id,
+        course_id: course_data.id,
+        course_slug: course_data.slug,
       })
     );
     setIsModalVisible(false);
@@ -116,400 +130,463 @@ const DetailCourse = ({ route, navigation }) => {
     whatWillYouLearn:
       "Learn to Program and Analyze Data with Python. Develop programs to gather, clean, analyze, and visualize data.",
   };
-  return (
-    <ScrollView style={{ padding: 25, paddingBottom: 50 }}>
-      <View style={{ alignItems: "center", marginTop: 25, marginBottom: 50 }}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: course_data.background || props.url,
-          }}
-        ></Image>
-        <View style={{ alignItems: "flex-start" }}>
-          <Text style={[styles.title, styles.spaceBetweenComponent]}>
-            {course_data.title}
-          </Text>
-        </View>
-        <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
-          <Text style={{ textAlign: "justify" }}>{course_data.summary}</Text>
-        </View>
-        <View style={{ alignItems: "center", width: "100%" }}>
-          <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
-            <View
-              style={{
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              {renderStar(course_data.avg_rating)}
-            </View>
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "row",
-                marginTop: 8,
-              }}
-            >
-              <Text
-                style={{ color: "#FFBD35", fontWeight: "600", marginRight: 8 }}
-              >
-                {course_data.avg_rating}/5
-              </Text>
-              <Text style={{}}>{course_data.total_rating} ratings</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                paddingTop: 8,
-              }}
-            >
-              {course_data.status_rating ? (
-                <View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      showDialog();
-                      getMyRating();
-                    }}
-                  >
-                    <View style={styles.btnRating}>
-                      <Text style={{ color: "white" }}>View your rating</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View>
-                  <TouchableOpacity onPress={handleModal}>
-                    <View style={styles.btnRating}>
-                      <Text style={{ color: "white" }}>Generate feedback</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={[
-            styles.spaceBetweenComponent,
-            { justifyContent: "center", alignItems: "center" },
-          ]}
-          onPress={() => {
-            dispatch(getCourseProcess({ course_id: course_data.id }));
-            navigation.navigate("Lesson");
-          }}
-        >
-          <View
-            style={[
-              styles.btnEnroll,
-              { width: "100%", alignSelf: "center", alignItems: "center" },
-            ]}
-          >
-            <Text style={{ color: "white", fontWeight: "700" }}>
-              Enroll now
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <View
-          style={
-            ({ alignItems: "center", width: "100%" },
-            [styles.contentComponent, styles.spaceBetweenComponent])
-          }
-        >
-          <RenderHtml source={{ html: `${course_data.description}` }} />
-        </View>
-        <View
-          style={
-            ({ alignItems: "center", width: "100%" },
-            [styles.contentComponent, styles.spaceBetweenComponent])
-          }
-        >
-          <View>
-            <View style={{ flexDirection: "row", minHeight: 60 }}>
-              <View style={{ width: "30%", alignItems: "center" }}>
-                <Image
-                  style={styles.avatar}
-                  source={{
-                    uri: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
-                  }}
-                ></Image>
-              </View>
-              <View style={{ width: "70%",justifyContent:"center" }}>
-                <Text
-                  style={{
-                    color: "#024547",
-                    fontWeight: "700",
-                  }}
-                >
-                  {course_data.user.full_name}
-                </Text>
-                <Text
-                  style={{
-                    color: "#024547",
-                    fontWeight: "500",
-                  }}
-                >
-                  {course_data.user.role}
-                </Text>
-              </View>
-            </View>
-            <Text style={{ textAlign: "justify", paddingTop:10}}>
-              {course_data.user.bio}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={
-            ({ alignItems: "center", width: "100%", marginBottom: 100 },
-            [styles.contentComponent, styles.spaceBetweenComponent])
-          }
-        >
-          <Text
-            style={{ color: "#024547", fontWeight: "700", marginBottom: 16 }}
-          >
-            Earn a Certificate upon completion
-          </Text>
-          <Text style={styles.textJustifyPadding}>
-            {props.whatWillYouLearn}
-          </Text>
+  if (course_data.isLoading) {
+    return <View></View>;
+  } else {
+    return (
+      <ScrollView style={{ padding: 25, paddingBottom: 50 }}>
+        <View style={{ alignItems: "center", marginTop: 25, marginBottom: 50 }}>
           <Image
             style={styles.image}
             source={{
-              uri: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+              uri:
+                course_data.background ||
+                "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
             }}
           ></Image>
-        </View>
-        <View style={{ alignItems: "flex-start" }}>
-          <Text style={[styles.title, styles.spaceBetweenComponent]}>
-            {course_data.chapters.length} Chapters in this Specialization
-          </Text>
-        </View>
-        <View style={{ paddingTop: 25 }}>
-          {course_data.chapters.map((e, index) => (
-            <View style={{ paddingBottom: 20 }}>
-              <Chapter key={index} props={[e, index]} />
-            </View>
-          ))}
-        </View>
-        {/* Rating */}
-        <View
-          style={
-            ({ alignItems: "center", width: "100%", marginBottom: 100 },
-            [styles.contentComponent])
-          }
-        >
-          <RatingSection></RatingSection>
-        </View>
-        {/* Modal */}
-        <View>
-          <Modal isVisible={isModalVisible}>
-            <View style={{ flex: 1, justifyContent: "center", maxHeight: 500 }}>
-              <View style={[styles.contentComponent]}>
-                <View
+          <View style={{ alignItems: "flex-start" }}>
+            <Text style={[styles.title, styles.spaceBetweenComponent]}>
+              {course_data.title}
+            </Text>
+          </View>
+          <View style={[styles.contentComponent, styles.spaceBetweenComponent]}>
+            <Text style={{ textAlign: "justify" }}>{course_data.summary}</Text>
+          </View>
+          <View style={{ alignItems: "center", width: "100%" }}>
+            <View
+              style={[styles.contentComponent, styles.spaceBetweenComponent]}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                {renderStar(course_data.avg_rating)}
+              </View>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  marginTop: 8,
+                }}
+              >
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    color: "#FFBD35",
+                    fontWeight: "600",
+                    marginRight: 8,
                   }}
                 >
-                  <Text style={styles.text}>How did we do?</Text>
-                  <TouchableOpacity onPress={handleModal}>
-                    <Text style={[styles.text, { paddingRight: 4 }]}>X</Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <Text style={{ opacity: 0.7, paddingBottom: 16 }}>
-                    Please let us know how we did with your support request. All
-                    feedbach is appreciared to help us improve our offering!
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    paddingBottom: 16,
-                  }}
-                >
-                  {!rating[0] ? (
-                    <TouchableOpacity onPress={() => changeRating(0)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="staro"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => changeRating(0)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="star"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {!rating[1] ? (
-                    <TouchableOpacity onPress={() => changeRating(1)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="staro"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => changeRating(1)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="star"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {!rating[2] ? (
-                    <TouchableOpacity onPress={() => changeRating(2)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="staro"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => changeRating(2)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="star"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {!rating[3] ? (
-                    <TouchableOpacity onPress={() => changeRating(3)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="staro"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => changeRating(3)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="star"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  {!rating[4] ? (
-                    <TouchableOpacity onPress={() => changeRating(4)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="staro"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => changeRating(4)}>
-                      <AntDesign
-                        size={30}
-                        color="#FFBD35"
-                        name="star"
-                        width={30}
-                        style={{ width: 30 }}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-                <View style={{ paddingBottom: 16 }}>
-                  <TextInput
-                    mode="outlined"
-                    label="Title"
-                    value={ratingTitle}
-                    onChangeText={(text) => setRatingTitle(text)}
-                    selectionColor="#024547"
-                    underlineColor="#024547"
-                    activeOutlineColor="#024547"
-                    style={{ fontSize: 18 }}
-                  />
-                  <TextInput
-                    multiline
-                    numberOfLines={3}
-                    mode="outlined"
-                    label="Your feedback"
-                    value={ratingContent}
-                    onChangeText={(text) => setRatingContent(text)}
-                    selectionColor="#024547"
-                    underlineColor="#024547"
-                    activeOutlineColor="#024547"
-                    style={{ fontSize: 18 }}
-                  />
-                </View>
-                <View style={[styles.buttonCover, { width: "100%" }]}>
-                  <TouchableOpacity
-                    style={[styles.button, { width: "100%" }]}
-                    onPress={handleSubmitRating}
-                  >
-                    <Text style={{ color: "white", fontWeight: "700" }}>
-                      Rating
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                  {course_data.avg_rating.toString().substring(0, 4)}/5
+                </Text>
+                <Text>{course_data.total_rating} ratings</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  paddingTop: 8,
+                }}
+              >
+                {course_data.process_status == PROCESS_STATUS.NOT_OPEN ||
+                course_data.process_status == PROCESS_STATUS.OPEN ? (
+                  <></>
+                ) : (
+                  <>
+                    {course_data.status_rating ? (
+                      <View>
+                        <TouchableOpacity
+                          onPress={() => {
+                            showDialog();
+                            getMyRating();
+                          }}
+                        >
+                          <View style={styles.btnRating}>
+                            <Text style={{ color: "white" }}>
+                              View your rating
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <View>
+                        <TouchableOpacity onPress={handleModal}>
+                          <View style={styles.btnRating}>
+                            <Text style={{ color: "white" }}>
+                              Generate feedback
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </>
+                )}
               </View>
             </View>
-          </Modal>
-        </View>
-        {/* Dialog */}
-        <View>
-          <Portal>
-            <Dialog
-              visible={visible}
-              onDismiss={hideDialog}
-              style={{ backgroundColor: "white" }}
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.spaceBetweenComponent,
+              { justifyContent: "center", alignItems: "center" },
+            ]}
+            onPress={() => {
+              dispatch(getCourseProcess({ course_id: course_data.id }));
+              navigation.navigate("Lesson", { course_id: course_data.id });
+            }}
+          >
+            <View
+              style={[
+                styles.btnEnroll,
+                { width: "100%", alignSelf: "center", alignItems: "center" },
+              ]}
             >
-              <Dialog.Title style={{ fontSize: 24 }}>
-                {myRating.title}
-              </Dialog.Title>
-              <Dialog.Content>
-                <View
-                  style={{ flexDirection: "row", justifyContent: "center" }}
-                >
-                  {renderStar(myRating.star_rating)}
+              {course_data.process_status == PROCESS_STATUS.NOT_OPEN ||
+              course_data.process_status == PROCESS_STATUS.OPEN ? (
+                <Text style={{ color: "white", fontWeight: "700" }}>
+                  Enroll now
+                </Text>
+              ) : course_data.process_status == PROCESS_STATUS.IN_PROGRESS ? (
+                <Text style={{ color: "white", fontWeight: "700" }}>
+                  Continue
+                </Text>
+              ) : (
+                <Text style={{ color: "white", fontWeight: "700" }}>
+                  Review
+                </Text>
+              )}
+            </View>
+          </TouchableOpacity>
+          <View
+            style={
+              ({ alignItems: "center", width: "100%" },
+              [styles.contentComponent, styles.spaceBetweenComponent])
+            }
+          >
+            <RenderHtml source={{ html: `${course_data.description}` }} />
+          </View>
+          <View
+            style={
+              ({ alignItems: "center", width: "100%" },
+              [styles.contentComponent, styles.spaceBetweenComponent])
+            }
+          >
+            <View>
+              <View style={{ flexDirection: "row", minHeight: 60 }}>
+                <View style={{ width: "30%", alignItems: "center" }}>
+                  <Image
+                    style={styles.avatar}
+                    source={{
+                      uri: course_data.user.avatar || getAvatar(),
+                    }}
+                  ></Image>
                 </View>
-                <Paragraph>{myRating.content}</Paragraph>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button
-                  onPress={hideDialog}
-                  textColor="#024547"
-                  fontWeight="bold"
-                >
-                  Done
-                </Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
+                <View style={{ width: "70%", justifyContent: "center" }}>
+                  <Text
+                    style={{
+                      color: "#024547",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {course_data.user.full_name}
+                  </Text>
+                  <Text
+                    style={{
+                      color: "#024547",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {course_data.user.role}
+                  </Text>
+                </View>
+              </View>
+              <Text style={{ textAlign: "justify", paddingTop: 10 }}>
+                {course_data.user.bio}
+              </Text>
+            </View>
+          </View>
+          {course_data.certificate_frame ? (
+            <View
+              style={
+                ({ alignItems: "center", width: "100%", marginBottom: 100 },
+                [styles.contentComponent, styles.spaceBetweenComponent])
+              }
+            >
+              <Text>Certificate</Text>
+              {/* <Image
+                style={styles.image}
+                source={{
+                  uri: "https://sgp1.digitaloceanspaces.com/elearning-bk/media/courses/certificate_frames/Django_Basicadmin12e61dddd0-7395-11ed-8a51-050a53fe21b7.pdf?AWSAccessKeyId=DO00ZV8UC3BCHHTQ6UJG&Signature=ynFIeOzQDRTjEbT5IjjNrM1Mzss%3D&Expires=1670147083",
+                }}
+              ></Image> */}
+              {/* <WebView
+                bounces={false}
+                scrollEnabled={false}
+                source={{
+                  uri: "https://sgp1.digitaloceanspaces.com/elearning-bk/media/courses/certificate_frames/Django_Basicadmin12e61dddd0-7395-11ed-8a51-050a53fe21b7.pdf?AWSAccessKeyId=DO00ZV8UC3BCHHTQ6UJG&Signature=ynFIeOzQDRTjEbT5IjjNrM1Mzss%3D&Expires=1670147083",
+                }}
+              /> */}
+              {/* <WebView
+                style={{ flex: 1, height: "100%", minHeight: 440 }}
+                useWebKit={true}
+                originWhitelist={["*"]}
+                nestedScrollEnabled
+                scrollEnabled={true}
+                overScrollMode="content"
+                containerStyle={{
+                  backgroundColor: "white",
+                }}
+                mediaPlaybackRequiresUserAction={true}
+                source={{
+                  uri: "https://sgp1.digitaloceanspaces.com/elearning-bk/media/courses/certificate_frames/Lap_Trinh_pythonbang_pham4f0afe56-73d0-11ed-91a4-0242ac140002.pdf?AWSAccessKeyId=DO00ZV8UC3BCHHTQ6UJG&Signature=PHUrY6GR7u%2BePm4vkI8AI07%2Ff%2Fo%3D&Expires=1670435472",
+                }}
+              />
+              <WebView
+                // renderLoading={this.renderLoadingView}
+                source={{
+                  uri: "https://drive.google.com/viewerng/viewer?embedded=true&url=http://www.pdf995.com/samples/pdf.pdf",
+                }}
+                startInLoadingState={true}
+              /> */}
+            </View>
+          ) : (
+            <></>
+          )}
+          <View style={{ alignItems: "flex-start" }}>
+            <Text style={[styles.title, styles.spaceBetweenComponent]}>
+              {course_data.chapters.length} Chapters in this Specialization
+            </Text>
+          </View>
+          <View style={{ paddingTop: 25, width:'100%' }}>
+            {course_data.chapters.map((e, index) => (
+              <View key={index.toString()} style={{ paddingBottom: 20, width:'100%' }}>
+                <Chapter props={[e, index]} style={{ width:'100%' }} />
+              </View>
+            ))}
+          </View>
+          {/* Rating */}
+          <View
+            style={
+              ({ alignItems: "center", width: "100%", marginBottom: 100 },
+              [styles.contentComponent])
+            }
+          >
+            <RatingSection></RatingSection>
+          </View>
+          {/* Modal */}
+          <View>
+            <Modal isVisible={isModalVisible}>
+              <View
+                style={{ flex: 1, justifyContent: "center", maxHeight: 500 }}
+              >
+                <View style={[styles.contentComponent]}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text style={styles.text}>How did we do?</Text>
+                    <TouchableOpacity onPress={handleModal}>
+                      <Text style={[styles.text, { paddingRight: 4 }]}>X</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <Text style={{ opacity: 0.7, paddingBottom: 16 }}>
+                      Please let us know how we did with your support request.
+                      All feedbach is appreciared to help us improve our
+                      offering!
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      paddingBottom: 16,
+                    }}
+                  >
+                    {!rating[0] ? (
+                      <TouchableOpacity onPress={() => changeRating(0)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="staro"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity onPress={() => changeRating(0)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="star"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    {!rating[1] ? (
+                      <TouchableOpacity onPress={() => changeRating(1)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="staro"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity onPress={() => changeRating(1)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="star"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    {!rating[2] ? (
+                      <TouchableOpacity onPress={() => changeRating(2)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="staro"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity onPress={() => changeRating(2)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="star"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    {!rating[3] ? (
+                      <TouchableOpacity onPress={() => changeRating(3)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="staro"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity onPress={() => changeRating(3)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="star"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    {!rating[4] ? (
+                      <TouchableOpacity onPress={() => changeRating(4)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="staro"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity onPress={() => changeRating(4)}>
+                        <AntDesign
+                          size={30}
+                          color="#FFBD35"
+                          name="star"
+                          width={30}
+                          style={{ width: 30 }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                  <View style={{ paddingBottom: 16 }}>
+                    <TextInput
+                      mode="outlined"
+                      label="Title"
+                      value={ratingTitle}
+                      onChangeText={(text) => setRatingTitle(text)}
+                      selectionColor="#024547"
+                      underlineColor="#024547"
+                      activeOutlineColor="#024547"
+                      style={{ fontSize: 18 }}
+                    />
+                    <TextInput
+                      multiline
+                      numberOfLines={3}
+                      mode="outlined"
+                      label="Your feedback"
+                      value={ratingContent}
+                      onChangeText={(text) => setRatingContent(text)}
+                      selectionColor="#024547"
+                      underlineColor="#024547"
+                      activeOutlineColor="#024547"
+                      style={{ fontSize: 18 }}
+                    />
+                  </View>
+                  <View style={[styles.buttonCover, { width: "100%" }]}>
+                    <TouchableOpacity
+                      style={[styles.button, { width: "100%" }]}
+                      onPress={handleSubmitRating}
+                    >
+                      <Text style={{ color: "white", fontWeight: "700" }}>
+                        Rating
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          </View>
+          {/* Dialog */}
+          <View>
+            <Portal>
+              <Dialog
+                visible={visible}
+                onDismiss={hideDialog}
+                style={{ backgroundColor: "white" }}
+              >
+                <Dialog.Title style={{ fontSize: 24 }}>
+                  {myRating.title}
+                </Dialog.Title>
+                <Dialog.Content>
+                  <View
+                    style={{ flexDirection: "row", justifyContent: "center" }}
+                  >
+                    {renderStar(myRating.star_rating)}
+                  </View>
+                  <Paragraph>{myRating.content}</Paragraph>
+                </Dialog.Content>
+                <Dialog.Actions>
+                  <Button
+                    onPress={hideDialog}
+                    textColor="#024547"
+                    fontWeight="bold"
+                  >
+                    Done
+                  </Button>
+                </Dialog.Actions>
+              </Dialog>
+            </Portal>
+          </View>
         </View>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
+  }
 };
 export default DetailCourse;
 const styles = StyleSheet.create({
