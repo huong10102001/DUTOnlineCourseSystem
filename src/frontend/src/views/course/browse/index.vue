@@ -13,7 +13,14 @@
         multiple
       />
 
-      <span v-show="loading">Loading...</span>
+      <span v-if="loading" class="p-6 is-flex is-justify-content-center">
+        <button class="button is-text" disabled style="text-decoration: none">
+          <el-icon class="is-loading mr-2">
+            <Loading/>
+          </el-icon>
+          Loading...
+        </button>
+      </span>
 
       <el-row v-show="!loading" :gutter="20">
         <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">

@@ -9,7 +9,7 @@
       </router-link>
 
       <el-row :gutter="20" class="mb-4 is-vcentered">
-        <el-col :md="12">
+        <el-col :md="12" class="mb-2">
           <el-select-v2
             v-model="query.categories"
             :options="topics"
@@ -38,7 +38,14 @@
           <CourseItem :course="course" @deleteCourse="getListCourses"></CourseItem>
         </el-col>
       </el-row>
-      <span v-if="loading">Loading...</span>
+      <span v-if="loading" class="p-6 is-flex is-justify-content-center">
+        <button class="button is-text" disabled style="text-decoration: none">
+          <el-icon class="is-loading mr-2">
+            <Loading/>
+          </el-icon>
+          Loading...
+        </button>
+      </span>
     </div>
 
     <Pagination
@@ -110,7 +117,7 @@ import {ElNotification} from "element-plus";
   watch: {
     query: {
       deep: true,
-      handler: async function() {
+      handler: async function () {
         this.loading = true
         this.$router.replace({query: this.query})
         await this.getListCourses();
