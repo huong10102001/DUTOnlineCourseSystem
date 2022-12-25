@@ -9,7 +9,7 @@
       </router-link>
 
       <el-row :gutter="20" class="mb-4 is-vcentered">
-        <el-col :md="12" class="mb-2">
+        <el-col :md="12">
           <el-select-v2
             v-model="query.categories"
             :options="topics"
@@ -119,7 +119,6 @@ import {ElNotification} from "element-plus";
       deep: true,
       handler: async function () {
         this.loading = true
-        this.$router.replace({query: this.query})
         await this.getListCourses();
         this.loading = false
       },
@@ -134,10 +133,6 @@ import {ElNotification} from "element-plus";
   async created() {
     this.SET_LOADING(true)
     await this.getListTopics()
-    if (Object.keys(this.$route.query).length != 0) {
-      this.query = this.$route.query
-      return
-    }
     await this.getListCourses()
     this.SET_LOADING(false)
   },

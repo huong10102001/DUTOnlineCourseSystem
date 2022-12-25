@@ -104,12 +104,14 @@ import TitleBar from "@/components/TitleBar.vue";
     }
   },
   async created() {
+    this.SET_LOADING(true)
     await this.getListTopics()
     if (Object.keys(this.$route.query).length != 0) {
       this.query = this.$route.query
       return
     }
     await this.getListCourses();
+    this.SET_LOADING(false)
   },
   mounted() {
     document.title = 'Browse Online Courses | E-Learning'

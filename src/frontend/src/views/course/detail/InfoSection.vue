@@ -85,7 +85,9 @@
             class="number-star"
             :class="{active: numberStar >= i}"
           >
-            <el-icon size="large"><star/></el-icon>
+            <el-icon size="large">
+              <star/>
+            </el-icon>
           </el-button>
         </el-row>
 
@@ -137,6 +139,32 @@ import {ActionTypes} from "@/types/store/ActionTypes";
       numberStar: 0,
     }
   },
+  computed: {
+    last_learned_lesson() {
+      let chapter_index = 0
+      let lesson_index = 0
+      this.course.chapters.forEach((chapter: any) => {
+        chapter.lessons.forEach((lesson: any) => {
+          if (lesson.status == PROCESS_STATUS.OPEN || lesson.status == PROCESS_STATUS.IN_PROGRESS) {
+            return {
+              chapter_index,
+              lesson_index
+            }
+          }
+          lesson_index++
+        })
+        if (chapter_index < this.course.chapters.length - 1) {
+          chapter_index++
+          lesson_index = 0
+        }
+      })
+      lesson_index--
+      return {
+        chapter_index,
+        lesson_index
+      }
+    }
+  },
   methods: {
     ...mapActions('rating', [ActionTypes.CREATE_RATING]),
 
@@ -153,8 +181,8 @@ import {ActionTypes} from "@/types/store/ActionTypes";
         name: 'lesson-detail',
         params: {
           course_slug: this.course.slug,
-          chapter_slug: this.course.chapters[0].slug,
-          lesson_slug: this.course.chapters[0].lessons[0].slug,
+          chapter_slug: this.course.chapters[this.last_learned_lesson.chapter_index].slug,
+          lesson_slug: this.course.chapters[this.last_learned_lesson.chapter_index].lessons[this.last_learned_lesson.lesson_index].slug,
         },
         query: {
           course_id: this.course.id
