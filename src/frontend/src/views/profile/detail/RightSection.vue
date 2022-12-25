@@ -51,3 +51,18 @@ import {Options, Vue} from 'vue-class-component';
 export default class RightSection extends Vue {
 }
 </script>
+
+<style lang="scss" scoped>
+.card {
+  border: 1px solid #eee;
+  box-shadow: none
+}
+
+.card:hover {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.card-header {
+  box-shadow: none
+}
+</style>

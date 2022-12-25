@@ -36,9 +36,7 @@
 
       <el-form-item
         prop="score"
-        style="width: 100%"
         label="Score"
-        class="mr-0"
       >
         <el-input-number v-model="_question.score" :min="5" :max="100" :step-strictly="true" :step="5"/>
       </el-form-item>
@@ -247,6 +245,10 @@ export default class QuizForm extends Vue {
   border-radius: 4px;
   transition: all 0.2s linear;
   margin-top: 30px;
+}
+
+.quiz-form:hover {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .answer-section {

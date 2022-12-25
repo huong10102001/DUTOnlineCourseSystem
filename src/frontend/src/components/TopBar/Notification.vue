@@ -173,9 +173,9 @@ import {ElNotification} from 'element-plus';
     }
   },
   mounted() {
-    setInterval( () => {
-      if (!this.isHover) this.fetchNotification()
-    }, 5000)
+    // setInterval( () => {
+    //   if (!this.isHover) this.fetchNotification()
+    // }, 5000)
   },
   async created() {
     await this.fetchNotification()

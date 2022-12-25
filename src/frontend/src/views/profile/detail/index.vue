@@ -39,7 +39,9 @@ import RightSection from "@/views/profile/detail/RightSection.vue";
     ...mapMutations(["SET_LOADING"]),
     async getProfileDetail() {
       this.SET_LOADING(true)
-      let response: any = await this.GET_USER_PROFILE(this.tokenInfo.user_id)
+      let user_id = this.tokenInfo.user_id
+      if (this.$route.query.id) user_id = this.$route.query.id
+      let response: any = await this.GET_USER_PROFILE(user_id)
       if (response.status == 200) {
         this.user = response.data
       }

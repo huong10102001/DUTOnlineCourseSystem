@@ -1,24 +1,31 @@
 <template>
   <el-main>
     <el-scrollbar max-height="500px">
-      <div v-for="(user, index) in top_users" :key="user.id" class="user-record">
-        <div class="columns is-flex is-vcentered">
-          <div class="column is-one-fifth is-flex is-justify-content-center">#{{ index+1 }}</div>
-          <div class="column is-flex is-justify-content-center">
-            <div class="columns is-flex is-vcentered">
-              <div class="column is-flex is-justify-content-center">
-                <el-avatar :size="60" :src="user.avatar">
-                  <img src="@/assets/vectors/default_avatar.svg"/>
-                </el-avatar>
-              </div>
-              <div class="column is-capitalized" style="min-width: 250px">
-                <strong>{{ user.full_name }}</strong>
+      <div
+        v-for="(user, index) in top_users"
+        :key="user.id"
+        class="user-record"
+        @click="$router.push({name: 'profile-detail', query: {id: user.id}})"
+      >
+          <div class="columns is-flex is-vcentered">
+            <div class="column is-one-fifth is-flex is-justify-content-center">#{{ index + 1 }}</div>
+            <div class="column is-flex is-justify-content-center">
+              <div class="columns is-flex is-vcentered">
+                <div class="column is-flex is-justify-content-center">
+                  <el-avatar :size="60" :src="user.avatar">
+                    <img src="@/assets/vectors/default_avatar.svg"/>
+                  </el-avatar>
+                </div>
+                <div class="column is-capitalized" style="min-width: 250px">
+                  <strong>
+                    {{ user.full_name }}
+                  </strong>
+                </div>
               </div>
             </div>
+            <div class="column is-flex is-justify-content-center">{{ user.total_certificate }} certificates</div>
+            <div class="column is-flex is-justify-content-center">{{ user.total_answer }} answers</div>
           </div>
-          <div class="column is-flex is-justify-content-center">{{ user.total_certificate }} certificates</div>
-          <div class="column is-flex is-justify-content-center">{{ user.total_answer }} answers</div>
-        </div>
       </div>
     </el-scrollbar>
   </el-main>
@@ -60,6 +67,7 @@ export default class TopUserSection extends Vue {
   border-radius: 20px;
   padding: 15px;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .user-record:last-child {
