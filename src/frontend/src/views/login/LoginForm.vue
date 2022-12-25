@@ -59,6 +59,8 @@ import LoginItem from "@/types/login/LoginItem";
 import {mapActions, mapState} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import {ElNotification} from 'element-plus'
+import { database, ref as dbRef, push, onValue } from "@/firebase";
+import {equalTo, query, orderByChild, get} from '@firebase/database';
 
 @Options({
   data() {
@@ -94,6 +96,16 @@ import {ElNotification} from 'element-plus'
 
           if (response.status == 200) {
             const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
+            const que = await query(dbRef(database, 'notifications/'), orderByChild('user_id'), equalTo(this.tokenInfo.user_id))
+            get(que).then((snapshot) => {
+              if (!snapshot.exists()) {
+                 push(dbRef(database, "notifications/"), {
+                    user_id: this.tokenInfo.user_id
+                  });
+              }
+            }).catch((error) => {
+              console.error(error);
+            });
             if (user_info.status == 200) {
               this.$router.push("/")
               return
@@ -108,10 +120,18 @@ import {ElNotification} from 'element-plus'
         }
       })
       this.is_freeze = false
-    }
+    },
+
+  },
+  async created() {
+    await this.gettoken()
   },
   computed: {
     ...mapState("authentication", ["tokenInfo"])
+    // startOnMessageListener()
+  },
+  mounted() {
+
   }
 })
 

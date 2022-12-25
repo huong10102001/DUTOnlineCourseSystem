@@ -5,6 +5,7 @@ from api_course.serializers import DiscussionSerializer, DiscussionLessonSeriali
 from rest_framework import status
 from api_notification.models import Notification
 from rest_framework.permissions import IsAuthenticated
+from api_course.services import SaveNotification
 
 
 class DiscussionViewSet(BaseViewSet):
@@ -28,6 +29,8 @@ class DiscussionViewSet(BaseViewSet):
                     user_id = Discussion.objects.filter(id=request.data.get('parent_discussion_id')).first().user_id
                     notification = Notification(title=title, content=discussion.data['content'], user_id=user_id,
                                                 user_reply=user_obj, discussion_id=discussion.data['id'])
+                    data = {"title": title, "content": discussion.data['content']}
+                    SaveNotification.save_notification(str(user_id), data)
                     notification.save()
                 else:
                     course = Course.objects.filter(id=kwargs['course_pk']).first()
@@ -37,8 +40,9 @@ class DiscussionViewSet(BaseViewSet):
                                                     user=course.user,
                                                     user_reply=user_obj,
                                                     discussion_id=discussion.data['id'])
+                        data = {"title": title, "content": discussion.data['content']}
+                        SaveNotification.save_notification(str(course.user.id), data)
                         notification.save()
-
             return Response(discussion.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
