@@ -203,9 +203,9 @@ DATABASES = {
 }
 
 CRONJOBS = [
-    ('*/59 17 * * *', 'api_report.cron_tab.lecturer_report_daily'),
-    ('*/59 10 * * *', 'api_report.cron_tab.reminder_after_three_day'),
-    ('*/59 23 28 * *', 'api_report.cron_tab.admin_report_monthly'),
+    ('*/55 17 * * *', 'api_report.cron_tab.lecturer_report_daily'),
+    ('*/55 10 * * *', 'api_report.cron_tab.reminder_after_three_day'),
+    ('*/55 23 28 * *', 'api_report.cron_tab.admin_report_monthly'),
 ]
 
 # DATABASES = {
