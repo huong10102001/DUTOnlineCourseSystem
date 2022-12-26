@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from django.db.models import Q
+from api_course.services import SaveNotification
 
 
 class NotificationViewSet(BaseViewSet):
@@ -39,6 +40,7 @@ class NotificationViewSet(BaseViewSet):
             for i in range(len(page)):
                 page[i].isRead = True
             Notification.objects.bulk_update(page, ['isRead'])
+            SaveNotification.read_notification(len(page), str(user_obj.pk))
             serializer = self.serializer_class(page, many=True)
 
             return Response(serializer.data, status=status.HTTP_200_OK)

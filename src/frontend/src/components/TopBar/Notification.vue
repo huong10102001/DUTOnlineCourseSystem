@@ -77,9 +77,11 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import {ElNotification} from 'element-plus';
+import {database, ref as dbRef, onValue, push} from '@/firebase'
+import {equalTo, query, orderByChild, get} from '@firebase/database';
 
 @Options({
   data() {
@@ -117,8 +119,13 @@ import {ElNotification} from 'element-plus';
       next_page: null,
       total_notification: 0,
       maxScrollHeight: 0,
-      isHover: false
+      isHover: false,
+      notification_id: "",
+      notification_popup: {"title": ""}
     }
+  },
+  computed:{
+    ...mapGetters("authentication", ["tokenInfo"]),
   },
   methods: {
     ...mapActions("notification", [ActionTypes.FETCH_NOTIFICATION, ActionTypes.CHANGE_NOTIFICATIONS_STATE]),
@@ -156,29 +163,44 @@ import {ElNotification} from 'element-plus';
       if (this.query.isStateChanged) return
       this.CHANGE_NOTIFICATIONS_STATE({page: this.query.page})
       this.query.isStateChanged = true
-    }
+    },
+    async getNotification(noti_id: String){
+        await onValue(dbRef(database, 'notifications/' + noti_id), (snapshot) => {
+        const data = Object.values(Object(snapshot.val())['notification'])
+        this.notification_popup = data[data.length-1]
+      })
+    },
+    async getNotiHasUnread(noti_id: String){
+        await onValue(dbRef(database, 'notifications/' + noti_id), (snapshot) => {
+        this.hasUnread = Object(snapshot.val())['noti_number']
+      })
+    },
+    async getNotificationName(user_id: string) {
+      const que = await query(dbRef(database, 'notifications/'), orderByChild('user_id'), equalTo(user_id))
+      await get(que).then((snapshot: any) => {
+        this.notification_id = Object.keys(snapshot.val())[0]
+      })
+    },
   },
   watch: {
-    hasUnread(newVal: number, oldVal: number) {
-      if (newVal > oldVal) {
-        for (let i = 0; i < newVal - oldVal; i++) {
-          ElNotification({
-            title: 'Notification',
-            message: this.notifications[i].title,
-            position: 'bottom-right',
-            icon: "Notification"
-          })
-        }
-      }
+    async hasUnread(newVal: number, oldVal: number) {
+      await ElNotification({
+        title: 'Notification',
+        message: this.notification_popup.title,
+        position: 'bottom-right',
+        icon: "Notification"
+      })
+
     }
   },
   mounted() {
-    // setInterval( () => {
-    //   if (!this.isHover) this.fetchNotification()
-    // }, 5000)
+    this.getNotificationName(this.tokenInfo.user_id)
+
   },
   async created() {
     await this.fetchNotification()
+    await this.getNotification(this.notification_id)
+    await this.getNotiHasUnread(this.notification_id)
     this.loading = false
   },
   updated(){

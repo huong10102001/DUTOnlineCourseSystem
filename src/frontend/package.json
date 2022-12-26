@@ -5,9 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "build-production": "vue-cli-service build --mode production",
-    "watch": "vue-cli-service build --mode development --watch",
-    "test:unit": "vue-cli-service test:unit"
+    "watch": "vue-cli-service build --mode development --watch"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.9",
@@ -25,11 +25,13 @@
     "chart.js": "^3.9.1",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.17",
+    "firebase": "^9.15.0",
     "jwt-decode": "^3.1.2",
     "pdf-viewer-vue": "^0.2.7",
     "pdfvuer": "^2.0.1",
     "quill-blot-formatter": "^1.0.5",
     "quill-image-uploader": "^1.2.3",
+    "register-service-worker": "^1.7.2",
     "video.js": "^7.20.3",
     "vue": "^3.2.13",
     "vue-chartjs": "^4.1.2",
@@ -45,6 +47,7 @@
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-pwa": "^5.0.8",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-plugin-unit-jest": "~5.0.0",
