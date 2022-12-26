@@ -126,7 +126,50 @@ class ListCourseSerializer(serializers.ModelSerializer):
         instance['total_rating'] = len(list_rating)
         instance['has_user'] = ProcessCourse.objects.filter(course__id=instance['id']).count() > 0
         try:
-            instance['avg_rating'] = sum(list_rating) / instance['total_rating']
+            instance['avg_rating'] = round(sum(list_rating) / instance['total_rating'], 2)
+        except ZeroDivisionError:
+            instance['avg_rating'] = 0
+        number_star = context.get('view').request.query_params.get("number_star", "")
+        if len(number_star) != 0:
+            star_rating = instance['ratings']
+            number_rating = list(filter(lambda star: star['star_rating'] is int(number_star), star_rating))
+            instance['ratings'] = number_rating
+        try:
+            instance['status_rating'] = True if len(CourseRating.objects.filter(
+                Q(process_course__course_id=instance['id']) & Q(
+                    process_course__user_id=str(context.get('view').request.user.user.id)))) != 0 else False
+        except TypeError:
+            instance['status_rating'] = False
+        return instance
+
+
+class ListCourseSerializerLibrary(serializers.ModelSerializer):
+    user = UserShortSerializer(read_only=True, required=False)
+    topics = TopicShortSerializer(many=True, read_only=True, required=False)
+    ratings = CourseRatingForListCourseSerializer(many=True, read_only=True, required=False)
+    process_status = serializers.CharField(read_only=True, required=False)
+
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'summary', 'background', 'slug', 'status', 'user', 'topics',
+                  'process_status', 'ratings']
+        extra_kwargs = {
+            'user': {'required': False},
+            'topics': {'required': False},
+            'status': {'required': False},
+            'slug': {'read_only': True},
+        }
+
+    def to_representation(self, instance):
+        context = self.context
+        instance = super().to_representation(instance)
+        course_rating = CourseRating.objects
+        rating = course_rating.filter(process_course__course__id=instance['id'])
+        list_rating = list(rating.values_list('star_rating', flat=True).order_by())
+        instance['total_rating'] = len(list_rating)
+        instance['has_user'] = ProcessCourse.objects.filter(course__id=instance['id']).count() > 0
+        try:
+            instance['avg_rating'] = round(sum(list_rating) / instance['total_rating'], 2)
         except ZeroDivisionError:
             instance['avg_rating'] = 0
         number_star = context.get('view').request.query_params.get("number_star", "")

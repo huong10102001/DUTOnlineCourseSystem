@@ -38,7 +38,14 @@
           <CourseItem :course="course" @deleteCourse="getListCourses"></CourseItem>
         </el-col>
       </el-row>
-      <span v-if="loading">Loading...</span>
+      <span v-if="loading" class="p-6 is-flex is-justify-content-center">
+        <button class="button is-text" disabled style="text-decoration: none">
+          <el-icon class="is-loading mr-2">
+            <Loading/>
+          </el-icon>
+          Loading...
+        </button>
+      </span>
     </div>
 
     <Pagination
@@ -110,9 +117,8 @@ import {ElNotification} from "element-plus";
   watch: {
     query: {
       deep: true,
-      handler: async function() {
+      handler: async function () {
         this.loading = true
-        this.$router.replace({query: this.query})
         await this.getListCourses();
         this.loading = false
       },
@@ -127,10 +133,6 @@ import {ElNotification} from "element-plus";
   async created() {
     this.SET_LOADING(true)
     await this.getListTopics()
-    if (Object.keys(this.$route.query).length != 0) {
-      this.query = this.$route.query
-      return
-    }
     await this.getListCourses()
     this.SET_LOADING(false)
   },

@@ -195,6 +195,7 @@ import {equalTo, query, orderByChild, get} from '@firebase/database';
   },
   mounted() {
     this.getNotificationName(this.tokenInfo.user_id)
+
   },
   async created() {
     await this.fetchNotification()

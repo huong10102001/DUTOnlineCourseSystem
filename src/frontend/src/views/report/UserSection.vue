@@ -35,7 +35,17 @@
       size="large"
     >
       <el-table-column type="index" sortable label="#" align="center" width="80"/>
-      <el-table-column prop="full_name" sortable label="Name" min-width="250"/>
+      <el-table-column prop="full_name" sortable label="Name" min-width="250">
+        <template #default="scope">
+          <a
+            :href="`/profile?id=${scope.row.id}`"
+            target="_blank"
+            style="color: #555"
+          >
+            <strong>{{ scope.row.full_name }}</strong>
+          </a>
+        </template>
+      </el-table-column>
       <el-table-column prop="role" sortable label="Role" width="150"/>
 
       <el-table-column prop="total_certificate" sortable align="center" label="Certificates" width="150">
@@ -136,12 +146,6 @@ export default class UserSection extends Vue {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap');
 
-.user-record {
-  background: #FFFFFF;
-  border: 1px solid #EBE8FF;
-  border-radius: 15px;
-}
-
 p {
   font-family: 'Nunito';
   font-weight: 600;
@@ -169,18 +173,5 @@ h2 {
   letter-spacing: 0.02em;
   color: #000000;
   opacity: 0.5;
-}
-
-.title {
-  background: #dedfe4;
-  opacity: 0.75;
-  border-radius: 7px;
-  font-family: 'Inter';
-  font-size: 12px;
-  line-height: 15px;
-  letter-spacing: 0.02px;
-  color: #323c4c;
-  text-align: center;
-  margin-bottom: 0px !important;
 }
 </style>

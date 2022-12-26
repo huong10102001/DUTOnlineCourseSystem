@@ -313,14 +313,14 @@ export default class QuizSection extends Vue {
 <style lang="scss" scoped>
 .quiz-info {
   display: block;
-  border: 2px dashed #eee;
+  border: 1px solid #ccc;
   padding: 20px;
   border-radius: 4px;
   transition: all 1s linear;
   margin-bottom: 30px;
 
   &:hover {
-    border: 2px dashed #ccc;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   }
 
 }

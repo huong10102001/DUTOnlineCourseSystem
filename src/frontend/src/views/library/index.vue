@@ -1,9 +1,9 @@
 <template>
   <div class="main-container p-2" v-show="!is_loading">
     <div class="course-container">
-      <h1>New Courses Today</h1>
+      <h1>New Courses</h1>
       <el-row :gutter="20">
-        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses_new">
           <CourseItem :course="course"></CourseItem>
         </el-col>
       </el-row>
@@ -12,16 +12,16 @@
     <div class="course-container">
       <h1>Most Popular</h1>
       <el-row :gutter="20">
-        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses_most">
           <CourseItem :course="course"></CourseItem>
         </el-col>
       </el-row>
     </div>
 
     <div class="course-container">
-      <h1>Weekly Trend</h1>
+      <h1>Pick For You</h1>
       <el-row :gutter="20">
-        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses">
+        <el-col :xl="8" :lg="8" :sm="12" :xs="24" v-for="course in courses_random">
           <CourseItem :course="course"></CourseItem>
         </el-col>
       </el-row>
@@ -42,12 +42,9 @@ import Course from "@/types/course/CourseItem";
   },
   data() {
     return {
-      courses: [] as Course[],
-      total: 0,
-      query: {
-        page: 1,
-        page_size: 6,
-      },
+      courses_most: [] as Course[],
+      courses_new: [] as Course[],
+      courses_random: [] as Course[]
     }
   },
   methods: {
@@ -55,8 +52,10 @@ import Course from "@/types/course/CourseItem";
     ...mapMutations(["SET_LOADING"]),
     async getListCourses() {
       this.SET_LOADING(true)
-      let data = await this.FETCH_COURSES(this.query)
-      this.courses = data.results as Course[]
+      let data = await this.FETCH_COURSES()
+      this.courses_most = data.course_most
+      this.courses_new = data.course_new
+      this.courses_random = data.course_random
       this.SET_LOADING(false)
     }
   },
