@@ -126,7 +126,7 @@ class ListCourseSerializer(serializers.ModelSerializer):
         instance['total_rating'] = len(list_rating)
         instance['has_user'] = ProcessCourse.objects.filter(course__id=instance['id']).count() > 0
         try:
-            instance['avg_rating'] = sum(list_rating) / instance['total_rating']
+            instance['avg_rating'] = round(sum(list_rating) / instance['total_rating'], 2)
         except ZeroDivisionError:
             instance['avg_rating'] = 0
         number_star = context.get('view').request.query_params.get("number_star", "")
@@ -169,7 +169,7 @@ class ListCourseSerializerLibrary(serializers.ModelSerializer):
         instance['total_rating'] = len(list_rating)
         instance['has_user'] = ProcessCourse.objects.filter(course__id=instance['id']).count() > 0
         try:
-            instance['avg_rating'] = round(sum(list_rating) / instance['total_rating'])
+            instance['avg_rating'] = round(sum(list_rating) / instance['total_rating'], 2)
         except ZeroDivisionError:
             instance['avg_rating'] = 0
         number_star = context.get('view').request.query_params.get("number_star", "")
