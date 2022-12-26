@@ -115,8 +115,25 @@ class CourseService(BaseService):
         if params.get('q'):
             ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
 
-        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft)
+        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft).order_by('created_at')[0:3]
 
+        if params.getlist('categories[]'):
+            topic_ids = params.getlist('categories[]')
+            for topic_id in topic_ids:
+                courses = courses.filter(topics__id=topic_id)
+
+        return courses
+
+    @classmethod
+    def get_list_most_courses(cls, user_obj, params=None):
+        ft = Q(status=CourseStatus.PUBLISHED.value)
+
+        if params.get('q'):
+            ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
+
+        courses_process = ProcessCourse.objects .values('course_id').annotate(total_user=Count('user', distinct=True)).order_by('total_user').values('course_id')
+        course_id = [i.get('course_id') for i in list(courses_process)[0:3]]
+        courses = Course.objects.filter(id__in=course_id).filter(ft)
         if params.getlist('categories[]'):
             topic_ids = params.getlist('categories[]')
             for topic_id in topic_ids:

@@ -65,7 +65,6 @@ export default class Sidebar extends Vue {
   top: 0;
   left: 0;
   background-color: #ffffff;
-  box-shadow: inset -5px 0 9px -7px rgba(0, 0, 0, 0.7);
   transition: all 0.3s;
 
   &--collapse {
@@ -143,13 +142,13 @@ export default class Sidebar extends Vue {
       height: 52px;
       width: 52px;
       background-color: #024547;
-      border-radius: 14px;
+      border-radius: 4px;
       color: white;
-      transition: all 0.3s;
+      transition: all 0.3s ease-in-out;
 
       &--collapse {
         font-size: 1.6rem;
-        border-radius: 8px;
+        border-radius: 4px;
         height: 36px;
         width: 36px;
         line-height: 32px;
@@ -161,7 +160,7 @@ export default class Sidebar extends Vue {
       display: inline-block;
       color: #024547;
       text-transform: capitalize;
-      transition: visibility 0.8s, opacity 0.3s linear;
+      transition: visibility 0.1s, opacity 0.3s linear;
       margin-left: 10px;
       opacity: 1;
       overflow: hidden;

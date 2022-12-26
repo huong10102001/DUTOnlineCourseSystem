@@ -12,14 +12,14 @@
     :events="['seeking', 'seeked']"
     @timeupdate="onVideoPlayerTimeUpdate"
     style="width: 100%;"
-  >
-</video-player>
+  ></video-player>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { VideoPlayer } from "@videojs-player/vue";
 import "video.js/dist/video-js.css";
+import {PROCESS_STATUS} from "@/const/process_status";
 
 @Options({
   components: {
@@ -27,6 +27,7 @@ import "video.js/dist/video-js.css";
   },
   props: {
     file: "" as string,
+    process_status: PROCESS_STATUS.OPEN
   },
   data() {
     return {
@@ -52,6 +53,12 @@ import "video.js/dist/video-js.css";
         this.$emit('lessonComplete')
       }
     },
+  },
+  watch: {
+    process_status(){
+      if (this.process_status == PROCESS_STATUS.TESTING || this.process_status == PROCESS_STATUS.COMPLETED)
+        this.controls.progressControl = true
+    }
   },
   emits: ['lessonComplete']
 })

@@ -272,7 +272,7 @@ a {
 
 .course-item:hover {
   cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
   border-top: 10px solid #333;
 }
 

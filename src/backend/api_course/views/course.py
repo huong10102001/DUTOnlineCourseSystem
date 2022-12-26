@@ -28,15 +28,12 @@ class CourseViewSet(BaseViewSet):
         user_obj = request.user.user
         params = request.query_params
         res_data = CourseService.get_list_courses(user_obj, params)
-
-        page = self.paginate_queryset(res_data)
-
-        if page:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(res_data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = {"course_new": self.get_serializer(res_data, many=True).data}
+        res_data = CourseService.get_list_most_courses(user_obj, params)
+        serializer.update({"course_most": self.get_serializer(res_data, many=True).data})
+        res_data = CourseService.get_list_random_courses(user_obj, params)
+        serializer.update({"course_random": self.get_serializer(res_data, many=True).data})
+        return Response(serializer, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="library", serializer_class=ListCourseSerializerLibrary)
     def get_course_library(self, request, *args, **kwargs):

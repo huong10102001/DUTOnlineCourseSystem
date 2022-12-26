@@ -11,6 +11,7 @@ _urlpatterns = [
     path(r"login/google", csrf_exempt(login_google_view), name="login_google"),
     path(r"registers/user", csrf_exempt(register_user), name="register_user"),
     path(r"registers/lecturer", csrf_exempt(register_lecturer), name="register_lecturer"),
+    path(r"forgot-password/", csrf_exempt(forgot_password), name="forgot-password"),
 ]
 
 urlpatterns = router.urls + _urlpatterns

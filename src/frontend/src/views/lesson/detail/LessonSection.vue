@@ -18,6 +18,7 @@
       <VideoViewer 
         v-else
         :file="lesson.attachment.file"
+        :process_status="lesson.status"
         @lessonComplete="$emit('videoLessonComplete')"
       >
       </VideoViewer>
