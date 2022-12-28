@@ -25,6 +25,7 @@ import ReportPage from "@/views/report/index.vue";
 import BrowseCoursePage from "@/views/course/browse/index.vue";
 import ForgotPasswordPage from "@/views/forgot-pw/index.vue";
 import ResetPasswordPage from "@/views/reset-pw/index.vue";
+import CourseReport from "@/views/course/report/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -62,6 +63,11 @@ const routes: Array<RouteRecordRaw> = [
             path: ':course_slug/edit',
             name: 'edit-course',
             component: EditCoursePage
+          },
+          {
+            path: ':course_slug/report',
+            name: 'report-course',
+            component: CourseReport
           },
           {
             path: 'management',

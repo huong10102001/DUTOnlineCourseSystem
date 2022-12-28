@@ -40,6 +40,15 @@ class ReportService extends BaseService {
       return error.response;
     }
   }
+
+  async get_lecturer_course_report(id: string) {
+    try {
+      const response: any = await this.request().get(`${this.entity}/${id}/lecturer-course-report/`);
+      return response;
+    } catch (error: any) {
+      return error.response;
+    }
+  }
 }
 
 export default new ReportService();

@@ -34,7 +34,17 @@
       size="large"
     >
       <el-table-column type="index" sortable label="#" align="center" width="80"/>
-      <el-table-column prop="title" sortable label="Title" min-width="250"/>
+      <el-table-column prop="title" sortable label="Title" min-width="250">
+        <template #default="scope">
+          <a
+            :href="`/courses/${scope.row.slug}/`"
+            target="_blank"
+            style="color: #555"
+          >
+            <strong>{{ scope.row.title }}</strong>
+          </a>
+        </template>
+      </el-table-column>
 
       <el-table-column prop="user.full_name" sortable label="Lecturer" width="150">
         <template #default="scope">
@@ -78,16 +88,15 @@
       <el-table-column
         fixed="right"
         label="Operations"
-        width="160"
+        width="120"
         align="center"
         prop="id"
       >
         <template #default="scope">
           <el-button text size="default" class="p-1" icon="View"
-                     @click="$router.push({name:'course-detail', params: {course_slug: scope.row.slug}})"></el-button>
+                     @click="$router.push({name:'report-course', params: {course_slug: scope.row.slug}})"></el-button>
           <el-button text size="default" class="p-1" icon="Edit"
                      @click="$router.push({name:'edit-course', params: {course_slug: scope.row.slug}})"></el-button>
-          <el-button text size="default" class="p-1" icon="Lock"></el-button>
         </template>
       </el-table-column>
     </el-table>

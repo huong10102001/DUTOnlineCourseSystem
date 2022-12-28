@@ -31,6 +31,10 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+  [ActionTypes.FETCH_LECTURER_REPORT_COURSE](
+    { commit }: AugmentedActionContext,
+    id: string
+  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -48,6 +52,10 @@ export const actions: ActionTree<State, State> & Actions = {
   },
   async [ActionTypes.FETCH_ADMIN_REPORT_USER]({ commit }, params) {
     let response: any = await ReportService.get_admin_report_user(params)
+    return response
+  },
+  async [ActionTypes.FETCH_LECTURER_REPORT_COURSE]({ commit }, id) {
+    let response: any = await ReportService.get_lecturer_course_report(id)
     return response
   },
 }

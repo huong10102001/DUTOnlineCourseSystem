@@ -25,7 +25,11 @@
                     </el-dropdown-item>
                   </router-link>
 
-                  <el-dropdown-item icon="Lock" @click="dialogVisible = true">
+                  <el-dropdown-item icon="DeleteFilled" @click="dialogVisible = true" v-if="!course.has_user">
+                    Delete
+                  </el-dropdown-item>
+
+                  <el-dropdown-item icon="Lock" @click="dialogVisible2 = true" v-if="userInfo.role == ROLES.ADMIN && course.status != COURSE_STATUS.PUBLISHED">
                     Deactivate
                   </el-dropdown-item>
                 </restricted-view>
@@ -119,17 +123,39 @@
       </template>
     </el-dialog>
   </restricted-view>
+
+  <restricted-view :routes="[ROUTES.COURSE_MANAGEMENT.name]">
+    <el-dialog
+      v-model="dialogVisible2"
+      title="Deactivate Course"
+      width="50%"
+      style="border-radius: 20px"
+      center>
+      <span style="word-break: break-word">
+        Are you sure to deactivate this course? This should be undone!
+      </span>
+      <template #footer>
+        <span class="dialog-footer">
+          <button class="button is-light is-rounded mr-3" @click="dialogVisible = false">Cancel</button>
+          <button class="button is-dark is-rounded" @click="handleDeactivate">
+            Confirm
+          </button>
+        </span>
+      </template>
+    </el-dialog>
+  </restricted-view>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
 import Course from "@/types/course/CourseItem";
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import {ElMessage} from "element-plus";
 import {COURSE_STATUS} from "@/const/course_status";
 import RestrictedView from "@/components/RestrictedView.vue";
 import {ROUTES} from "@/const/routes";
+import {ROLES} from "@/const/roles";
 
 @Options({
   components: {RestrictedView},
@@ -147,11 +173,14 @@ import {ROUTES} from "@/const/routes";
   data() {
     return {
       dialogVisible: false,
+      dialogVisible2: false,
       ROUTES: ROUTES,
-      COURSE_STATUS: COURSE_STATUS
+      COURSE_STATUS: COURSE_STATUS,
+      ROLES: ROLES
     }
   },
   computed: {
+    ...mapGetters("user", ['userInfo']),
     course_progress() {
       if (!this.total_lesson || !this.course.lessons_completed) return 0
       return Math.round(this.course.lessons_completed * 100 / this.total_lesson)
@@ -168,7 +197,7 @@ import {ROUTES} from "@/const/routes";
   },
   emits: ['deleteCourse'],
   methods: {
-    ...mapActions("course", [ActionTypes.DELETE_COURSE]),
+    ...mapActions("course", [ActionTypes.DELETE_COURSE, ActionTypes.CHANGE_COURSE_STATUS]),
     async handleDelete() {
       let response: any = await this.DELETE_COURSE(this.course.id)
       if (response.status == 204) {
@@ -181,6 +210,24 @@ import {ROUTES} from "@/const/routes";
         ElMessage.error('Delete course failed.')
       }
       this.dialogVisible = false
+    },
+    async handleDeactivate() {
+      let response: any = await this.CHANGE_COURSE_STATUS({
+        course_id: this.course.id,
+        payload: {
+          status: COURSE_STATUS.DEACTIVATED
+        }
+      })
+      if (response.status == 200) {
+        ElMessage({
+          message: `Deactivated ${this.course.title} successfully.`,
+          type: 'success',
+        })
+        this.$emit('delete-course')
+      } else {
+        ElMessage.error('Deactivate course failed.')
+      }
+      this.dialogVisible2 = false
     }
   }
 })

@@ -81,6 +81,15 @@ class CourseService extends BaseService {
     }
   }
 
+  async changeStatus(data: any) {
+    try {
+      const response: any = await this.request().patch(`${this.entity}/${data.course_id}/change-status/`, data.payload);
+      return response
+    } catch (error: any) {
+      return error.response
+    }
+  }
+
   async delete(id: string) {
     try {
       const res = await this.request().delete(`${this.entity}/${id}/`);
