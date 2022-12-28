@@ -1,4 +1,5 @@
-import { Alert } from "react-native";
+import { Alert,Text } from "react-native";
+import React  from "react";
 
 const userState = {
   id: null,
@@ -11,25 +12,23 @@ const userState = {
   address: null,
   phone: null,
   birthday: null,
+  process_courses:[],
   account: {
     id: null,
     email: null,
     date_joined: null,
   },
   error:null,
-  isLoading:false
 };
 
 const userReducer = (state = userState, { type, payload }) => {
-  console.log(`userReducer type: ${type} with payload: ${payload}`);
   switch (type) {
     case "GET_USER":
       return {
         ...state,
-        isLoading:true
       };
     case "GET_USER_SUCCESS":
-      let {
+      const {
         id,
         full_name,
         role,
@@ -41,6 +40,7 @@ const userReducer = (state = userState, { type, payload }) => {
         phone,
         birthday,
         account,
+        process_courses,
       } = payload;
       return {
         ...state,
@@ -54,28 +54,27 @@ const userReducer = (state = userState, { type, payload }) => {
         address: address,
         phone: phone,
         birthday: birthday,
+        process_courses: process_courses,
         account: {
           id: account.id,
           email: account.email,
           date_joined: account.date_joined,
         },
         error: null,
-        isLoading:false
+        isLoading: false,
       };
     case "GET_USER_FAILURE":
       return {
         ...state,
         error: payload.detail,
-        isLoading:false
       };
     case "UPDATE_PROFILE_USER":
       return {
         ...state,
-        isLoading:true
+        isLoading: true,
       };
     case "UPDATE_PROFILE_USER_SUCCESS":
-      console.log("@@@@UPDATE",payload)
-      Alert.alert("Success","Update Success")
+      Alert.alert("Success", "Update Success");
       return {
         ...state,
         id: payload.id,
@@ -93,21 +92,26 @@ const userReducer = (state = userState, { type, payload }) => {
           date_joined: payload.account.date_joined,
         },
         error: "",
-        isLoading:false
+        isLoading: false,
       };
     case "UPDATE_PROFILE_USER_FAILURE":
       return {
         ...state,
         error: payload.detail,
-        isLoading:false
+        isLoading: false,
       };
     case "RESET_ERROR":
-      return{
+      return {
         ...state,
-        error:"",
-      }
+        error: "",
+      };
     case "LOGOUT":
       return userState;
+    case "CHANGE_PASSWORD":
+      return {
+        ...state,
+        error:''
+      };
     default:
       return state;
   }

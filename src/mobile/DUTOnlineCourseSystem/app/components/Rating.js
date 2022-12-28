@@ -10,7 +10,8 @@ import { getCourseProcess } from "../actions/courseProcessAction";
 import { Checkbox } from "react-native-paper";
 import renderStar from "../../utils/renderStar";
 import { render } from "react-dom";
-const Rating = ({props}) => {
+import { getAvatar } from "../../utils/getImage";
+const Rating = ({ props }) => {
   return (
     <View style={{ paddingBottom: 8 }}>
       <View style={{ flexDirection: "row", paddingBottom: 8 }}>
@@ -25,9 +26,7 @@ const Rating = ({props}) => {
           <Image
             style={styles.avatar}
             source={{
-              uri:
-                props.user.avatar ||
-                "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+              uri: props.user.avatar || getAvatar(),
             }}
           ></Image>
         </View>

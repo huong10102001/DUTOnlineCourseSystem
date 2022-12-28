@@ -16,30 +16,21 @@ import { useNavigation } from "@react-navigation/native";
 import { PROCESS_STATUS } from "../const/processStatus";
 import { getCourse } from "../actions/courseAction";
 import { useDispatch } from "react-redux";
+import { getAvatar } from "../../utils/getImage";
+import { ProgressBar, MD3Colors } from "react-native-paper";
+
 const CourseProcess = ({ props, width }) => {
-  console.log(width);
   const dispatch = useDispatch();
   const [isComplete, setIsComplete] = useState(false);
   const navigation = useNavigation();
-  const numberOfLesson = () => {
+  const progress = () => {
     let count = 0;
     for (let i = 0; i < props.chapters.length; i++) {
       count = count + props.chapters[i].lessons.length;
     }
-    return count;
+    return props.lessons_completed / count;
   };
-  const state = {
-    url: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
-    name: "Name of Couse",
-    decription:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Varius.",
-    author: "DAT",
-    class: "B class",
-    time: "3 Hours",
-    numberOfLession: 36,
-    isComplete: 36,
-  };
-  console.log(props);
+
   const checkIconComplete = () => {
     if (!isComplete) {
       return (
@@ -63,63 +54,7 @@ const CourseProcess = ({ props, width }) => {
     }
   };
 
-  const checkProcessCourse = (isComplete, numberOfLession) => {
-    const state = "0%";
-    console.log(state);
-    {
-      switch (props.process_status) {
-        case PROCESS_STATUS.COMPLETED:
-          React.useEffect(() => {
-            setIsComplete(true);
-          }, []);
-          return (
-            <View style={styles.coverProgressComplete}>
-              <Text style={{ color: "white", fontWeight: "700" }}>
-                Complete
-              </Text>
-            </View>
-          );
-        case PROCESS_STATUS.OPEN:
-          return (
-            <View style={styles.coverProgressStart}>
-              <Text style={{ color: "white", fontWeight: "bold" }}>
-                Start Now
-              </Text>
-            </View>
-          );
-        case PROCESS_STATUS.IN_PROGRESS:
-          let lesson_completed = props.lessons_completed;
-          let number_of_lesson = numberOfLesson();
-          let percent = (lesson_completed / number_of_lesson) * 100;
-          let percent_string = percent.toString() + "%";
-          return (
-            <View style={styles.coverProgress}>
-              <View
-                style={{
-                  backgroundColor: "#024547",
-                  height: "100%",
-                  borderRadius: 10,
-                  width: { percent_string },
-                }}
-              ></View>
-            </View>
-          );
-        default:
-          return (
-            <View style={styles.coverProgress}>
-              <View
-                style={{
-                  backgroundColor: "#024547",
-                  height: "100%",
-                  borderRadius: 10,
-                  width: { state },
-                }}
-              ></View>
-            </View>
-          );
-      }
-    }
-  };
+
   return (
     <TouchableOpacity
       style={[styles.container, { width: width }]}
@@ -149,7 +84,7 @@ const CourseProcess = ({ props, width }) => {
           <Image
             style={styles.avatar}
             source={{
-              uri: props.user.avatar||"https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+              uri: props.user.avatar || getAvatar(),
             }}
           ></Image>
         </View>
@@ -174,26 +109,14 @@ const CourseProcess = ({ props, width }) => {
               {props.user.full_name}
             </Text>
           </View>
-          <View style={{ flexShrink: 1, width: width - 24 - 80 }}>
-            <Text
-              style={[
-                styles.text,
-                {
-                  paddingTop: 4,
-                  opacity: 0.5,
-                  flexWrap: "wrap",
-                },
-              ]}
-            >
-              {props.summary}
-            </Text>
-          </View>
-
-          {/* {checkProcessCourse()} */}
+          <View style={{ flexShrink: 1, width: width - 24 - 80 }}></View>
+          <ProgressBar
+            progress={progress()}
+            color="#024547"
+            style={{ height: 5, width: "90%", marginTop: 8 }}
+          />
         </View>
       </View>
-
-      {/* <View style={styles.buttonPlay}>{checkIconComplete()}</View> */}
     </TouchableOpacity>
   );
 };

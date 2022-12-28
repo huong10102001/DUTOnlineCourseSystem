@@ -18,7 +18,9 @@ import Feather from "@expo/vector-icons/Feather";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { CreateDiscussion } from "../actions/discussionAction";
+import { getAvatar } from "../../utils/getImage";
 const DiscussionInput = ({ props }) => {
+  const user = useSelector((state)=>state.user)
   const dispatch = useDispatch();
   const [discussion,setDiscussion] = useState("");
   const [error,setError]= useState("");
@@ -65,7 +67,7 @@ const DiscussionInput = ({ props }) => {
         <Image
           style={styles.avatar}
           source={{
-            uri: "https://www.classcentral.com/report/wp-content/uploads/2020/04/most-popular-all-time-1.png",
+            uri: user.avatar || getAvatar(),
           }}
         ></Image>
       </View>
@@ -147,9 +149,9 @@ export default DiscussionInput;
 const styles = StyleSheet.create({
   avatar: {
     position: "absolute",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   button: {
     backgroundColor: "#024547",
