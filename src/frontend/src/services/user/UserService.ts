@@ -24,6 +24,14 @@ class UserService extends BaseService{
     }
   }
 
+  async resetPw(data: any) {
+    try {
+      const response: any = await this.request().put(`${this.entity}/password-reset/`, data.payload, {params: data.params});
+      return response
+    } catch (error) {
+      return null;
+    }
+  }
 }
 
 export default new UserService();

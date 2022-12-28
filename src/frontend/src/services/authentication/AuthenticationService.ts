@@ -27,6 +27,15 @@ class AuthenticationService extends BaseService{
       return false;
     }
   }
+
+  async forgotPw(data: any){
+    try {
+      const response= await this.request().post(`${this.entity}/forgot-password/`, data);
+      return response;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 
 export default new AuthenticationService();

@@ -11,55 +11,51 @@
     <div class="dropdown-menu" id="dropdown-notification" role="menu">
       <div class="dropdown-content">
         <p class="p-3" style="font-size: 1rem">Notifications</p>
-        <el-scrollbar
-          height="400px"
-          @scroll="handleScroll"
-        >
-          <div ref="scrollbarInnerRef">
-            <div
-              v-for="noti in notifications"
-              :key="noti.id"
-              @mouseenter="handleChangeState(); isHover = true"
-              @mouseleave="isHover = false; query.page=1"
+        <div v-infinite-scroll="handleScroll" class="infinite-list" style="overflow: auto">
+          <div
+            v-for="noti in notifications"
+            :key="noti.id"
+            @mouseenter="handleChangeState(); isHover = true"
+            @mouseleave="isHover = false; query.page=1"
+            class="infinite-list-item"
+          >
+            <router-link
+              :to="noti.link_comment"
+              v-if="noti.link_comment"
+              :class="['notification-item', {'isRead': noti.isRead}]"
             >
-              <router-link
-                :to="noti.link_comment"
-                v-if="noti.link_comment"
-                :class="['notification-item', {'isRead': noti.isRead}]"
-              >
-                <div class="columns is-flex is-vcentered">
-                  <div class="column is-one-quarter" style="max-width: 80px">
-                    <figure class="image is-64x64">
-                      <img v-if="noti.user_reply.avatar" :src="noti.user_reply.avatar" class="is-rounded"
-                           style="height: 100%">
-                      <img v-else src="@/assets/vectors/default_avatar.svg" class="is-rounded" style="height: 100%"/>
-                    </figure>
-                  </div>
-                  <div class="column">
-                    <p>{{ noti.title }}</p>
-                    <p style="font-size: 0.9rem; color: #999">{{ noti.time_comment }}</p>
-                  </div>
+              <div class="columns is-flex is-vcentered">
+                <div class="column is-one-quarter" style="max-width: 80px">
+                  <figure class="image is-64x64">
+                    <img v-if="noti.user_reply.avatar" :src="noti.user_reply.avatar" class="is-rounded"
+                         style="height: 100%">
+                    <img v-else src="@/assets/vectors/default_avatar.svg" class="is-rounded" style="height: 100%"/>
+                  </figure>
                 </div>
-              </router-link>
-              <router-link
-                :to="noti.link_course_reminder"
-                v-if="noti.link_course_reminder"
-                :class="['notification-item', {'isRead': noti.isRead}]"
-              >
-                <div class="columns is-flex is-vcentered">
-                  <div class="column is-one-quarter" style="max-width: 80px">
-                    <figure class="image is-64x64">
-                      <img src="@/assets/images/notification-bell.png" class="is-rounded"
-                           style="height: 100%">
-                    </figure>
-                  </div>
-                  <div class="column">
-                    <p>{{ noti.title }}</p>
-                    <p style="font-size: 0.9rem; color: #999">{{ noti.content }}</p>
-                  </div>
+                <div class="column">
+                  <p>{{ noti.title }}</p>
+                  <p style="font-size: 0.9rem; color: #999">{{ noti.time_comment }}</p>
                 </div>
-              </router-link>
-            </div>
+              </div>
+            </router-link>
+            <router-link
+              :to="noti.link_course_reminder"
+              v-if="noti.link_course_reminder"
+              :class="['notification-item', {'isRead': noti.isRead}]"
+            >
+              <div class="columns is-flex is-vcentered">
+                <div class="column is-one-quarter" style="max-width: 80px">
+                  <figure class="image is-64x64">
+                    <img src="@/assets/images/notification-bell.png" class="is-rounded"
+                         style="height: 100%">
+                  </figure>
+                </div>
+                <div class="column">
+                  <p>{{ noti.title }}</p>
+                  <p style="font-size: 0.9rem; color: #999">{{ noti.content }}</p>
+                </div>
+              </div>
+            </router-link>
           </div>
           <span v-if="loading" class="p-6 is-flex is-justify-content-center">
             <button class="button is-text" disabled style="text-decoration: none">
@@ -69,7 +65,12 @@
               Loading for notification...
             </button>
           </span>
-        </el-scrollbar>
+          <span v-if="!next_page" class="p-6 is-flex is-justify-content-center">
+            <button class="button is-text" disabled style="text-decoration: none">
+              No more
+            </button>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -118,13 +119,13 @@ import {equalTo, query, orderByChild, get} from '@firebase/database';
       },
       next_page: null,
       total_notification: 0,
-      maxScrollHeight: 0,
       isHover: false,
       notification_id: "",
-      notification_popup: {"title": ""}
+      notification_popup: {"title": ""},
+      isFirstLoad: true
     }
   },
-  computed:{
+  computed: {
     ...mapGetters("authentication", ["tokenInfo"]),
   },
   methods: {
@@ -139,40 +140,39 @@ import {equalTo, query, orderByChild, get} from '@firebase/database';
       }
     },
 
-    async handleScroll(distance: any) {
-      if (!this.next_page)  return
-      if (distance.scrollTop == this.maxScrollHeight) {
-        this.loading = true
-        this.query.page++
-        this.query.isStateChanged = false
-        const response: any = await this.FETCH_NOTIFICATION(this.query)
-        if (response.status == 200) {
-          this.notifications.push(response.data.results.list_notification)
-          this.hasUnread = response.data.results.number_notification
-          this.total_notification = response.data.count
-          this.next_page = response.data.next
-          await this.handleChangeState()
-        } else {
-          this.query.page--
-        }
+    async handleScroll() {
+      if (!this.next_page) return
 
-        this.loading = false
+      this.loading = true
+      this.query.page++
+      this.query.isStateChanged = false
+      const response: any = await this.FETCH_NOTIFICATION(this.query)
+      if (response.status == 200) {
+        this.notifications.push(response.data.results.list_notification)
+        this.hasUnread = response.data.results.number_notification
+        this.total_notification = response.data.count
+        this.next_page = response.data.next
+        await this.handleChangeState()
+      } else {
+        this.query.page--
       }
+
+      this.loading = false
     },
     async handleChangeState() {
       if (this.query.isStateChanged) return
       this.CHANGE_NOTIFICATIONS_STATE({page: this.query.page})
       this.query.isStateChanged = true
     },
-    async getNotification(noti_id: String){
-        await onValue(dbRef(database, 'notifications/' + noti_id), (snapshot) => {
+    async getNotification(noti_id: String) {
+      await onValue(dbRef(database, 'notifications/' + noti_id), (snapshot) => {
         const data = Object.values(Object(snapshot.val())['notification'])
-        this.notification_popup = data[data.length-1]
+        this.notification_popup = data[data.length - 1]
       })
     },
-    async getNotiHasUnread(noti_id: String){
-        await onValue(dbRef(database, 'notifications/' + noti_id), (snapshot) => {
-        this.hasUnread = Object(snapshot.val())['noti_number']
+    async getNotiHasUnread(noti_id: String) {
+      await onValue(dbRef(database, 'notifications/' + noti_id), (snapshot) => {
+        this.hasUnread = Object(snapshot.val())['noti_number'] ? Object(snapshot.val())['noti_number'] : 0
       })
     },
     async getNotificationName(user_id: string) {
@@ -184,28 +184,29 @@ import {equalTo, query, orderByChild, get} from '@firebase/database';
   },
   watch: {
     async hasUnread(newVal: number, oldVal: number) {
-      await ElNotification({
-        title: 'Notification',
-        message: this.notification_popup.title,
-        position: 'bottom-right',
-        icon: "Notification"
-      })
-
+      if (this.isFirstLoad) {
+        this.isFirstLoad = false
+        return
+      }
+      if (newVal > oldVal) {
+        await ElNotification({
+          title: 'Notification',
+          message: this.notification_popup.title,
+          position: 'bottom-right',
+          icon: "Notification"
+        })
+      }
     }
   },
-  mounted() {
-    this.getNotificationName(this.tokenInfo.user_id)
-
+  async mounted() {
+    await this.getNotificationName(this.tokenInfo.user_id)
+    await this.getNotiHasUnread(this.notification_id)
   },
   async created() {
     await this.fetchNotification()
     await this.getNotification(this.notification_id)
-    await this.getNotiHasUnread(this.notification_id)
     this.loading = false
   },
-  updated(){
-    this.maxScrollHeight = this.$refs.scrollbarInnerRef.clientHeight - 400
-  }
 })
 export default class Notification extends Vue {
 }
@@ -258,5 +259,18 @@ export default class Notification extends Vue {
     color: #024547;
     transition: color 0.2s ease-in-out;
   }
+}
+</style>
+
+<style scope>
+.infinite-list {
+  height: 500px;
+  padding: 0;
+  margin: 0;
+}
+.infinite-list .infinite-list-item {
+  display: flex;
+  min-height: 100px;
+  max-height: 350px;
 }
 </style>

@@ -115,7 +115,7 @@ class CourseService(BaseService):
         if params.get('q'):
             ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
 
-        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft).order_by('created_at')[0:3]
+        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft).order_by('created_at')[0:6]
 
         if params.getlist('categories[]'):
             topic_ids = params.getlist('categories[]')
@@ -132,7 +132,7 @@ class CourseService(BaseService):
             ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
 
         courses_process = ProcessCourse.objects .values('course_id').annotate(total_user=Count('user', distinct=True)).order_by('total_user').values('course_id')
-        course_id = [i.get('course_id') for i in list(courses_process)[0:3]]
+        course_id = [i.get('course_id') for i in list(courses_process)[0:6]]
         courses = Course.objects.filter(id__in=course_id).filter(ft)
         if params.getlist('categories[]'):
             topic_ids = params.getlist('categories[]')
@@ -148,7 +148,7 @@ class CourseService(BaseService):
         if params.get('q'):
             ft &= Q(title_lower__contains=str(params.get('q')).strip().lower())
 
-        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft).order_by('created_at')[0:3]
+        courses = Course.objects.annotate(title_lower=Lower('title')).filter(ft).order_by('created_at')[0:6]
 
         if params.getlist('categories[]'):
             topic_ids = params.getlist('categories[]')

@@ -48,11 +48,11 @@ import Course from "@/types/course/CourseItem";
     }
   },
   methods: {
-    ...mapActions("course", [ActionTypes.FETCH_COURSES]),
+    ...mapActions("course", [ActionTypes.FETCH_COURSES_LIBRARY]),
     ...mapMutations(["SET_LOADING"]),
     async getListCourses() {
       this.SET_LOADING(true)
-      let data = await this.FETCH_COURSES()
+      let data = await this.FETCH_COURSES_LIBRARY()
       this.courses_most = data.course_most
       this.courses_new = data.course_new
       this.courses_random = data.course_random
