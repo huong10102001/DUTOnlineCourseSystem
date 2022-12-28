@@ -184,3 +184,21 @@ class ListCourseSerializerLibrary(serializers.ModelSerializer):
         except TypeError:
             instance['status_rating'] = False
         return instance
+
+
+class CourseUpdateSerializer(serializers.ModelSerializer):
+    user = UserShortSerializer(read_only=True, required=False)
+    topics = TopicShortSerializer(many=True, read_only=True, required=False)
+
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'summary', 'background', 'slug', 'status', 'user', 'topics']
+        extra_kwargs = {
+            'user': {'required': False},
+            'topics': {'required': False},
+            'status': {'required': False},
+            'slug': {'read_only': True},
+            'background': {'required': False},
+            'summary': {'required': False},
+            'title': {'required': False},
+        }

@@ -2,7 +2,7 @@ from rest_framework.response import Response
 
 from api_base.views import BaseViewSet
 from api_course.models import Course
-from api_course.serializers import CourseSerializer, ListCourseSerializer, ListCourseSerializerLibrary
+from api_course.serializers import CourseSerializer, ListCourseSerializer, ListCourseSerializerLibrary, CourseUpdateSerializer
 from rest_framework.decorators import action
 
 from api_course.services import CourseService
@@ -118,3 +118,14 @@ class CourseViewSet(BaseViewSet):
             '-created_at').first()
         serializer = self.get_serializer(res_data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.PATCH], detail=True, url_path="change-status", serializer_class=CourseUpdateSerializer)
+    def update_status(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
