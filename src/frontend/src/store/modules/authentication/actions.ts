@@ -40,6 +40,11 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: RegisterItem
   ): any,
+
+  [ActionTypes.SEND_MAIL_RESET_PASSWORD](
+    { commit }: AugmentedActionContext,
+    payload: any
+  ): any,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -69,6 +74,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.REGISTER]({ commit }, payload) {
     const response: any = await AuthenticationService.register(payload)
+    return response;
+  },
+
+  async [ActionTypes.SEND_MAIL_RESET_PASSWORD]({ commit }, payload) {
+    const response: any = await AuthenticationService.forgotPw(payload)
     return response;
   }
 }

@@ -31,6 +31,10 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: any,
   ): any,
+  [ActionTypes.RESET_PASSWORD](
+    { commit }: AugmentedActionContext,
+    data: any,
+  ): any,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -55,6 +59,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.UPDATE_USER_PROFILE]({ commit }, payload) {
     let response: any = await UserService.updateUserInfo(payload.user_id, payload.data)
+    return response
+  },
+
+  async [ActionTypes.RESET_PASSWORD]({ commit }, data) {
+    let response: any = await UserService.resetPw(data)
     return response
   },
 }

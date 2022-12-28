@@ -1,10 +1,4 @@
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.db.models import Q
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from drf_yasg import openapi
-from rest_framework.response import Response
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from api_user.models import Account, User
 from rest_framework import status
@@ -29,7 +23,7 @@ def forgot_password(request):
         user_id = user.id
         token = PasswordResetTokenGenerator().make_token(account)
         current_site = request.META['HTTP_HOST']
-        absurl = 'http://'+current_site + '/api/v1/users/password-reset?user_id=' + str(user_id) + '&token=' + str(token)
+        absurl = 'http://'+current_site + '/password-reset?user_id=' + str(user_id) + '&token=' + str(token)
         email_body = f'Hello {user.full_name}, \n Use link below to reset your password  \n' + str(absurl)
         send_mail(
             'Reset your passsword',

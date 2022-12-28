@@ -21,6 +21,10 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+  [ActionTypes.FETCH_COURSES_LIBRARY](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
   [ActionTypes.FETCH_COURSE_MANAGEMENT](
     { commit }: AugmentedActionContext,
     params: any
@@ -46,6 +50,11 @@ export interface Actions {
 export const actions: ActionTree<State, State> & Actions = {
   async [ActionTypes.FETCH_COURSES]({ commit }, params) {
     let data: any = await CourseService.getAll(params)
+    return data
+  },
+
+  async [ActionTypes.FETCH_COURSES_LIBRARY]({ commit }, params) {
+    let data: any = await CourseService.getLibrary(params)
     return data
   },
 

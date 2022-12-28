@@ -18,6 +18,18 @@ class CourseService extends BaseService {
     }
   }
 
+  async getLibrary(params: any = null) {
+    try {
+      const res = await this.request().get(`${this.entity}/library/`, {
+        params,
+      });
+      const courses = res.data;
+      return courses;
+    } catch (error) {
+      return [];
+    }
+  }
+
   async get_course_management(params: any = null) {
     try {
       const res = await this.request().get(`${this.entity}/management/`, {

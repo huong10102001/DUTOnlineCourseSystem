@@ -23,6 +23,8 @@ import ProfileEdit from "@/views/profile/edit/index.vue";
 import CertificationPage from '@/views/certification/index.vue';
 import ReportPage from "@/views/report/index.vue";
 import BrowseCoursePage from "@/views/course/browse/index.vue";
+import ForgotPasswordPage from "@/views/forgot-pw/index.vue";
+import ResetPasswordPage from "@/views/reset-pw/index.vue";
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -145,6 +147,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'login',
     component: LoginPage
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: ForgotPasswordPage
+  },
+  {
+    path: '/password-reset',
+    name: 'reset-password',
+    component: ResetPasswordPage
   },
   {
     path: '/logout',
