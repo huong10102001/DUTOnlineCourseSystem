@@ -50,7 +50,7 @@ class CourseViewSet(BaseViewSet):
         serializer.update({"course_random": self.get_serializer(res_data, many=True).data})
         return Response(serializer, status=status.HTTP_200_OK)
 
-    @action(methods=[HttpMethod.GET], detail=False, url_path="management")
+    @action(methods=[HttpMethod.GET], detail=False, url_path="management", serializer_class=ListCourseSerializer)
     def get_course_management(self, request, *args, **kwargs):
         user_obj = request.user.user
         params = request.query_params

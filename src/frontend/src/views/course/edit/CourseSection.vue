@@ -86,7 +86,7 @@
           </el-icon>
           Save
         </button>
-        <div>
+        <div v-if="!course.has_user">
           <button
             class="button is-success is-light is-rounded mr-2"
             v-if="course.status == COURSE_STATUS.DRAFT"
@@ -104,6 +104,9 @@
             @click.prevent="dialogVisible = true">
             <font-awesome-icon icon="fa-solid fa-trash"/>
           </button>
+        </div>
+        <div v-else style="font-size: 0.8rem">
+          This course can't change state when have users enrolled
         </div>
       </div>
     </el-form>
@@ -176,7 +179,7 @@ import CoverImage from "@/components/CoverImage.vue";
     }
   },
   methods: {
-    ...mapActions("course", [ActionTypes.UPDATE_COURSE_INFO, ActionTypes.DELETE_COURSE]),
+    ...mapActions("course", [ActionTypes.UPDATE_COURSE_INFO, ActionTypes.DELETE_COURSE, ActionTypes.CHANGE_COURSE_STATUS]),
     async handleSubmit(formEl: FormInstance | undefined) {
       if (!formEl) return
 
@@ -249,17 +252,11 @@ import CoverImage from "@/components/CoverImage.vue";
 
     async handlePublish() {
       this.is_freeze = true
-      let formData = new FormData()
-      formData.append("title", this.course.title);
-      formData.append("summary", this.course.summary);
-      formData.append("status", COURSE_STATUS.PUBLISHED);
-      this.course.topics.map((topic_id: string) => {
-        formData.append("topic_ids", topic_id ? topic_id : "")
-      })
-
-      const response: any = await this.UPDATE_COURSE_INFO({
-        form: formData,
-        id: this.course.id
+      const response: any = await this.CHANGE_COURSE_STATUS({
+        course_id: this.course.id,
+        payload: {
+          status: COURSE_STATUS.PUBLISHED
+        }
       })
 
       if (response.status == 200) {
@@ -283,17 +280,11 @@ import CoverImage from "@/components/CoverImage.vue";
 
     async handleUnpublish() {
       this.is_freeze = true
-      let formData = new FormData()
-      formData.append("title", this.course.title);
-      formData.append("summary", this.course.summary);
-      formData.append("status", COURSE_STATUS.DRAFT);
-      this.course.topics.map((topic_id: string) => {
-        formData.append("topic_ids", topic_id ? topic_id : "")
-      })
-
-      const response: any = await this.UPDATE_COURSE_INFO({
-        form: formData,
-        id: this.course.id
+      const response: any = await this.CHANGE_COURSE_STATUS({
+        course_id: this.course.id,
+        payload: {
+          status: COURSE_STATUS.DRAFT
+        }
       })
 
       if (response.status == 200) {

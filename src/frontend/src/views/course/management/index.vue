@@ -28,7 +28,7 @@
             <el-radio-button label="ALL"/>
             <el-radio-button :label="COURSE_STATUS.DRAFT"/>
             <el-radio-button :label="COURSE_STATUS.PUBLISHED"/>
-            <el-radio-button :label="COURSE_STATUS.DEACTIVATED"/>
+            <el-radio-button :label="COURSE_STATUS.DEACTIVATED" v-if="userInfo.role == ROLES.ADMIN"/>
           </el-radio-group>
         </el-col>
       </el-row>
@@ -59,7 +59,7 @@
 
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
-import {mapActions, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import CourseItem from "@/components/CourseItem.vue";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import Course from "@/types/course/CourseItem";
@@ -67,6 +67,7 @@ import Pagination from "@/components/Pagination.vue";
 import {COURSE_STATUS} from "@/const/course_status";
 import TopicItem from "@/types/course/TopicItem";
 import {ElNotification} from "element-plus";
+import {ROLES} from "@/const/roles";
 
 @Options({
   components: {
@@ -89,7 +90,11 @@ import {ElNotification} from "element-plus";
       loading: false,
       timeOut: null,
       timer: 300,
+      ROLES: ROLES
     }
+  },
+  computed: {
+    ...mapGetters("user", ['userInfo'])
   },
   methods: {
     ...mapActions("course", [ActionTypes.FETCH_COURSE_MANAGEMENT]),
