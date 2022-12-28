@@ -10,7 +10,6 @@ const initState = {
 }
 
 const authReducer = (state = initState, { type, payload }) => {
-  console.log(`authReducer type: ${type} with payload: ${payload}`);
   switch (type) {
     case "LOGIN_HANDLE":
       return {
@@ -24,7 +23,6 @@ const authReducer = (state = initState, { type, payload }) => {
         refresh_token: refresh_token,
         user_id: user_id,
         isLogin: true,
-        error: null,
       };
     case "LOGIN_FAILURE":
       return {
@@ -33,9 +31,7 @@ const authReducer = (state = initState, { type, payload }) => {
         error: payload.details,
       };
     case "LOGOUT":
-      return {
-        initState,
-      };
+      return initState;
     default:
       return state;
   }

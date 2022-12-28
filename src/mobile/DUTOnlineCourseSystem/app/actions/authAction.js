@@ -17,12 +17,13 @@ export function loginFailed(payload) {
   };
 }
 
-export function logout(payload){
+export function logout(payload) {
   return {
-    type:"LOGOUT",
+    type: "LOGOUT",
     payload,
-  }
+  };
 }
+
 export default {
   actionLogin,
   loginSuccess,

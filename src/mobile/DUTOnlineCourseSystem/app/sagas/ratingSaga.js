@@ -23,9 +23,6 @@ import {
 } from "../../actions/coursesAction";
 const getToken = (state) => state.auth.access_token;
 function* create_rating_api(action) {
-  console.log(
-    `create_rating_api type: ${action.type} with payload: ${action.payload}`
-  );
   const token = yield select(getToken);
   try {
     let response_parent;
@@ -43,18 +40,20 @@ function* create_rating_api(action) {
           },
         }
       );
-      console.log(response);
       response_parent = response;
       yield put(createRatingSuccess());
     } catch (error) {
       yield put(createRatingFailure());
+      console.log(error)
     }
     yield put(
       getCourse({
         course_id: action.payload.course_id,
       })
     );
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
   return;
 }
 export default create_rating_api;
