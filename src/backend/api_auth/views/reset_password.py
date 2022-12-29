@@ -23,7 +23,7 @@ def forgot_password(request):
         user_id = user.id
         token = PasswordResetTokenGenerator().make_token(account)
         current_site = request.META['HTTP_HOST']
-        absurl = 'http://'+current_site + '/password-reset?user_id=' + str(user_id) + '&token=' + str(token)
+        absurl = 'http://pbl6elearning.me' + '/password-reset?user_id=' + str(user_id) + '&token=' + str(token)
         email_body = f'Hello {user.full_name}, \n Use link below to reset your password  \n' + str(absurl)
         send_mail(
             'Reset your passsword',
