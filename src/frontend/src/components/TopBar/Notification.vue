@@ -141,6 +141,7 @@ import {equalTo, query, orderByChild, get} from '@firebase/database';
     },
 
     async handleScroll() {
+      console.log("hit")
       if (!this.next_page) return
 
       this.loading = true
@@ -148,7 +149,7 @@ import {equalTo, query, orderByChild, get} from '@firebase/database';
       this.query.isStateChanged = false
       const response: any = await this.FETCH_NOTIFICATION(this.query)
       if (response.status == 200) {
-        this.notifications.push(response.data.results.list_notification)
+        this.notifications.push(...response.data.results.list_notification)
         this.hasUnread = response.data.results.number_notification
         this.total_notification = response.data.count
         this.next_page = response.data.next
